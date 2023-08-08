@@ -1,0 +1,336 @@
+html
+{
+	background: url("../images/fond.png") no-repeat center fixed;
+	background-color: rgb(200,200,200);
+	background-size: cover;
+}
+
+body
+{
+	width: 100%;
+}
+
+a
+{
+	text-decoration: none;
+	color: black;
+}
+
+p
+{
+	text-align: justify;
+}
+
+@media screen and (max-width: 800px){
+	body
+	{
+		display: none;
+	}
+}
+
+@media screen and (min-width: 800px) and (max-width: 1000px){
+	body
+	{
+		font-size: 60%;
+	}
+}
+
+@media screen and (min-width: 1000px) and (max-width: 1200px){
+	body
+	{
+		font-size: 80%;
+	}
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1400px){
+	body
+	{
+		font-size: 95%;
+	}
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1600px){
+	body
+	{
+		font-size: 120%;
+	}
+}
+
+@media screen and (min-width: 1600px) and (max-width: 1800px){
+	body
+	{
+		font-size: 125%;
+	}
+}
+
+@media screen and (min-width: 1800px) and (max-width: 2000px){
+	body
+	{
+		font-size: 160%;
+	}
+}
+
+@media screen and (min-width: 2200px) and (max-width: 2400px){
+	body
+	{
+		font-size: 180%;
+	}
+}
+
+@media screen and (min-width: 2400px) and (max-width: 2600px){
+	body
+	{
+		font-size: 200%;
+	}
+}
+
+@media screen and (device-aspect-ratio: 16/9), screen and (device-aspect-ratio: 16/10), screen and (device-aspect-ratio: 1366/768), screen and (device-aspect-ratio: 1360/760)
+{
+	header
+	{
+		width: 20%;
+		font-size: 76%;
+	}
+	
+	#accueil
+	{
+		margin-top: 15%;
+	}
+}
+
+@media screen and (device-aspect-ratio: 4/3), screen and (device-aspect-ratio: 5/4)
+{
+	header
+	{
+		width: 23%;
+		font-size: 100%;
+	}
+	
+	#accueil
+	{
+		margin-top: -6%;
+	}
+}
+
+header
+{
+	position: fixed;
+	top: -3%;
+	left: 0%;
+	width: 23%;
+	height: 103%;
+	border-right: 3px solid black;
+	background: url("../images/ciel.png")
+}
+
+	#sujet
+	{
+		width: 90%;
+		height: 25%;
+	}
+
+	#img 
+	{
+		width: 150%;
+	}
+
+	header h2
+	{
+		text-align: center;
+		font-size: 210%;
+	}
+
+	header span.h2:hover
+	{
+		color: rgb(50,50,170);
+		border-top: 2px rgb(50,50,170) solid;
+		border-bottom: 2px rgb(50,50,170) solid;
+		border-radius: 5px;
+	}
+	
+	
+
+	#accueil, #sommaire, #divers
+	{
+		background-color: rgba(162,171,204,0.7);
+		width: 90%;
+		margin-left: 5%;
+		border: 1px rgba() solid;
+		border-radius: 10px;
+	}
+
+	#accueil
+	{
+		height: 5%;
+	}
+
+	#accueil h2
+	{
+		position: relative;
+		top: 11%;
+	}
+
+	#sommaire
+	{
+		margin-top: 10%;
+		height: 35%;
+	}
+
+	#sommaire h2
+	{
+		position: relative;
+		top: 4%;
+	}
+
+	#divers
+	{
+		margin-top: -1%;
+		height: 18%;
+	}
+
+	#divers h2
+	{
+		position: relative;
+		top: 3%;
+		margin-bottom: -4%;
+	}
+	
+	#divers h3
+	{
+		text-align: center;
+		font-size: 145%;
+		margin-bottom: -3%;
+	}
+	
+	#sommaire h3
+	{
+		margin-left: 5%;
+		font-style: italic;
+		font-size: 113%;
+	}
+	
+	header span.h3
+	{
+		background: rgba(105,120,173,0.5);
+		border-radius: 3px;
+	}
+	
+	header span.h3:hover
+	{
+		color: rgb(0,0,100);
+		border-top: 1px rgb(0,0,100) solid;
+		border-bottom: 1px rgb(0,0,100) solid;
+		border-radius: 5px;
+	}
+	
+	#spec1
+	{
+		color: rgb(0,0,100);
+		border-top: 1px rgb(0,0,100) solid;
+		border-bottom: 1px rgb(0,0,100) solid;
+		border-radius: 5px;
+	}
+
+	header ul
+	{
+		background: rgba(85,101,155,0.5);
+		margin-top: -3%;
+	}
+	
+	header li
+	{
+		list-style-type: none;
+		font-size: 95%;
+		font-weight: bold;
+	}
+	
+	header span.h4:hover
+	{
+		color: rgb(0,0,100);
+		border-left: 1px rgb(0,0,100) solid;
+		border-right: 1px rgb(0,0,100) solid;
+		border-radius: 5px;
+		margin-left: -0.5%;
+	}
+	
+	#spec2
+	{
+		color: rgb(0,0,100);
+		border-left: 1px rgb(0,0,100) solid;
+		border-right: 1px rgb(0,0,100) solid;
+		border-radius: 5px;
+		margin-left: -0.5%;
+	}
+
+#titre
+{
+	text-align: center;
+	color: rgb(30,30,65);
+	font-size: 120%;
+	width: 100%;
+	height: 10%;
+	background: url("../images/fondnuage.png") no-repeat center fixed;
+	background-size: cover;
+}
+
+#titre h1
+{
+	border-top: 2px rgb(90,140,186) solid;
+	border-bottom: 2px rgb(90,140,186) solid;
+}
+
+article
+{
+	background: rgb(150,170,220);
+	border: 2px rgb(115,140,205) solid;
+	border-radius: 5px;
+	font-size: 120%;
+	margin-top: 6%;
+	margin-left: 30%;
+	width: 60%;
+}
+
+article h3
+{
+	font-weight: bold;
+	font-style: italic;
+	font-size: 110%;
+}
+
+p
+{
+	width: 96%;
+	margin-left: 2%;
+	border-radius: 1px;
+	border-top: 1px rgb(130,160,215) solid;
+	border-bottom: 1px rgb(130,160,215) solid;
+}
+
+#tabl1
+{
+	margin-left: 3%;
+	margin-top: 1%;
+	width: 94%;
+}
+
+#tabl2
+{
+	margin-top: 1%;
+	width: 100%;
+}
+
+#fleche
+{
+	position: fixed;
+	width: 8%;
+	bottom: 3%;
+	right: 1%;
+}
+
+#fleche2
+{
+	position: fixed;
+	width: 5%;
+	bottom: 3%;
+	left: 24.5%;
+}
