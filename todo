@@ -24,6 +24,21 @@
         - [ ] Enable file upload functionality.
     - [ ] DELETE
         - [ ] Implement file or resource deletion logic.
+- [ ] Implement HTTP headers:
+    - [ ] Handle headers for GET, POST, and DELETE.
+    - [ ] Handle headers for CGI.
+    - [ ] Handle headers for redirection.
+    - [ ] Handle headers for directory listing.
+    - [ ] Handle headers for file upload.
+- [ ] Implement HTTP responses:
+    - [ ] Handle responses for GET, POST, and DELETE.
+    - [ ] Handle responses for CGI.
+    - [ ] Handle responses for redirection.
+    - [ ] Handle responses for directory listing.
+    - [ ] Handle responses for file upload.
+- [ ] Implement a way to safe exit the server through ;
+    - [ ] SIGINT
+    - [ ] SIGTERM
 
 # 3. Configure Server Settings:
 - [ ] Implement configuration file parsing:

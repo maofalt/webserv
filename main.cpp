@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/11 17:06:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/11 17:12:33 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,9 @@
 
 
 /*
-Creates, binds, and sets up a listening socket.
 INPUT :	A pointer to an integer representing the socket file descriptor.
 OUTPUT :0 if successfully sets the socket for listening, -1 if it fails to bind, 
 		2 if there's an error with address information.
-CHECKS : Check if getaddrinfo failed, if socket creation failed, or if binding 
-		the socket failed. Also checks for proper cleanup on failures.
 DESCRIPTION : This function prepares a socket for accepting connections. 
 		It uses TCP over IPv4 (AF_INET and SOCK_STREAM). The port is defined by
 		the macro PORT.
@@ -76,13 +73,27 @@ int	set_and_bind_sock_listen(int *sock_listen)
 }
 
 /*
-Temporary main function for starting the server.
 INPUT : None.
-OUTPUT : 0 if everything goes fine, 2 if there's a failure in setting up the listening socket.
+OUTPUT : 0 if everything goes fine, 2 if there's a failure
+		in setting up the listening socket.
 CHECKS : Checks for failure in set_and_bind_sock_listen function.
-DESCRIPTION : This function initializes the server and enters into a loop where it continually accepts client connections and processes HTTP requests. It prints log messages during the connection process and delegates the receiving of requests to the HttpRequest class. It also sends a response after receiving a complete request. The listening socket is configured with a backlog defined by the macro BACKLOG.
-*/
+DESCRIPTION
+		It initializes the server and enters into
+		a loop where it continually accepts client connections and
+		processes HTTP requests.
+		It prints log messages during the connection process and
+		delegates the receiving of requests to the HttpRequest class.
+		It also sends a response after receiving a complete request.
+		The listening socket is configured with a backlog defined by
+		the macro BACKLOG.
+QUESTION :
+		- Shouldn't the server be able to handle multiple connections
+		at the same time? It seems to me that it will only handle 1
+		connection at a time.
 
+		- There are no way to safe exist the server. It will only stop
+		when it receives a SIGINT signal.		
+*/
 int	main(void)
 {
 	int						sock_listen;
