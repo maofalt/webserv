@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/11 17:12:33 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/11 17:13:00 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,12 @@ QUESTION :
 */
 int	main(void)
 {
+	struct sockaddr_storage	client_addr;
+	HttpRequest				request;
+	socklen_t				client_addr_size;
 	int						sock_listen;
 	int						sock_server;
-	struct sockaddr_storage	client_addr;
-	socklen_t				client_addr_size;
 	int						status;
-	HttpRequest				request;
 
 	status = set_and_bind_sock_listen(&sock_listen);
 	if (status == -1)
