@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/07/29 18:51:06 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/11 17:06:45 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,24 @@
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
 
+
+/*
+Creates, binds, and sets up a listening socket.
+INPUT :	A pointer to an integer representing the socket file descriptor.
+OUTPUT :0 if successfully sets the socket for listening, -1 if it fails to bind, 
+		2 if there's an error with address information.
+CHECKS : Check if getaddrinfo failed, if socket creation failed, or if binding 
+		the socket failed. Also checks for proper cleanup on failures.
+DESCRIPTION : This function prepares a socket for accepting connections. 
+		It uses TCP over IPv4 (AF_INET and SOCK_STREAM). The port is defined by
+		the macro PORT.
+		The function iterates over the possible addresses returned by getaddrinfo,
+		trying to bind to each one until it succeeds or runs out of options.
+QUESTION : Method binds to all addresses returned by getaddrinfo. And not jsut
+		the 1st one. It seems to me it will overwrite the socket file descriptor
+		each time it binds to a new address.
+		Shouldn't it just bind to the first address returned by getaddrinfo?
+*/
 int	set_and_bind_sock_listen(int *sock_listen)
 {
 	struct addrinfo	hints;
@@ -56,6 +74,14 @@ int	set_and_bind_sock_listen(int *sock_listen)
 		return (-1);
 	return (0);
 }
+
+/*
+Temporary main function for starting the server.
+INPUT : None.
+OUTPUT : 0 if everything goes fine, 2 if there's a failure in setting up the listening socket.
+CHECKS : Checks for failure in set_and_bind_sock_listen function.
+DESCRIPTION : This function initializes the server and enters into a loop where it continually accepts client connections and processes HTTP requests. It prints log messages during the connection process and delegates the receiving of requests to the HttpRequest class. It also sends a response after receiving a complete request. The listening socket is configured with a backlog defined by the macro BACKLOG.
+*/
 
 int	main(void)
 {

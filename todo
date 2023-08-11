@@ -1,0 +1,63 @@
+# To-Do List for Project: HTTP Server (webserv)
+# ------------------
+
+# 1. Initial Setup:
+- [ ] Setup project directory and initialize main executable `./webserv`.
+- [ ] Create Makefile with targets: NAME, all, clean, fclean, re.
+- [ ] Define and structure files: `*.{h, hpp}, *.cpp, *.tpp, *.ipp`.
+
+# 2. Implement Core Functions:
+- [ ] Implement socket handling:
+    - [ ] Create socket using `socket()`.
+    - [ ] Bind the socket using `bind()`.
+    - [ ] Listen for connections using `listen()`.
+    - [ ] Accept connections using `accept()`.
+- [ ] Implement non-blocking functionality:
+    - [ ] Use `poll()`, `select()`, `kqueue()`, or `epoll()` as equivalent.
+    - [ ] Ensure read and write operations are non-blocking.
+- [ ] Implement error handling:
+    - [ ] Handle errors without checking the value of `errno`.
+- [ ] Implement HTTP methods:
+    - [ ] GET
+        - [ ] Include routing and file search logic.
+    - [ ] POST
+        - [ ] Enable file upload functionality.
+    - [ ] DELETE
+        - [ ] Implement file or resource deletion logic.
+
+# 3. Configure Server Settings:
+- [ ] Implement configuration file parsing:
+    - [ ] Allow customization for port, host, server names, etc.
+    - [ ] Setup default error pages.
+    - [ ] Limit client body size.
+    - [ ] Define routing rules including HTTP methods, redirection, directory listing, etc.
+
+# 4. Implement CGI Functionality:
+- [ ] Execute CGI based on file extensions:
+    - [ ] Handle chunked requests and responses.
+    - [ ] Ensure the correct directory for relative path file access.
+    - [ ] Support multiple CGIs like php-CGI, Python, etc.
+- [ ] Research and consider alternative methods for executing CGI.
+
+# 5. Server Features:
+- [ ] Enable directory listing control.
+- [ ] Implement client file upload functionality:
+    - [ ] Configure file save locations.
+- [ ] Serve fully static websites.
+- [ ] Implement cookies and session management:
+    - [ ] Prepare quick examples for demonstration.
+- [ ] Add support for HTTP redirection.
+
+# 6. Testing and Quality Assurance:
+- [ ] Validate tester functionality and create custom tests:
+    - [ ] Conduct stress tests for server availability.
+    - [ ] Compare with NGINX for header and answer behaviors.
+    - [ ] Ensure compatibility with different browsers.
+    - [ ] Write additional tests in Python, Golang, or C++.
+    - [ ] Validate security against vulnerabilities like `addrinfo`.
+- [ ] Ensure server resilience and never-die behavior.
+
+# 7. Finalization:
+- [ ] Prepare and include configuration files and basic files for evaluation:
+    - [ ] Review and optimize code.
+    - [ ] Compile documentation or user guide if required.
