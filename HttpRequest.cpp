@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 16:44:19 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/14 16:54:45 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,10 +296,13 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 	std::string	crlf(CRLF);
 	int	size;
 
+	// 1. Get the size of the next field
 	try { size = std::atoi(&*it); }
 	catch (std::exception &e) {
 		throw (HttpRequest::Error("400")); }
+	// 2. Find the end of the field
 	it = search(it, end, crlf.begin(), crlf.end());
+	// 3. Skip the field
 	size += 2 * crlf.size();
 	while (it != end && size--)
 		++it;
@@ -325,6 +328,7 @@ bool	HttpRequest::_rawBodyComplete(void)
 		return (false);
 	}
 	// If Content-Length is set, compare the size of the raw body to the value
+	// instead of  >= couldn't we use =! ? client is allowed to send somethign smaller ?
 	else if (_field.count(CONTENT_LENGTH))
 	{
 		try {
