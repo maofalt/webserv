@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 15:45:54 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/14 16:44:19 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static std::vector<std::string>	getMethodsForbidden(void)
 	methodsForbidden.push_back("TRACE");
 	return (methodsForbidden);
 }
+
 static std::vector<std::string>	getMethodsOk(void)
 {
 	std::vector<std::string>	methodsOk;
@@ -220,6 +221,7 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 We extract the  header, triming the CRLF at the end of the header
 Then we parse the method, uri and protocol
 Then we parse the header fields
+?? : do we need to verify anything else besides if the methods is correct ? 
 */
 void	HttpRequest::_parseHeader(void)
 {
@@ -236,13 +238,22 @@ void	HttpRequest::_parseHeader(void)
 		_parseHeaderField(buffer);
 		setBuffer(buffer, it, _raw.end());
 	}
+	//We verify if the method is allowed
 	_verifyHeader();
 	_raw.erase(_raw.begin(), it);
 }
 
 // _parseBody
+/*
+	?? : We may need to handle other types of transfer encoding as errors,
+rather than implementing them
+	?? : we should handle if the content length is incorrect.  
+	error ? we ignore the bdy?send a timeout suing 413 error ?
+	
+*/
 void	HttpRequest::_parseBody(void)
 {
+	// When the body is chunked, the size of the chunked data is unknown
 	if (_field.count(TRANSFER_ENCODING)
 		&& _field[TRANSFER_ENCODING] == "chunked")
 	{
@@ -253,15 +264,22 @@ void	HttpRequest::_parseBody(void)
 
 		while (it != _raw.end())
 		{
+			// If the end chunk is found, the parsing is complete.
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
 				return ;
+			// Get the size of the chunked data.
 			size = std::atoi(&*it);
+			// Get the start position of the chunked data
 			it = search(it, _raw.end(), crlf.begin(), crlf.end());
+			// Skip the size and CRLF.
 			it += crlf.size();
+			// Append chunked data to the body.
 			_body.append(it, it + size);
+			// Skip the chunked data and CRLF.
 			it += size + crlf.size();
 		}
 	}
+	// When the body is not chunked
 	else if (_field.count(CONTENT_LENGTH))
 		_body = _raw.substr(0, std::atoi(_field[CONTENT_LENGTH].c_str()));
 }
@@ -286,14 +304,18 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 	while (it != end && size--)
 		++it;
 }
+
+
 bool	HttpRequest::_rawBodyComplete(void)
 {
+	// If Transfer-Encoding is chunked, search for a double CRLF
 	if (_field.count(TRANSFER_ENCODING)
 		&& _field[TRANSFER_ENCODING] == "chunked")
 	{
 		std::string::iterator	it = _raw.begin();
 		std::string				endChunk(ENDCHUNK);
 
+		// Search the string for the end of the last chunk
 		while (it != _raw.end())
 		{
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
@@ -302,6 +324,7 @@ bool	HttpRequest::_rawBodyComplete(void)
 		}
 		return (false);
 	}
+	// If Content-Length is set, compare the size of the raw body to the value
 	else if (_field.count(CONTENT_LENGTH))
 	{
 		try {
@@ -309,6 +332,7 @@ bool	HttpRequest::_rawBodyComplete(void)
 		} catch (std::exception &e) {
 			throw (Error("400")); }
 	}
+	// If no headers are set, the body is complete
 	return (true);
 }
 
@@ -325,13 +349,16 @@ int	HttpRequest::recv(int fd)
 	if (count < 0)
 		throw (Error("500"));
 	_raw += buffer;
+	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
 		_parseHeader();
 		_headerComplete = true;
 	}
+	// Request entity too large
 	if (_headerComplete && _raw.size() > SIZE_MAX_REQUEST)
 		throw (Error("413"));
+	//as long as the body is not complete, we parse it
 	if (_headerComplete && !_bodyComplete && _rawBodyComplete())
 	{
 		_parseBody();
