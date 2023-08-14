@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 16:54:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/14 17:05:45 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,6 +399,7 @@ std::string	numberToString(T nb)
 }
 
 // respond
+// Dow e ahve righ to use send ? or we need to sue other ?
 int	HttpRequest::respond(int fd, std::string status)
 {
 	std::string			response;
@@ -412,6 +413,7 @@ int	HttpRequest::respond(int fd, std::string status)
 	if (_uri == "/")
 		_uri = "/index.html";
 
+	// we try to open the requested page and if it fails we send a 404 error
 	_uri = "./site" + _uri;
 	std::ifstream	file(_uri.c_str());
 	if (!file.is_open())
@@ -429,6 +431,9 @@ int	HttpRequest::respond(int fd, std::string status)
 	file.close();
 	body = buffer.str();
 
+	// we build the response
+	// 1- Status line HTTP-Version Status-Code Reason-Phrase CRLF
+	
 	response += _protocol;
 	response += " ";
 	response += status;
@@ -436,6 +441,7 @@ int	HttpRequest::respond(int fd, std::string status)
 	response += _description[status];
 	response += "\r\n";
 
+// 2- Date: Date and time of the message CRLF
 	char	time_buffer[1000];
 	time_t	now = time(0);
 	struct tm	tm = *gmtime(&now);
@@ -444,14 +450,17 @@ int	HttpRequest::respond(int fd, std::string status)
 	response += time_buffer;
 	response += "\r\n";
 
+// 3- Server: Information about the server CRLF
 	response += "Server: ";
 	response += "Webserv";
 	response += "\r\n";
 
+// 4- Content-Length: Size of the message body in bytes CRLF
 	response += "Content-Length: ";
 	response += numberToString(body.size());
 	response += "\r\n";
 
+// 5- Content-Type: Type of the message body CRLF
 	extension = _uri.substr(_uri.find_last_of(".") + 1);
 	response += "Content-Type: ";
 	response += _content_type[extension];
