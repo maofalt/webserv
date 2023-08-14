@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 15:21:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/14 15:45:54 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,17 @@ void	HttpRequest::_parseMethod(const std::string &method)
 	_protocol = method.substr(second_sp + 1, std::string::npos);
 }
 
+/* Pase of the a header field spliting name and value and saving it in the _field map
+	it is colon, semicolon is used to separet multiple values
+	?? :  if the value is empty, should we throw an error? I supppose this is done in the verification part
+	?? : is  the value ahs different values  separeted by a coma,
+	should we split it and save it in a vector? Or should we instead  use a multimap ?
+	?? : if there are semicolon (diffrent parameters) should we split them or 
+	keep them as a unique value ?
+*/
 void	HttpRequest::_parseHeaderField(const std::string &field)
 {
+	// Find the first semicolon to separate the name and value
 	std::string	name;
 	std::string	value;
 	size_t		semicolon;
@@ -190,6 +199,7 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 	name = field.substr(0, semicolon);
 	value = field.substr(semicolon + 1, field.size());
 
+	// Remove leading and trailing whitespaces from the name and value
 	first_char = name.find_first_not_of(' ');
 	last_char = name.find_last_not_of(' ');
 	if (first_char == std::string::npos || last_char == std::string::npos)
@@ -202,6 +212,7 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 		throw (Error("400"));
 	value = value.substr(first_char, last_char + 1);
 
+	// Add the name and value to the _field map
 	_field[name] = value;
 }
 
@@ -218,6 +229,7 @@ void	HttpRequest::_parseHeader(void)
 	it = _raw.begin();
 	setBuffer(buffer, it, _raw.end());
 	_parseMethod(buffer);
+	//buffer to next header field
 	setBuffer(buffer, it, _raw.end());
 	while (buffer.size() > 0)
 	{
