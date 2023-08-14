@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayblin <ayblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 06:18:27 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/07/29 18:42:35 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/13 17:56:17 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 //		bool	oversized(const std::string &str) const {return (str.size() > 2048);}
 //};
 
+//2 times public . 1st is private?
 class HttpRequest
 {
 	public:

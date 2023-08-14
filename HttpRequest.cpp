@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayblin <ayblin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/07/29 18:47:03 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/14 14:57:18 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,18 @@ void	HttpRequest::_verifyHeader(void) const
 		throw (Error("501"));
 }
 
-// _parseHeader
+/* 
+	_parseHeader
+	searches for the next CRLF in the buffer,
+	and sets the value of the buffer to the string between the current iterator
+	and the CRLF('\r\n'), CRLF indicates the end of the HEADER.
+	 If the Transfer-Encoding: chunked header is used, the CRLF sequence is also
+	 used to separate chunks of the message body.
+	 The iterator is then moved to the end of the CRLF
+
+	 ?? ; do we account for chunked transmission or we suppose that the header 
+	 is contained in only one request?
+*/
 static void	setBuffer(std::string &buffer,
 	std::string::iterator &it,
 	const std::string::iterator &end)
@@ -273,7 +284,7 @@ bool	HttpRequest::_rawBodyComplete(void)
 	return (true);
 }
 
-// recv
+// recv to be replaced by epoll, poll or select or any equivalent!
 int	HttpRequest::recv(int fd)
 {
 	char	buffer[BUFFER_SIZE_REQUEST + 1];
