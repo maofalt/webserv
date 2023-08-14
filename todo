@@ -2,23 +2,23 @@
 # ------------------
 
 # 1. Initial Setup:
-- [ ] Setup project directory and initialize main executable `./webserv`.
-- [ ] Create Makefile with targets: NAME, all, clean, fclean, re.
-- [ ] Define and structure files: `*.{h, hpp}, *.cpp, *.tpp, *.ipp`.
+- [✓] Setup project directory and initialize main executable `./webserv`.
+- [✓] Create Makefile with targets: NAME, all, clean, fclean, re.
+- [✓] Define and structure files: `*.{h, hpp}, *.cpp, *.tpp, *.ipp`.
 
 # 2. Implement Core Functions:
 - [ ] Implement socket handling:
-    - [ ] Create socket using `socket()`.
-    - [ ] Bind the socket using `bind()`.
-    - [ ] Listen for connections using `listen()`.
-    - [ ] Accept connections using `accept()`.
-- [ ] Implement non-blocking functionality:
+    - [✓] Create socket using `socket()`.
+    - [✓] Bind the socket using `bind()`.
+    - [✓] Listen for connections using `listen()`.
+    - [✓] Accept connections using `accept()`.
+- [ ] Implement non-blocking functionality, (right now blocking):
     - [ ] Use `poll()`, `select()`, `kqueue()`, or `epoll()` as equivalent.
     - [ ] Ensure read and write operations are non-blocking.
 - [ ] Implement error handling:
     - [ ] Handle errors without checking the value of `errno`.
 - [ ] Implement HTTP methods:
-    - [ ] GET
+    - [✓] GET
         - [ ] Include routing and file search logic.
     - [ ] POST
         - [ ] Enable file upload functionality.
@@ -65,6 +65,8 @@
 
 # 6. Testing and Quality Assurance:
 - [ ] Validate tester functionality and create custom tests:
+    - [ ] If launched several times, second  and subsequent launches 
+        segfaults.
     - [ ] Conduct stress tests for server availability.
     - [ ] Compare with NGINX for header and answer behaviors.
     - [ ] Ensure compatibility with different browsers.
