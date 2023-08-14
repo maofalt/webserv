@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 14:57:18 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/14 15:21:23 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,11 +151,18 @@ static void	setBuffer(std::string &buffer,
 	buffer = std::string(it, it2);
 	it = it2 + (crlf.end() - crlf.begin());
 }
+
+/*
+	We extract the request line here, which includes the HTTP method 
+	(e.g., GET, POST), the request URI, and the HTTP version
+	?? : Should we verify that the htpp version is 1.1?
+*/
 void	HttpRequest::_parseMethod(const std::string &method)
 {
 	size_t	first_sp;
 	size_t	second_sp;
 
+	//We extract the  the method between the spaces
 	first_sp = method.find_first_of(' ');
 	if (first_sp == std::string::npos)
 		throw (Error("400"));
@@ -163,9 +170,12 @@ void	HttpRequest::_parseMethod(const std::string &method)
 	if (second_sp == std::string::npos)
 		throw (Error("400"));
 	_method = method.substr(0, first_sp);
+	//Since we already subtracted the CRLF, the middle part is the uri
 	_uri = method.substr(first_sp + 1, second_sp - (first_sp + 1));
+	// last part is the protocol (HTTP/1.1 )
 	_protocol = method.substr(second_sp + 1, std::string::npos);
 }
+
 void	HttpRequest::_parseHeaderField(const std::string &field)
 {
 	std::string	name;
@@ -194,6 +204,12 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 
 	_field[name] = value;
 }
+
+/*
+We extract the  header, triming the CRLF at the end of the header
+Then we parse the method, uri and protocol
+Then we parse the header fields
+*/
 void	HttpRequest::_parseHeader(void)
 {
 	std::string				buffer;
