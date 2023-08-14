@@ -15,6 +15,7 @@
 - [ ] Implement non-blocking functionality, (right now blocking):
     - [ ] Use `poll()`, `select()`, `kqueue()`, or `epoll()` as equivalent.
     - [ ] Ensure read and write operations are non-blocking.
+    - [ ] Timeout function -> ? close client ?;
 - [ ] Implement error handling:
     - [ ] Handle errors without checking the value of `errno`.
 - [ ] Implement HTTP methods:
@@ -65,7 +66,7 @@
 
 # 6. Testing and Quality Assurance:
 - [ ] Validate tester functionality and create custom tests:
-    - [ ] If launched several times, second  and subsequent launches 
+    - [ ] If launched several times, second and subsequent launches 
         segfaults.
     - [ ] Conduct stress tests for server availability.
     - [ ] Compare with NGINX for header and answer behaviors.

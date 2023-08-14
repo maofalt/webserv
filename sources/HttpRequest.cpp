@@ -235,6 +235,7 @@ void	HttpRequest::_parseHeader(void)
 	setBuffer(buffer, it, _raw.end());
 	while (buffer.size() > 0)
 	{
+		std::cout << "in header while" << std::endl;
 		_parseHeaderField(buffer);
 		setBuffer(buffer, it, _raw.end());
 	}
@@ -264,6 +265,7 @@ void	HttpRequest::_parseBody(void)
 
 		while (it != _raw.end())
 		{
+			std::cout << "in body while" << std::endl;
 			// If the end chunk is found, the parsing is complete.
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
 				return ;
@@ -347,15 +349,18 @@ int	HttpRequest::recv(int fd)
 	int		count;
 
 	std::memset(buffer, 0, BUFFER_SIZE_REQUEST + 1);
+	std::cout << "before recv" << std::endl;
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
+	std::cout << "fd : " << fd << std::endl;
 	if (count == 0)
-		throw (Error("Closed"));
+		throw (Error("LOL"));
 	if (count < 0)
 		throw (Error("500"));
 	_raw += buffer;
 	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
+		// std::cout << "parse Header" << std::endl;
 		_parseHeader();
 		_headerComplete = true;
 	}

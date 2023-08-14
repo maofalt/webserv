@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <errno.h>
 #include "HttpRequest.hpp"
 
 #define PORT "8694"
@@ -115,13 +116,29 @@ int	main(void)
 		for (;;)
 		{
 			std::cout << "Receiving.." << std::endl;
-			request.recv(sock_server);
+			try
+			{
+				std::cout << "try recv" << std::endl;
+				request.recv(sock_server);
+				std::cout << "after recv" << std::endl;
+			}
+			catch(const std::exception& e)
+			{
+				std::cerr << e.what() << '\n';
+				// request.clear();
+				// close(sock_server);
+				// return errno;
+				break ;
+			}
 			if (request.isComplete())
 				break ;
 		}
+		std::cout << "before respond" << std::endl;
 		request.respond(sock_server, "200");
+		std::cout << "before clear" << std::endl;
 		request.clear();
 		close(sock_server);
 	}
+	close(sock_listen);
 	return (0);
 }
