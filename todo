@@ -79,3 +79,6 @@
 - [ ] Prepare and include configuration files and basic files for evaluation:
     - [ ] Review and optimize code.
     - [ ] Compile documentation or user guide if required.
+
+# To look up:
+- [ ] TIME_WAIT after closing sockets and how to work around it if necessary;
