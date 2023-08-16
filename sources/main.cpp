@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 20:01:27 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 21:23:20 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
 #include "HttpRequest.hpp"
 
 #define PORT "8694"
@@ -143,7 +144,6 @@ while (true) {
 
 
 int setUpSocket(int* sock_listen) {
-    // Your existing set_and_bind_sock_listen() function will be used here.
     return set_and_bind_sock_listen(sock_listen);
 }
 
@@ -210,24 +210,112 @@ void handleClient(int sock_server, HttpRequest& request) {
     close(sock_server);
 }
 
-int main(void) {
-    struct sockaddr_storage client_addr;
-    HttpRequest request;
-    socklen_t client_addr_size = sizeof(client_addr);
-    int sock_listen;
-    int sock_server;
 
-    if (setUpSocket(&sock_listen) == -1)
-        return 2;
+const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
 
-    listen(sock_listen, BACKLOG);
 
-    while (true) {
-        if (acceptClient(sock_listen, &sock_server, &client_addr, &client_addr_size)) {
-            handleClient(sock_server, request);
+int setUpEpoll(int sock_listen) {
+    int epoll_fd = epoll_create1(0);
+    if (epoll_fd == -1) {
+        perror("epoll_create1");
+        exit(EXIT_FAILURE);//this exit is not safe!!!
+    }
+
+    struct epoll_event ev;
+    ev.events = EPOLLIN;
+    ev.data.fd = sock_listen;
+
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_listen, &ev) == -1) {
+        perror("epoll_ctl: sock_listen");
+        exit(EXIT_FAILURE);//this exit is not safe!!!
+    }
+
+    return epoll_fd;
+}
+
+
+void handle_epoll_events(int epoll_fd, int sock_listen) {
+    
+	struct epoll_event		events[MAX_EVENTS];
+	struct epoll_event 		event;
+	struct sockaddr_storage	client_addr;
+	HttpRequest				request;
+	socklen_t				client_addr_size;
+    int						num_fds;
+	int 					sock_server;
+
+	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
+    if (num_fds == -1) {
+        perror("epoll_wait");
+        exit(EXIT_FAILURE);
+    }
+
+	if (num_fds == 0) {
+		std::cout << "Waiting for new clients or data from existing clients..." << std::endl;
+		return;
+	}
+
+    for (int i = 0; i < num_fds; i++) {
+        if (events[i].data.fd == sock_listen) {
+            client_addr_size = sizeof(client_addr);
+            sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
+            if (sock_server == -1) {
+                perror("accept");
+                continue;
+            }
+
+            std::cout << "New client connected on descriptor " << sock_server << "!" << std::endl;
+            event.events = EPOLLIN;
+            event.data.fd = sock_server;
+            if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
+                perror("epoll_ctl: sock_server");
+                close(sock_server);
+                continue;
+            }
+        } else {
+            // Handle client data
+			while (true) {
+				std::cout << "Receiving data from client on descriptor " << events[i].data.fd << std::endl;
+				try {
+            		request.recv(events[i].data.fd);
+				}
+				catch (const std::exception& e) {
+					std::cerr << e.what() << '\n';
+					close(events[i].data.fd);
+					continue;
+				}
+				if (request.isComplete())
+				break ;
+			}
+			std::cout << "before respond" << std::endl;
+			request.respond(sock_server, "200");
+			std::cout << "before clear" << std::endl;
+			request.clear();
+			close(events[i].data.fd);
         }
     }
+}
+
+int main(void) {
+
+    int						sock_listen;
+	int						epoll_fd;
+
+	if (setUpSocket(&sock_listen) == -1) {
+        return 2;
+	}
+	
+    listen(sock_listen, BACKLOG);
+	
+	epoll_fd = setUpEpoll(sock_listen);
+
+    while (true) {
+        handle_epoll_events(epoll_fd, sock_listen);
+    }
+	
+	close(epoll_fd);
 	close(sock_listen);
+	
 	return 0;
 }
 
