@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 21:23:20 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 21:40:41 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,7 @@ int setUpEpoll(int sock_listen) {
     ev.data.fd = sock_listen;
 
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_listen, &ev) == -1) {
-        perror("epoll_ctl: sock_listen");
+        perror(strerror(errno));
         exit(EXIT_FAILURE);//this exit is not safe!!!
     }
 
@@ -288,7 +288,7 @@ void handle_epoll_events(int epoll_fd, int sock_listen) {
 				break ;
 			}
 			std::cout << "before respond" << std::endl;
-			request.respond(sock_server, "200");
+			request.respond(events[i].data.fd, "200");
 			std::cout << "before clear" << std::endl;
 			request.clear();
 			close(events[i].data.fd);
