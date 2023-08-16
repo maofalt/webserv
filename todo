@@ -65,6 +65,32 @@
 - [ ] Add support for HTTP redirection.
 
 # 6. Testing and Quality Assurance:
+- [ ] install Brew, Siege, Nginx, and Apache for testing.
+- [ ] Create a sript that use Siege 
+    - [ ] Baseline Tests
+        Purpose: Establish a baseline for future tests.
+        siege http://localhost:PORT/
+    - [ ] Stress Tests
+        Purpose: Identify the server's upper limits and see how it performs under extreme conditions
+    - [ ] Endurance Tests
+        Purpose: Check for memory leaks, and see how the server performs over an extended period.
+    - [ ] Performance Tests
+        Purpose: Measure the server's response times and throughput.
+    - [ ] Concurrence Tests
+        Purpose: Understand how many simultaneous users your server can handle.
+    - [ ] Transacation Tests
+         Purpose: Test multiple URLs in sequence, simulating a user journey through the site.
+        Create a file named transaction.txt with:
+        http://localhost:PORT/login
+        http://localhost:PORT/dashboard
+        http://localhost:PORT/logout
+    - [ ] Content Tests
+        Purpose: Ensure various types of content (HTML, images, videos, etc.) are served correctly.
+    - [ ] Failover Tests
+        Purpose: Check how the system behaves when one component fails or when there's a network interruption.
+    - [ ] Connecton Delay Tests
+        Purpose: Check how your server behaves when clients take longer to read data.
+
 - [ ] Validate tester functionality and create custom tests:
     - [ ] If launched several times, second and subsequent launches 
         segfaults.
