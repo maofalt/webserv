@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 22:14:20 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 22:26:11 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,13 +193,33 @@ void handle_client_data(int epoll_fd, int client_fd) {
 
 }
 
+//if we want to ahve a more robust logi for time out
+// if we know that the server is under heavy load, 
+// might opt for a longer timeout, and during idle times, a shorter one.
+/*
+Nginx : 
+Nginx often sets the epoll_wait timeout dynamically based on various factors. 
+If there are immediate tasks to handle, it might set the timeout to 0 to poll; 
+if there are delayed tasks, it will calculate the time until the nearest timer 
+and use that as the timeout. If there's nothing immediate to do, it might block 
+indefinitely.
+*/
+int calculate_dynamic_timeout() {
+    // Logic to determine appropriate timeout
+	int timeout_value = 1000;
+    return timeout_value;
+}
+
 void handle_epoll_events(int epoll_fd, int sock_listen) {
     
 	struct epoll_event	events[MAX_EVENTS];
     HttpRequest			request;
     int					num_fds;
 
-	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
+
+	int timeout = calculate_dynamic_timeout();
+
+	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
     if (num_fds == -1) {
         perror("epoll_wait");
         exit(EXIT_FAILURE);
