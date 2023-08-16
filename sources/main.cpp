@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 21:53:46 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 22:14:20 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,41 +104,6 @@ int setUpSocket(int* sock_listen) {
     return set_and_bind_sock_listen(sock_listen);
 }
 
-void handleClient(int sock_server, HttpRequest& request) {
-    // int flags = fcntl(sock_server, F_GETFL, 0);
-    // if (flags == -1) {
-    //     perror("fcntl flags");
-    //     return;
-    // }
-    // if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
-    //     perror("fcntl socket error");
-    //     return;
-    // }
-
-    // Handle client connection
-    while (true) {
-        std::cout << "Receiving.." << std::endl;
-        try {
-            std::cout << "try recv" << std::endl;
-            request.recv(sock_server);
-            std::cout << "after recv" << std::endl;
-        }
-        catch (const std::exception& e) {
-            std::cerr << e.what() << '\n';
-            break;
-        }
-        if (request.isComplete()) {
-            break;
-        }
-    }
-
-    std::cout << "before respond" << std::endl;
-    request.respond(sock_server, "200");
-    std::cout << "before clear" << std::endl;
-    request.clear();
-    close(sock_server);
-}
-
 const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
 
 int setUpEpoll(int sock_listen) {
@@ -163,7 +128,7 @@ int setUpEpoll(int sock_listen) {
 int accept_new_client(int epoll_fd, int sock_listen) {
     
 	struct sockaddr_storage	client_addr;
-	struct epoll_event event;
+	struct epoll_event 		event;
     socklen_t 				client_addr_size;
 	int 					sock_server;
 	
@@ -187,23 +152,45 @@ int accept_new_client(int epoll_fd, int sock_listen) {
     return sock_server;
 }
 
-void handle_client_data(int client_fd, HttpRequest& request) {
+// Global or class-level state to keep track of ongoing requests jst for prototyping
+//we should create a struc or lass to hande this mproperly!!
+std::map<int, HttpRequest> ongoingRequests;
+
+void handle_client_data(int epoll_fd, int client_fd) {
     
+	
+	(void)epoll_fd; //we should use this variable to handle the error
 	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
-    try {
-        while (!request.isComplete()) {
-            request.recv(client_fd);
-        }
+	
+	
+    if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
+        // New client, create a HttpRequest for it
+        ongoingRequests[client_fd] = HttpRequest();
+    }
+
+    HttpRequest& request = ongoingRequests[client_fd];
+    
+	try {
+        request.recv(client_fd);
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         close(client_fd);
+		ongoingRequests.erase(client_fd);
         throw;  // return would be beter	
     }
-    std::cout << "before respond" << std::endl;
-    request.respond(client_fd, "200");
-    std::cout << "before clear" << std::endl;
-    request.clear();
-    close(client_fd);
+
+    if (request.isComplete()) {
+        std::cout << "before respond" << std::endl;
+        request.respond(client_fd, "200");
+        std::cout << "before clear" << std::endl;
+        request.clear();
+        close(client_fd);
+        ongoingRequests.erase(client_fd);
+    }
+	else {
+		std::cout << "Request not complete yet" << std::endl;
+	}
+
 }
 
 void handle_epoll_events(int epoll_fd, int sock_listen) {
@@ -229,7 +216,7 @@ void handle_epoll_events(int epoll_fd, int sock_listen) {
                 continue;
             }
         } else {
-            handle_client_data(events[i].data.fd, request);
+            handle_client_data(epoll_fd, events[i].data.fd);
         }
     }
 }
