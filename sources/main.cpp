@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 18:47:55 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 20:01:27 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,103 +140,97 @@ while (true) {
 }
 */
 
-int	main(void)
-{
-	struct sockaddr_storage	client_addr;
-	HttpRequest				request;
-	socklen_t				client_addr_size;
-	int						sock_listen;
-	int						sock_server;
-	int						status;
-	struct timeval timeout;
-	fd_set readfds;
 
-	status = set_and_bind_sock_listen(&sock_listen);
-	if (status == -1)
-		return (2);
 
-	// vvvvvvvvvvvvvvvvvvvvvvv ! TESTING ! vvvvvvvvvvvvvvvvvvvvvvvv
+int setUpSocket(int* sock_listen) {
+    // Your existing set_and_bind_sock_listen() function will be used here.
+    return set_and_bind_sock_listen(sock_listen);
+}
 
-	// int flags = fcntl(sock_listen, F_GETFL, 0);
-	// if (flags == -1) {
-	// 	return perror("fcntl"), 1;
-	// }
+bool acceptClient(int sock_listen, int* sock_server, 
+					struct sockaddr_storage* client_addr, 
+					socklen_t* client_addr_size) {
+    
+	fd_set			readfds;
+    struct timeval	timeout;
+    
+	FD_ZERO(&readfds);
+    FD_SET(sock_listen, &readfds);
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
 
-	// if (fcntl(sock_listen, F_SETFL, flags | O_NONBLOCK) == -1) {
-	// 	return perror("fcntl"), 1;
-	// }
-	// ^^^^^^^^^^^^^^^^^^^^^^ ! TESTING ! ^^^^^^^^^^^^^^^^^^^^^^^^^
+    std::cout << "select()" << std::endl;
+    int ret = select(sock_listen + 1, &readfds, NULL, NULL, &timeout);
+    if (ret == -1) {
+        perror("select");
+        return false;
+    }
+    else if (ret == 0) {
+        return false; // Timeout.
+    }
+    else {
+        std::cout << "Accept in progress..." << std::endl;
+        *sock_server = accept(sock_listen, (struct sockaddr *)client_addr, client_addr_size);
+        return (*sock_server != -1);
+    }
+}
 
-	listen(sock_listen, BACKLOG);
+void handleClient(int sock_server, HttpRequest& request) {
+    // int flags = fcntl(sock_server, F_GETFL, 0);
+    // if (flags == -1) {
+    //     perror("fcntl flags");
+    //     return;
+    // }
+    // if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
+    //     perror("fcntl socket error");
+    //     return;
+    // }
 
-	// vvvvvvvvvvvvvvvvvvvvvvv ! TESTING ! vvvvvvvvvvvvvvvvvvvvvvvv
+    // Handle client connection
+    while (true) {
+        std::cout << "Receiving.." << std::endl;
+        try {
+            std::cout << "try recv" << std::endl;
+            request.recv(sock_server);
+            std::cout << "after recv" << std::endl;
+        }
+        catch (const std::exception& e) {
+            std::cerr << e.what() << '\n';
+            break;
+        }
+        if (request.isComplete()) {
+            break;
+        }
+    }
 
-	while (true) {
-		// ... (set up server socket and set it to non-blocking mode) ...
-		FD_ZERO(&readfds);
-		FD_SET(sock_listen, &readfds);
+    std::cout << "before respond" << std::endl;
+    request.respond(sock_server, "200");
+    std::cout << "before clear" << std::endl;
+    request.clear();
+    close(sock_server);
+}
 
-		// choose waiting time
-		timeout.tv_sec = 5;
-		timeout.tv_usec = 0;
+int main(void) {
+    struct sockaddr_storage client_addr;
+    HttpRequest request;
+    socklen_t client_addr_size = sizeof(client_addr);
+    int sock_listen;
+    int sock_server;
 
-		client_addr_size = sizeof(client_addr);
+    if (setUpSocket(&sock_listen) == -1)
+        return 2;
 
-		std::cout << "select()" << std::endl;
-		int ret = select(sock_listen + 1, &readfds, NULL, NULL, &timeout); // need to look up the NULL parameters;
-		if (ret == -1) {
-			perror("select");
-			continue ;
-		}
-		else if (ret == 0) {
-			// Timeout: No client was ready to connect within <tv_sec> seconds
-		}
-		else {
-			// Client ready to connect
-			std::cout << "Accept in progress..." << std::endl;
-			sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
-			if (sock_server != -1) {
-				// Set serv sock to non-blocking
-				int flags = fcntl(sock_server, F_GETFL, 0);
-				if (flags == -1) {
-					perror("fcntl flags");
-					continue ;
-				}
+    listen(sock_listen, BACKLOG);
 
-				if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
-					perror("fcntl socket error");
-					continue ;
-				}
+    while (true) {
+        if (acceptClient(sock_listen, &sock_server, &client_addr, &client_addr_size)) {
+            handleClient(sock_server, request);
+        }
+    }
+	close(sock_listen);
+	return 0;
+}
 
-				// Handle client connection
-				while (true)
-				{
-					std::cout << "Receiving.." << std::endl;
-					try
-					{
-						std::cout << "try recv" << std::endl;
-						request.recv(sock_server);
-						std::cout << "after recv" << std::endl;
-					}
-					catch(const std::exception& e)
-					{
-						std::cerr << e.what() << '\n';
-						// request.clear();
-						// close(sock_server);
-						// return errno;
-						break ;
-					}
-					if (request.isComplete())
-						break ;
-				}
-				std::cout << "before respond" << std::endl;
-				request.respond(sock_server, "200");
-				std::cout << "before clear" << std::endl;
-				request.clear();
-				close(sock_server);
-			}
-		}
-	}
 	// ^^^^^^^^^^^^^^^^^^^^^^ ! TESTING ! ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 	// for (;;)
@@ -271,21 +265,21 @@ int	main(void)
 	// 	close(sock_server);
 	// }
 
-	if (shutdown(sock_listen, SHUT_WR) == -1) {
-		perror("shutdown");
-	}
+// 	if (shutdown(sock_listen, SHUT_WR) == -1) {
+// 		perror("shutdown");
+// 	}
 
-	char buffer[1024];
-	while (true) {
-		// Step 2: Wait for any remaining data or the FIN packet from the client
-		int bytesRead = recv(sock_listen, buffer, sizeof(buffer), 0);
-		if (bytesRead <= 0) {
-			// Received FIN or error
-			break;
-		}
-		// Optionally handle any last data received here
-	}
+// 	char buffer[1024];
+// 	while (true) {
+// 		// Step 2: Wait for any remaining data or the FIN packet from the client
+// 		int bytesRead = recv(sock_listen, buffer, sizeof(buffer), 0);
+// 		if (bytesRead <= 0) {
+// 			// Received FIN or error
+// 			break;
+// 		}
+// 		// Optionally handle any last data received here
+// 	}
 
-	close(sock_listen);
-	return (0);
-}
+// 	close(sock_listen);
+// 	return (0);
+// }
