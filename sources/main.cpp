@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 21:49:33 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 21:53:46 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,18 +160,22 @@ int setUpEpoll(int sock_listen) {
     return epoll_fd;
 }
 
-
 int accept_new_client(int epoll_fd, int sock_listen) {
-    struct sockaddr_storage client_addr;
-    socklen_t client_addr_size = sizeof(client_addr);
-    int sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
+    
+	struct sockaddr_storage	client_addr;
+	struct epoll_event event;
+    socklen_t 				client_addr_size;
+	int 					sock_server;
+	
+	client_addr_size = sizeof(client_addr);
+    sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
     if (sock_server == -1) {
         perror("accept");
         return -1;
     }
 
     std::cout << "New client connected on descriptor " << sock_server << "!" << std::endl;
-    struct epoll_event event;
+    
     event.events = EPOLLIN;
     event.data.fd = sock_server;
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
@@ -184,7 +188,8 @@ int accept_new_client(int epoll_fd, int sock_listen) {
 }
 
 void handle_client_data(int client_fd, HttpRequest& request) {
-    std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
+    
+	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
     try {
         while (!request.isComplete()) {
             request.recv(client_fd);
@@ -192,7 +197,7 @@ void handle_client_data(int client_fd, HttpRequest& request) {
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
         close(client_fd);
-        throw;  // or return, based on your design
+        throw;  // return would be beter	
     }
     std::cout << "before respond" << std::endl;
     request.respond(client_fd, "200");
@@ -202,9 +207,12 @@ void handle_client_data(int client_fd, HttpRequest& request) {
 }
 
 void handle_epoll_events(int epoll_fd, int sock_listen) {
-    struct epoll_event events[MAX_EVENTS];
-    int num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
+    
+	struct epoll_event	events[MAX_EVENTS];
+    HttpRequest			request;
+    int					num_fds;
 
+	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
     if (num_fds == -1) {
         perror("epoll_wait");
         exit(EXIT_FAILURE);
@@ -221,7 +229,6 @@ void handle_epoll_events(int epoll_fd, int sock_listen) {
                 continue;
             }
         } else {
-            HttpRequest request;
             handle_client_data(events[i].data.fd, request);
         }
     }
