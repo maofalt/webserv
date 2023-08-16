@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/11 17:13:00 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 18:47:55 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,14 +157,14 @@ int	main(void)
 
 	// vvvvvvvvvvvvvvvvvvvvvvv ! TESTING ! vvvvvvvvvvvvvvvvvvvvvvvv
 
-	int flags = fcntl(sock_listen, F_GETFL, 0);
-	if (flags == -1) {
-		return perror("fcntl"), 1;
-	}
+	// int flags = fcntl(sock_listen, F_GETFL, 0);
+	// if (flags == -1) {
+	// 	return perror("fcntl"), 1;
+	// }
 
-	if (fcntl(sock_listen, F_SETFL, flags | O_NONBLOCK) == -1) {
-		return perror("fcntl"), 1;
-	}
+	// if (fcntl(sock_listen, F_SETFL, flags | O_NONBLOCK) == -1) {
+	// 	return perror("fcntl"), 1;
+	// }
 	// ^^^^^^^^^^^^^^^^^^^^^^ ! TESTING ! ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 	listen(sock_listen, BACKLOG);
@@ -185,7 +185,8 @@ int	main(void)
 		std::cout << "select()" << std::endl;
 		int ret = select(sock_listen + 1, &readfds, NULL, NULL, &timeout); // need to look up the NULL parameters;
 		if (ret == -1) {
-			return perror("select"), 1;
+			perror("select");
+			continue ;
 		}
 		else if (ret == 0) {
 			// Timeout: No client was ready to connect within <tv_sec> seconds
@@ -196,14 +197,16 @@ int	main(void)
 			sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
 			if (sock_server != -1) {
 				// Set serv sock to non-blocking
-				// int flags = fcntl(sock_server, F_GETFL, 0);
-				// if (flags == -1) {
-				// 	return perror("fcntl"), 1;
-				// }
+				int flags = fcntl(sock_server, F_GETFL, 0);
+				if (flags == -1) {
+					perror("fcntl flags");
+					continue ;
+				}
 
-				// if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
-				// 	return perror("fcntl"), 1;
-				// }
+				if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
+					perror("fcntl socket error");
+					continue ;
+				}
 
 				// Handle client connection
 				while (true)
