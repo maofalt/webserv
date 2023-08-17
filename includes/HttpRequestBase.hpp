@@ -3,6 +3,14 @@
 
 # include <iostream>
 
+/*
+Purpose:            To act as a base class for all HTTP request types.
+Attributes/Methods: We already got a good starting point with the 
+                    existing HttpRequest class. 
+                    Refactor this to make it more generic 
+                    (i.e., remove GET-specific behavior).
+*/
+
 class HttpRequestBase {
 private:
     // Private members
