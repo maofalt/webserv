@@ -13,7 +13,7 @@
     - [✓] Listen for connections using `listen()`.
     - [✓] Accept connections using `accept()`.
 - [ ] Implement non-blocking functionality, (right now blocking):
-    - [ ] Use `poll()`, `select()`, `kqueue()`, or `epoll()` as equivalent.
+    - [✓] Use `poll()`, `select()`, `kqueue()`, or `epoll()` as equivalent.
     - [ ] Ensure read and write operations are non-blocking.
     - [ ] Timeout function -> ? close client ?;
 - [ ] Implement error handling:
@@ -37,8 +37,8 @@
     - [ ] Handle responses for redirection.
     - [ ] Handle responses for directory listing.
     - [ ] Handle responses for file upload.
-- [ ] Implement a way to safe exit the server through ;
-    - [ ] SIGINT
+- [✓] Implement a way to safe exit the server through ;
+    - [✓] SIGINT
     - [ ] SIGTERM
 
 # 3. Configure Server Settings:
@@ -108,3 +108,25 @@
 
 # To look up:
 - [ ] TIME_WAIT after closing sockets and how to work around it if necessary;
+
+
+# Structure:
+ -[ ] Pattern : Factory
+    - Explanation : To have a separate class or method that's responsible for creating objects. Instead of calling constructors directly, we delegate the responsibility of object creation to the factory, which determines which class to instantiate based on the provided information.
+- [ ] Create new classes for Factory
+    - [ ] Server Class
+        Manages the main loop, listens to new connections, and creates ClientHandler instances for each new connection.
+    - [ ] ClientHandler
+        Handles individual client connections. Reads data from the socket, uses the Factory to determine the request type, and uses HttpResponse to send responses.
+
+- [ ] Refactor New classes for Factory
+    - [ ] HTTPRequestBase
+    - [ ] HTTPResponse
+    - [ ] HTTPRequest Derived Classes
+        - [ ] HTTPRequestGET
+        - [ ] HTTPRequestPOST
+        - [ ] HTTPRequestDELETE
+        - [ ] Other methdos have to throw an error page ?
+    - [ ] HTTP Request Factory
+
+
