@@ -80,6 +80,13 @@ int	set_and_bind_sock_listen(int *sock_listen)
 		*sock_listen = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
 		if (*sock_listen == -1)
 			continue ;
+		//set SO_REUSEADDR option, but this make provoke to hijack the sokt it we launch the server serveral times!!
+		//we have to find a turnaround to fix this!! 
+		int optval = 1;
+		if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+			close(*sock_listen);
+			return perror(strerror(errno)), -1;
+		}
 		status = bind(*sock_listen, ad->ai_addr, ad->ai_addrlen);
 		if (status == -1)
 		{
@@ -123,10 +130,8 @@ int setUpSocket(int* sock_listen) {
 const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
 
 int setUpEpoll(int sock_listen) {
-	int epoll_fd = epoll_create1(0);
+	int epoll_fd = epoll_create(1);
 	if (epoll_fd == -1) {
-		// perror("epoll_create1");
-		// exit(EXIT_FAILURE); //this exit is not safe!!!
 		return perror("epoll_create1"), -1;
 	}
 
@@ -135,8 +140,6 @@ int setUpEpoll(int sock_listen) {
 	ev.data.fd = sock_listen;
 
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_listen, &ev) == -1) {
-		// perror(strerror(errno));
-		// exit(EXIT_FAILURE); //this exit is not safe!!!
 		return perror(strerror(errno)), -1;
 	}
 
@@ -238,6 +241,9 @@ int handle_epoll_events(int epoll_fd, int sock_listen) {
 
 	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
 	if (num_fds == -1) {
+		if (errno == EINTR) {
+			return perror("epoll_wait"), -1;
+		}
 		return perror("epoll_wait"), -1;
 	}
 
