@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main2.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 22:26:11 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/17 17:05:40 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 
 #include <string>
-#include <fcntl.h>
 #include <cstring>
 #include <netdb.h>
 #include <errno.h>
@@ -265,7 +264,7 @@ int handle_epoll_events(int epoll_fd, int sock_listen) {
 	return 0;
 }
 
-int main(void) {
+int main2(void) {
 
 	int						sock_listen;
 	int						epoll_fd;
