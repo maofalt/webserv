@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/17 17:05:40 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/17 17:08:07 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,16 @@ int accept_new_client(int epoll_fd, int sock_listen) {
 		perror("epoll_ctl: sock_server");
 		close(sock_server);
 		return -1;
-	}
-	return sock_server;
+	}int main(void) {
+    signal(SIGINT, signal_handler);  // This handler should set a global flag or a Server member to indicate server should shut down.
+
+    Server server;
+    server.loadConfig("path_to_config");  // If you have a configuration file.
+    server.start();  // Starts listening on all ports and enters event loop.
+
+    return 0;
+}
+
 }
 
 // Global or class-level state to keep track of ongoing requests jst for prototyping
