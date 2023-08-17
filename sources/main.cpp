@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/16 18:47:55 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/16 22:26:11 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,32 @@
 #include <cstring>
 #include <netdb.h>
 #include <errno.h>
+#include <signal.h>
 #include <unistd.h>
 #include <iostream>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
 #include "HttpRequest.hpp"
 
 #define PORT "8694"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
+
+// volatile sig_atomic_t stop_flag = 0;
+
+// void signal_handler(int signum) {
+//     stop_flag = 1;
+// }
+
+volatile sig_atomic_t	run = 1;
+
+void	signal_handler(int sig)
+{
+	if (sig == SIGINT)
+	run = 0;
+}
 
 
 /*
@@ -43,6 +59,7 @@ QUESTION : Method binds to all addresses returned by getaddrinfo. And not jsut
 		each time it binds to a new address.
 		Shouldn't it just bind to the first address returned by getaddrinfo?
 */
+
 int	set_and_bind_sock_listen(int *sock_listen)
 {
 	struct addrinfo	hints;
@@ -63,6 +80,13 @@ int	set_and_bind_sock_listen(int *sock_listen)
 		*sock_listen = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
 		if (*sock_listen == -1)
 			continue ;
+		//set SO_REUSEADDR option, but this make provoke to hijack the sokt it we launch the server serveral times!!
+		//we have to find a turnaround to fix this!! 
+		int optval = 1;
+		if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+			close(*sock_listen);
+			return perror(strerror(errno)), -1;
+		}
 		status = bind(*sock_listen, ad->ai_addr, ad->ai_addrlen);
 		if (status == -1)
 		{
@@ -99,193 +123,172 @@ QUESTION :
 		when it receives a SIGINT signal.		
 */
 
-/*
-
-int flags = fcntl(sockfd, F_GETFL, 0);
-if (flags == -1) {
-    perror("fcntl");
-    exit(1);
-}
-flags |= O_NONBLOCK;
-if (fcntl(sockfd, F_SETFL, flags) == -1) {
-    perror("fcntl");
-    exit(1);
+int setUpSocket(int* sock_listen) {
+	return set_and_bind_sock_listen(sock_listen);
 }
 
-fd_set readfds;
-struct timeval timeout;
+const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
 
-// ... (set up server socket and set it to non-blocking mode) ...
+int setUpEpoll(int sock_listen) {
+	int epoll_fd = epoll_create(1);
+	if (epoll_fd == -1) {
+		return perror("epoll_create1"), -1;
+	}
 
-while (true) {
-    FD_ZERO(&readfds);
-    FD_SET(serverSockfd, &readfds);
+	struct epoll_event ev;
+	ev.events = EPOLLIN;
+	ev.data.fd = sock_listen;
 
-    timeout.tv_sec = 5;  // wait up to 5 seconds
-    timeout.tv_usec = 0;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_listen, &ev) == -1) {
+		return perror(strerror(errno)), -1;
+	}
 
-    int ret = select(serverSockfd + 1, &readfds, nullptr, nullptr, &timeout);
-    if (ret == -1) {
-        perror("select");
-        exit(1);
-    } else if (ret == 0) {
-        // Timeout: No client was ready to connect within 5 seconds
-    } else {
-        // Client ready to connect
-        int clientSockfd = accept(serverSockfd, nullptr, nullptr);
-        if (clientSockfd != -1) {
-            // Handle client connection
-        }
-    }
+	return epoll_fd;
 }
-*/
 
-int	main(void)
-{
+int accept_new_client(int epoll_fd, int sock_listen) {
+	
 	struct sockaddr_storage	client_addr;
-	HttpRequest				request;
-	socklen_t				client_addr_size;
+	struct epoll_event 		event;
+	socklen_t 				client_addr_size;
+	int 					sock_server;
+	
+	client_addr_size = sizeof(client_addr);
+	sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
+	if (sock_server == -1) {
+		perror("accept");
+		return -1;
+	}
+
+	std::cout << "New client connected on descriptor " << sock_server << "!" << std::endl;
+	
+	event.events = EPOLLIN;
+	event.data.fd = sock_server;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
+		perror("epoll_ctl: sock_server");
+		close(sock_server);
+		return -1;
+	}
+	return sock_server;
+}
+
+// Global or class-level state to keep track of ongoing requests jst for prototyping
+//we should create a struc or lass to hande this mproperly!!
+std::map<int, HttpRequest> ongoingRequests;
+
+void handle_client_data(int epoll_fd, int client_fd) {
+	
+	
+	(void)epoll_fd; //we should use this variable to handle the error
+	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
+	
+	
+	if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
+		// New client, create a HttpRequest for it
+		ongoingRequests[client_fd] = HttpRequest();
+	}
+
+	HttpRequest& request = ongoingRequests[client_fd];
+	
+	try {
+		request.recv(client_fd);
+	} catch (const std::exception& e) {
+		std::cerr << e.what() << '\n';
+		close(client_fd);
+		ongoingRequests.erase(client_fd);
+		throw;  // return would be beter	
+	}
+
+	if (request.isComplete()) {
+		std::cout << "before respond" << std::endl;
+		request.respond(client_fd, "200");
+		std::cout << "before clear" << std::endl;
+		request.clear();
+		close(client_fd);
+		ongoingRequests.erase(client_fd);
+	}
+	else {
+		std::cout << "Request not complete yet" << std::endl;
+	}
+
+}
+
+//if we want to ahve a more robust logi for time out
+// if we know that the server is under heavy load, 
+// might opt for a longer timeout, and during idle times, a shorter one.
+/*
+Nginx : 
+Nginx often sets the epoll_wait timeout dynamically based on various factors. 
+If there are immediate tasks to handle, it might set the timeout to 0 to poll; 
+if there are delayed tasks, it will calculate the time until the nearest timer 
+and use that as the timeout. If there's nothing immediate to do, it might block 
+indefinitely.
+*/
+int calculate_dynamic_timeout() {
+	// Logic to determine appropriate timeout
+	int timeout_value = 1000;
+	return timeout_value;
+}
+
+int handle_epoll_events(int epoll_fd, int sock_listen) {
+	
+	struct epoll_event	events[MAX_EVENTS];
+	HttpRequest			request;
+	int					num_fds;
+	int					sock_server;
+
+	int timeout = calculate_dynamic_timeout();
+
+	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+	if (num_fds == -1) {
+		if (errno == EINTR) {
+			return perror("epoll_wait"), -1;
+		}
+		return perror("epoll_wait"), -1;
+	}
+
+	if (num_fds == 0) {
+		std::cout << "Waiting for new clients or data from existing clients..." << std::endl;
+		return 1;
+	}
+
+	for (int i = 0; i < num_fds; i++) {
+		if (events[i].data.fd == sock_listen) {
+			sock_server = accept_new_client(epoll_fd, sock_listen);
+			if (sock_server == -1) {
+				continue;
+			}
+		} else {
+			handle_client_data(epoll_fd, events[i].data.fd);
+		}
+	}
+	return 0;
+}
+
+int main(void) {
+
 	int						sock_listen;
-	int						sock_server;
-	int						status;
-	struct timeval timeout;
-	fd_set readfds;
+	int						epoll_fd;
 
-	status = set_and_bind_sock_listen(&sock_listen);
-	if (status == -1)
-		return (2);
-
-	// vvvvvvvvvvvvvvvvvvvvvvv ! TESTING ! vvvvvvvvvvvvvvvvvvvvvvvv
-
-	// int flags = fcntl(sock_listen, F_GETFL, 0);
-	// if (flags == -1) {
-	// 	return perror("fcntl"), 1;
-	// }
-
-	// if (fcntl(sock_listen, F_SETFL, flags | O_NONBLOCK) == -1) {
-	// 	return perror("fcntl"), 1;
-	// }
-	// ^^^^^^^^^^^^^^^^^^^^^^ ! TESTING ! ^^^^^^^^^^^^^^^^^^^^^^^^^
+	signal(SIGINT, signal_handler);
+	if (setUpSocket(&sock_listen) == -1) {
+		return 2;
+	}
 
 	listen(sock_listen, BACKLOG);
 
-	// vvvvvvvvvvvvvvvvvvvvvvv ! TESTING ! vvvvvvvvvvvvvvvvvvvvvvvv
+	epoll_fd = setUpEpoll(sock_listen);
+	std::cout << epoll_fd << std::endl;
 
-	while (true) {
-		// ... (set up server socket and set it to non-blocking mode) ...
-		FD_ZERO(&readfds);
-		FD_SET(sock_listen, &readfds);
-
-		// choose waiting time
-		timeout.tv_sec = 5;
-		timeout.tv_usec = 0;
-
-		client_addr_size = sizeof(client_addr);
-
-		std::cout << "select()" << std::endl;
-		int ret = select(sock_listen + 1, &readfds, NULL, NULL, &timeout); // need to look up the NULL parameters;
-		if (ret == -1) {
-			perror("select");
-			continue ;
+	if (epoll_fd != -1) {
+		while (run) {
+			if (handle_epoll_events(epoll_fd, sock_listen) == -1)
+				break;
 		}
-		else if (ret == 0) {
-			// Timeout: No client was ready to connect within <tv_sec> seconds
-		}
-		else {
-			// Client ready to connect
-			std::cout << "Accept in progress..." << std::endl;
-			sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
-			if (sock_server != -1) {
-				// Set serv sock to non-blocking
-				int flags = fcntl(sock_server, F_GETFL, 0);
-				if (flags == -1) {
-					perror("fcntl flags");
-					continue ;
-				}
-
-				if (fcntl(sock_server, F_SETFL, flags | O_NONBLOCK) == -1) {
-					perror("fcntl socket error");
-					continue ;
-				}
-
-				// Handle client connection
-				while (true)
-				{
-					std::cout << "Receiving.." << std::endl;
-					try
-					{
-						std::cout << "try recv" << std::endl;
-						request.recv(sock_server);
-						std::cout << "after recv" << std::endl;
-					}
-					catch(const std::exception& e)
-					{
-						std::cerr << e.what() << '\n';
-						// request.clear();
-						// close(sock_server);
-						// return errno;
-						break ;
-					}
-					if (request.isComplete())
-						break ;
-				}
-				std::cout << "before respond" << std::endl;
-				request.respond(sock_server, "200");
-				std::cout << "before clear" << std::endl;
-				request.clear();
-				close(sock_server);
-			}
-		}
+		std::cout << epoll_fd << std::endl;
+		close(epoll_fd);
 	}
-	// ^^^^^^^^^^^^^^^^^^^^^^ ! TESTING ! ^^^^^^^^^^^^^^^^^^^^^^^^^
-
-	// for (;;)
-	// {
-	// 	client_addr_size = sizeof(client_addr);
-	// 	std::cout << "Accept in progress..." << std::endl;
-	// 	sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
-	// 	for (;;)
-	// 	{
-	// 		std::cout << "Receiving.." << std::endl;
-	// 		try
-	// 		{
-	// 			std::cout << "try recv" << std::endl;
-	// 			request.recv(sock_server);
-	// 			std::cout << "after recv" << std::endl;
-	// 		}
-	// 		catch(const std::exception& e)
-	// 		{
-	// 			std::cerr << e.what() << '\n';
-	// 			// request.clear();
-	// 			// close(sock_server);
-	// 			// return errno;
-	// 			break ;
-	// 		}
-	// 		if (request.isComplete())
-	// 			break ;
-	// 	}
-	// 	std::cout << "before respond" << std::endl;
-	// 	request.respond(sock_server, "200");
-	// 	std::cout << "before clear" << std::endl;
-	// 	request.clear();
-	// 	close(sock_server);
-	// }
-
-	if (shutdown(sock_listen, SHUT_WR) == -1) {
-		perror("shutdown");
-	}
-
-	char buffer[1024];
-	while (true) {
-		// Step 2: Wait for any remaining data or the FIN packet from the client
-		int bytesRead = recv(sock_listen, buffer, sizeof(buffer), 0);
-		if (bytesRead <= 0) {
-			// Received FIN or error
-			break;
-		}
-		// Optionally handle any last data received here
-	}
-
 	close(sock_listen);
-	return (0);
+	
+	return 0;
 }
