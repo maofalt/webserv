@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 17:05:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/18 19:30:33 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,15 +460,23 @@ int	HttpRequest::respond(int fd, std::string status)
 	response += "Webserv";
 	response += "\r\n";
 
-// 4- Content-Length: Size of the message body in bytes CRLF
+// 4- Content-Type: Type of the message body CRLF
+	extension = _uri.substr(_uri.find_last_of(".") + 1);
+	response += "Content-Type: ";
+	response += _content_type[extension];
+	response += "\r\n";
+
+// 5- Content-Length: Size of the message body in bytes CRLF
 	response += "Content-Length: ";
 	response += numberToString(body.size());
 	response += "\r\n";
 
-// 5- Content-Type: Type of the message body CRLF
-	extension = _uri.substr(_uri.find_last_of(".") + 1);
-	response += "Content-Type: ";
-	response += _content_type[extension];
+	response += "Connection: ";
+	response += "keep-alive";
+	response += "\r\n";
+
+	response += "Accept-Ranges: ";
+	response += "bytes";
 	response += "\r\n";
 
 	response += "\r\n";
