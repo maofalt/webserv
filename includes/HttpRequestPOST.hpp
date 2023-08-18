@@ -7,7 +7,7 @@ class	HttpRequestPOST : public HttpRequestBase
 {
 	public :
 		HttpRequestPOST();
-		HttpRequestPOST(/*args*/);
+		HttpRequestPOST(int tmp_holder);
 		HttpRequestPOST(const HttpRequestPOST & other);
 
 		HttpRequestPOST	&operator=(const HttpRequestPOST & other);

@@ -7,9 +7,12 @@ HttpRequestBase::HttpRequestBase() {
 }
 
 HttpRequestBase::HttpRequestBase(const HttpRequestBase& other) {
+	(void)other;
 }
 
 HttpRequestBase& HttpRequestBase::operator=(const HttpRequestBase& other) {
+	(void)other;
+	return *this;
 }
 
 HttpRequestBase::~HttpRequestBase() {
@@ -45,4 +48,6 @@ HttpRequestBase *HttpRequestBase::createRequestObj(const std::string RequestType
 }
 
 std::ostream& operator<<(std::ostream& os, const HttpRequestBase & other) {
+	(void)other;
+	return (os);
 }

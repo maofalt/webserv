@@ -7,7 +7,7 @@ class	HttpRequestGET : public HttpRequestBase
 {
 	public :
 		HttpRequestGET();
-		HttpRequestGET(/*args*/);
+		HttpRequestGET(int tmp_holder);
 		HttpRequestGET(const HttpRequestGET & other);
 
 		HttpRequestGET	&operator=(const HttpRequestGET & other);

@@ -7,7 +7,7 @@ class	HttpRequestDELETE : public HttpRequestBase
 {
 	public :
 		HttpRequestDELETE();
-		HttpRequestDELETE(/*args*/);
+		HttpRequestDELETE(int tmp_holder);
 		HttpRequestDELETE(const HttpRequestDELETE & other);
 
 		HttpRequestDELETE	&operator=(const HttpRequestDELETE & other);

@@ -11,11 +11,6 @@ Attributes/Methods: We already got a good starting point with the
                     (i.e., remove GET-specific behavior).
 */
 
-struct RequestsTab{
-    std::string type;
-    HttpRequestBase* (*createRequest)(void);
-};
-
 class HttpRequestBase {
 private:
     // Private members
@@ -34,6 +29,11 @@ public:
     virtual ~HttpRequestBase();
 
     HttpRequestBase *createRequestObj(const std::string RequestType);
+};
+
+struct RequestsTab{
+    std::string type;
+    HttpRequestBase* (*createRequest)(void);
 };
 
 std::ostream& operator<<(std::ostream& os, const HttpRequestBase & other);

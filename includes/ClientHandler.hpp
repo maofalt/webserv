@@ -21,7 +21,6 @@ Methods:
 class ClientHandler {
 private:
     // Private members
-    obj;
 public:
     // Default constructor
     ClientHandler();

@@ -4,11 +4,17 @@
 HttpRequestPOST::HttpRequestPOST() {
 }
 
-HttpRequestPOST::HttpRequestPOST(/*args*/){
+HttpRequestPOST::HttpRequestPOST(int tmp_holder) {
+    (void)tmp_holder;
 }
 
-HttpRequestPOST::HttpRequestPOST(const HttpRequestPOST & other){
+HttpRequestPOST::HttpRequestPOST(const HttpRequestPOST & other) : HttpRequestBase(other)
+{
+    
+    (void)other;
 }
 
 HttpRequestPOST	&HttpRequestPOST::operator=(const HttpRequestPOST & other) {
+    (void)other;
+    return *this;
 }
