@@ -134,13 +134,14 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 	(void)epoll_fd; //we should use this variable to handle the error
 	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
 	
+	// HttpRequestBase request;
 	
 	if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
-		// New client, create a HttpRequest for it
-		ongoingRequests[client_fd] = HttpRequest();
+		// New client, create a HttpRequestBase for it
+		ongoingRequests[client_fd] = HttpRequestBase();
 	}
 
-	HttpRequest& request = ongoingRequests[client_fd];
+	HttpRequestBase& request = ongoingRequests[client_fd];
 	
 	try {
 		request.recv(client_fd);
@@ -148,13 +149,15 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 		std::cerr << e.what() << '\n';
 		close(client_fd);
 		ongoingRequests.erase(client_fd);
-		throw;  // return would be beter	
+		throw;  // return would be better;
 	}
 
 	if (request.isComplete()) {
-		std::cout << "before respond" << std::endl;
-		request.respond(client_fd, "200");
-		std::cout << "before clear" << std::endl;
+		HttpRequestBase *NewReqObj = request.createRequestObj(request._method);
+		// std::cout << "before respond" << std::endl;
+		NewReqObj->respond(client_fd, "200");
+		// std::cout << "before clear" << std::endl;
+		delete NewReqObj;
 		request.clear();
 		close(client_fd);
 		ongoingRequests.erase(client_fd);
@@ -184,7 +187,7 @@ int Server::calculate_dynamic_timeout() {
 int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 	
 	struct epoll_event	events[MAX_EVENTS];
-	HttpRequest			request;
+	HttpRequestBase		request;
 	int					num_fds;
 	int					sock_server;
 

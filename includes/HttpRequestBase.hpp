@@ -66,7 +66,7 @@ class HttpRequestBase {
 	// Coplien
 		HttpRequestBase(void);
 		HttpRequestBase(HttpRequestBase const &rhs);
-		~HttpRequestBase(void);
+		virtual ~HttpRequestBase(void);
 		HttpRequestBase	&operator=(HttpRequestBase const &rhs);
 
 	// Methods
@@ -85,7 +85,7 @@ class HttpRequestBase {
 
 struct RequestsTab{
     std::string type;
-    HttpRequestBase* (*createRequest)(void);
+    HttpRequestBase* (*createRequest)(const HttpRequestBase&);
 };
 
 // Exceptions

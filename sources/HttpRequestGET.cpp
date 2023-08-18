@@ -1,15 +1,17 @@
 #include "HttpRequestBase.hpp"
 #include "HttpRequestGET.hpp"
 
-HttpRequestGET::HttpRequestGET() {
+HttpRequestGET::HttpRequestGET() : HttpRequestBase() {
 }
 
-HttpRequestGET::HttpRequestGET(int tmp_holder){
+HttpRequestGET::HttpRequestGET(int tmp_holder) : HttpRequestBase() {
     (void)tmp_holder;
 }
 
-HttpRequestGET::HttpRequestGET(const HttpRequestGET & other) : HttpRequestBase(other)
-{
+HttpRequestGET::HttpRequestGET(const HttpRequestBase & Base) : HttpRequestBase(Base) {
+}
+
+HttpRequestGET::HttpRequestGET(const HttpRequestGET & other) : HttpRequestBase(other) {
     (void)other;
 }
 
