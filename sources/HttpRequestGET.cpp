@@ -83,17 +83,17 @@ int	HttpRequestGET::respond(int fd, std::string status)
 	response += "Webserv";
 	response += "\r\n";
 
-// 4- Content-Length: Size of the message body in bytes CRLF
-	response += "Content-Length: ";
-	response += numberToString(body.size());
-	response += "\r\n";
-
-// 5- Content-Type: Type of the message body CRLF
+// 4- Content-Type: Type of the message body CRLF
 	extension = _uri.substr(_uri.find_last_of(".") + 1);
 	response += "Content-Type: ";
 	response += _content_type[extension];
 	response += "\r\n";
 
+// 5- Content-Length: Size of the message body in bytes CRLF
+	response += "Content-Length: ";
+	response += numberToString(body.size());
+	response += "\r\n";
+	// need to add the update;
 	response += "\r\n";
 
 	response += body;
