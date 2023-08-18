@@ -1,7 +1,0 @@
-2d1
-< Content-Type: text/html
-4,5c3
-< Connection: keep-alive
-< Accept-Ranges: bytes
----
-> Content-Type: text/html

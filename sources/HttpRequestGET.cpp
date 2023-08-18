@@ -93,7 +93,15 @@ int	HttpRequestGET::respond(int fd, std::string status)
 	response += "Content-Length: ";
 	response += numberToString(body.size());
 	response += "\r\n";
-	// need to add the update;
+
+	response += "Connection: ";
+	response += "keep-alive";
+	response += "\r\n";
+
+	response += "Accept-Ranges: ";
+	response += "bytes";
+	response += "\r\n";
+
 	response += "\r\n";
 
 	response += body;
