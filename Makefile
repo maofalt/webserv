@@ -74,34 +74,6 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME)
 $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(SRCS_ALL)"
 	@$(CC) $(CFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
-#	@echo "\t[ $(GREEN)✓$(RESET) ] $(NAME) executable"
-#	@echo "\t$(ROSE)  "
-#	@echo "\t$(ROSE).████:   ████████.        "
-#	@echo "\t$(ROSE)████:███████████████.      "
-#	@echo "\t$(ROSE)███:█████████████████:     "
-#	@echo "\t$(ROSE)██:███████████████████:    "
-#	@echo "\t$(ROSE)█:███████$(BLUE)▒▒$(ROSE)███$(BLUE)▒▒$(ROSE)██████    "
-#	@echo "\t$(ROSE) ████████$(BLUE)▒▒▒$(ROSE)██$(BLUE)▒▒▒$(ROSE)███████   "
-#	@echo "\t$(ROSE) ████████$(BLUE)▒▒$(ROSE)███$(BLUE)▒▒$(ROSE)█████████  "
-#	@echo "\t$(ROSE) ██████████$(RED)▞▞▞$(ROSE)████████████:"
-#	@echo "\t$(ROSE) ██████████$(RED)▞▞▞$(ROSE)█████████████"
-#	@echo "\t$(ROSE)   ███████████████████ ████"
-#	@echo "\t$(ROSE)    █████████████████   ███"
-#	@echo "\t$(ROSE)      █████████████   ████ "
-#	@echo "\t$(RED) ▁▁▁▁▁▁▁▁▁$(ROSE)█████$(RED)▁▁▁▁▁▁▁▁▁   "
-#	@echo "\t$(RED)██████████████████████████. "
-#	@echo "\t$(RED)██████████████████████████ "
-#	@echo "\t$(RED)███████████   ████████████ "
-#	@echo "\t$(RED)████████       █████████ "
-#	@echo "\t$(RED) ██████           ██████.  "
-
-
-#	@echo " ▄▄▄·▄▄▌  ▄▄▄ . ▄▄▄· .▄▄ · ▄▄▄ .    ▄ •▄ ▪  ▄▄▌  ▄▄▌      • ▌ ▄ ·. ▄▄▄ ."
-#	@echo "▐█ ▄███•  ▀▄.▀·▐█ ▀█ ▐█ ▀. ▀▄.▀·    █▌▄▌▪██ ██•  ██•      ·██ ▐███▪▀▄.▀·"
-#	@echo " ██▀·██▪  ▐▀▀▪▄▄█▀▀█ ▄▀▀▀█▄▐▀▀▪▄    ▐▀▀▄·▐█·██▪  ██▪      ▐█ ▌▐▌▐█·▐▀▀▪▄"
-#	@echo "▐█▪·•▐█▌▐▌▐█▄▄▌▐█ ▪▐▌▐█▄▪▐█▐█▄▄▌    ▐█.█▌▐█▌▐█▌▐▌▐█▌▐▌    ██ ██▌▐█▌▐█▄▄▌"
-#	@echo ".▀   .▀▀▀  ▀▀▀  ▀  ▀  ▀▀▀▀  ▀▀▀     ·▀  ▀▀▀▀.▀▀▀ .▀▀▀     ▀▀  █▪▀▀▀ ▀▀▀ "
-
 
 	@echo "$(GREEN)\|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ $(RESET)"
 	@echo "\t [ $(GREEN)✓$(RESET) ] $(BOLD)PROJECT IS READY $(RESET)[ $(GREEN)✓$(RESET) ] "
@@ -122,6 +94,7 @@ fclean: clean tclean
 
 re: fclean all
 
+
 test: all
 	@docker-compose -f ./test/docker-compose.yml up -d --build 2>/dev/null
 	@(>/dev/null 2>/dev/null ./$(NAME) &)
@@ -130,9 +103,11 @@ test: all
 	@PID=$$(ps -ax | grep -F ./$(NAME) | grep -v "grep" | awk '{print $$1}')
 	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
 
+
 tclean:
 	@docker-compose -f ./test/docker-compose.yml down 2>/dev/null
 	@PID=$$(ps -ax | grep -F "./$(NAME)" | grep -v "grep" | awk '{print $$1}')
 	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
+
 
 .PHONY: all clean fclean re
