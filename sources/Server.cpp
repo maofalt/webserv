@@ -210,6 +210,7 @@ int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 		if (events[i].data.fd == sock_listen) {
 			sock_server = accept_new_client(epoll_fd, sock_listen);
 			if (sock_server == -1) {
+				perror("accept");
 				continue;
 			}
 		} else {
@@ -232,7 +233,10 @@ void Server::start() {
         std::cerr << "Failed to set up socket." << std::endl;
         return;
     }
-    listen(sock_listens[0], BACKLOG);
+    if (listen(sock_listens[0], BACKLOG) == -1) {
+		perror("listen");
+		return ;
+	}
     epoll_fd = setUpEpoll(sock_listens[0]);
     if (epoll_fd != -1) {
         while (run) {
