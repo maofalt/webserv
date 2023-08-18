@@ -13,6 +13,7 @@ class	HttpRequestGET : public HttpRequestBase
 		HttpRequestGET	&operator=(const HttpRequestGET & other);
 
 		// Methods;
+		int	respond(int fd, std::string status);
 	private :
 		
 };
