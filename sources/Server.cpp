@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/17 18:19:48 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/18 19:30:25 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_
 volatile sig_atomic_t Server::run = true; // Initialize the static member
 
 Server::Server() : 
-    epoll_fd(-1),
-    sock_listens(1,-1)
+    epoll_fd(-1)
 {
 }
 
@@ -41,22 +40,17 @@ QUESTION : Method binds to all addresses returned by getaddrinfo. And not jsut
 		each time it binds to a new address.
 		Shouldn't it just bind to the first address returned by getaddrinfo?
 */
-int Server::setUpSocket(int* sock_listen) {
-	return set_and_bind_sock_listen(sock_listen);
-}
-
-int	Server::set_and_bind_sock_listen(int *sock_listen)
+int	Server::setUpSocket(int* sock_listen, const std::string& port)
 {
 	struct addrinfo	hints;
 	struct addrinfo	*addrs;
 	int				status;
-
+	
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
-	status = getaddrinfo(NULL, PORT, &hints, &addrs);
-	if (status)
-	{
+	status = getaddrinfo(NULL, port.c_str(), &hints, &addrs);
+	if (status) {
 		std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
 		return (2);
 	}
@@ -85,20 +79,23 @@ int	Server::set_and_bind_sock_listen(int *sock_listen)
 	return (0);
 }
 
-int Server::setUpEpoll(int sock_listen) {
-	int epoll_fd = epoll_create(1);
+int Server::setUpEpoll() {
+	int epoll_fd = epoll_create(2);
 	if (epoll_fd == -1) {
 		return perror("epoll_create1"), -1;
 	}
 
-	struct epoll_event ev;
-	ev.events = EPOLLIN;
-	ev.data.fd = sock_listen;
-
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_listen, &ev) == -1) {
-		return perror(strerror(errno)), -1;
+	for (std::vector<int>::iterator it = sock_listens.begin();
+		it != sock_listens.end(); ++it) {
+		
+		struct epoll_event ev;
+		ev.events = EPOLLIN;
+		ev.data.fd = *it;
+		
+		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1) {
+			return perror(strerror(errno)), -1;
+		}
 	}
-
 	return epoll_fd;
 }
 
@@ -146,17 +143,17 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 		request.recv(client_fd);
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << '\n';
-		close(client_fd);
+		close_and_cleanup(epoll_fd, client_fd);
 		ongoingRequests.erase(client_fd);
 		throw;  // return would be beter	
-	}
+	} 
 
 	if (request.isComplete()) {
 		std::cout << "before respond" << std::endl;
 		request.respond(client_fd, "200");
 		std::cout << "before clear" << std::endl;
 		request.clear();
-		close(client_fd);
+		close_and_cleanup(epoll_fd, client_fd);
 		ongoingRequests.erase(client_fd);
 	}
 	else {
@@ -186,7 +183,7 @@ int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 	struct epoll_event	events[MAX_EVENTS];
 	HttpRequest			request;
 	int					num_fds;
-	int					sock_server;
+	int					client_fd;
 
 	int timeout = calculate_dynamic_timeout();
 
@@ -205,9 +202,18 @@ int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 
 	for (int i = 0; i < num_fds; i++) {
 		if (events[i].data.fd == sock_listen) {
-			sock_server = accept_new_client(epoll_fd, sock_listen);
-			if (sock_server == -1) {
-				continue;
+			while (true) {
+				client_fd = accept_new_client(epoll_fd, sock_listen);
+				if (client_fd == -1) {
+					if (errno == EAGAIN || errno == EWOULDBLOCK) {
+						// We have processed all incoming connections.
+						break;
+					} else {
+						perror("accept");
+						break;
+					}
+				}
+				handle_client_data(epoll_fd, client_fd);
 			}
 		} else {
 			handle_client_data(epoll_fd, events[i].data.fd);
@@ -222,28 +228,68 @@ void	Server::signal_handler(int sig)
         Server::run = false;
 }
 
+//This method will probably dissapear or change completely, just here to bootstrap 
+// multiple ports
+std::vector<std::string> Server::getPorts() {
+	
+	std::vector<std::string> ports;
+	ports.push_back(PORTAL);
+	ports.push_back(PORT);
+	
+	return ports;
+}
+
 void Server::start() {
     run = true;
     signal(SIGINT, signal_handler); // Register signal handler
-    if (setUpSocket(&sock_listens[0]) == -1) {
-        std::cerr << "Failed to set up socket." << std::endl;
-        return;
-    }
-    listen(sock_listens[0], BACKLOG);
-    epoll_fd = setUpEpoll(sock_listens[0]);
+	
+	// Loop over ports
+	std::vector<std::string> ports = getPorts();
+	for (std::vector<std::string>::const_iterator it = ports.begin();
+		it != ports.end();
+		++it) {
+		int socket;
+		if (setUpSocket(&socket, *it) == -1) {
+			std::cerr << "Failed to set up socket at port" <<  socket << std::endl;
+			continue ;
+		}
+		sock_listens.push_back(socket);
+    	if (listen(socket, BACKLOG) == -1) {
+			perror("listen");
+			return ;
+		}
+	}
+
+    epoll_fd = setUpEpoll();
+	
     if (epoll_fd != -1) {
         while (run) {
-            if (handle_epoll_events(epoll_fd, sock_listens[0]) == -1)
-                break;
+			for (std::vector<int>::iterator it = sock_listens.begin();
+				it != sock_listens.end();
+				++it) {
+				std::cout << "Listening on port " << *it << std::endl;
+	            if (handle_epoll_events(epoll_fd, *it) == -1)
+	                break;
+			}
         }
         close(epoll_fd);
     }
-    close(sock_listens[0]);
+	for (std::vector<int>::iterator it = sock_listens.begin();
+		it != sock_listens.end();
+		++it) {
+			close(*it);
+	}
 }
 
 void Server::stop() {
-    run = 0;
-    close(sock_listens[0]);
+    run = false;
+
+	for (std::vector<int>::iterator it = sock_listens.begin();
+		it != sock_listens.end();
+		++it) {
+		close(*it);
+	}
+	
     if (epoll_fd != -1) {
         close(epoll_fd);
     }
@@ -255,6 +301,15 @@ void Server::loadConfig(const std::string& configPath) {
     //create a specific bobject witha new class
     (void)configPath;
     return ;
+}
+
+void Server::close_and_cleanup(int epoll_fd, int client_fd) {
+    struct epoll_event ev;
+    if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, &ev) == -1) {
+        perror("epoll_ctl: EPOLL_CTL_DEL");
+        // Handle error
+    }
+    close(client_fd);
 }
 
 std::ostream& operator<<(std::ostream& os, const Server & server);

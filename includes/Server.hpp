@@ -20,6 +20,7 @@
 #include "ClientHandler.hpp" 
 
 #define PORT "8694"
+#define PORTAL "8000"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
 /*
@@ -55,7 +56,7 @@ private:
 public:
     Server();  // Constructor might accept configuration file path as an argument
     ~Server();
-private:
+private://This way they can't be used, since it doesn't make sense implementing them
     Server(const Server& other);
     Server& operator=(const Server& other);
     
@@ -66,14 +67,16 @@ public:
 
 private:
     // Encapsulate all the helper methods inside private scope
-    int     set_and_bind_sock_listen(int *sock_listen);
-    int     setUpSocket(int* sock_listen);
-    int     setUpEpoll(int sock_listen);
-    int     accept_new_client(int epoll_fd, int sock_listen);
-    void    handle_client_data(int epoll_fd, int client_fd);
-    int     calculate_dynamic_timeout();
-    int     handle_epoll_events(int epoll_fd, int sock_listen);
-    static void	signal_handler(int sig);
+    int                         setUpSocket(int* sock_listen, const std::string& port);
+    int                         setUpEpoll();
+    int                         accept_new_client(int epoll_fd, int sock_listen);
+    void                        handle_client_data(int epoll_fd, int client_fd);
+    int                         calculate_dynamic_timeout();
+    int                         handle_epoll_events(int epoll_fd, int sock_listen);
+    static void	                signal_handler(int sig);
+    
+    std::vector<std::string>    getPorts();
+    void                        close_and_cleanup(int epoll_fd, int client_fd);
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);

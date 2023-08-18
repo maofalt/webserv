@@ -14,7 +14,7 @@ Attributes/Methods: We already got a good starting point with the
 class HttpRequestBase {
 private:
     // Private members
-    HttpRequestBase *obj;
+    //HttpRequestBase *obj;
 public:
     // Default constructor
     HttpRequestBase();
