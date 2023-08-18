@@ -8,6 +8,7 @@ class	HttpRequestPOST : public HttpRequestBase
 	public :
 		HttpRequestPOST();
 		HttpRequestPOST(int tmp_holder);
+		HttpRequestPOST(const HttpRequestBase & Base);
 		HttpRequestPOST(const HttpRequestPOST & other);
 
 		HttpRequestPOST	&operator=(const HttpRequestPOST & other);

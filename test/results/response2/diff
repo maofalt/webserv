@@ -1,0 +1,13 @@
+1,12d0
+< HTTP/1.1 405 Not Allowed
+< Content-Type: text/html
+< Content-Length: 157
+< Connection: keep-alive
+< 
+< <html>
+< <head><title>405 Not Allowed</title></head>
+< <body>
+< <center><h1>405 Not Allowed</h1></center>
+< <hr><center>nginx/1.25.2</center>
+< </body>
+< </html>

@@ -8,6 +8,7 @@ class	HttpRequestDELETE : public HttpRequestBase
 	public :
 		HttpRequestDELETE();
 		HttpRequestDELETE(int tmp_holder);
+		HttpRequestDELETE(const HttpRequestBase & Base);
 		HttpRequestDELETE(const HttpRequestDELETE & other);
 
 		HttpRequestDELETE	&operator=(const HttpRequestDELETE & other);

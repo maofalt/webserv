@@ -41,13 +41,13 @@ Methods:
 */
 
 #include "ClientHandler.hpp"  // Assuming you'll create this
-#include "HttpRequest.hpp"
+#include "HttpRequestBase.hpp"
 
 class Server {
 private:
-    int                         epoll_fd;
-    std::vector<int>            sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequest>  ongoingRequests;  // ongoing requests for each client_fd
+    int                             epoll_fd;
+    std::vector<int>                sock_listens;  // to list to multiple ports
+    std::map<int, HttpRequestBase>  ongoingRequests;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	    run;
     // Configuration details can go here.
