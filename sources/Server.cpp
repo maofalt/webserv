@@ -228,7 +228,7 @@ int Server::handle_epoll_events(int epoll_fd) {
 					break;
 				}
 			}
-			handle_client_data(epoll_fd, client_fd);
+			//handle_client_data(epoll_fd, client_fd);
 			std::cout << "Accepted new client with fd: " << client_fd << " on port: " << events[i].data.fd << std::endl;
 		} else {
 			handle_client_data(epoll_fd, events[i].data.fd);
