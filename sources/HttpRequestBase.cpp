@@ -325,7 +325,6 @@ bool	HttpRequestBase::_rawBodyComplete(void)
 	return (true);
 }
 
-// recv to be replaced by epoll, poll or select or any equivalent!
 int	HttpRequestBase::recv(int fd)
 {
 	char	buffer[BUFFER_SIZE_REQUEST + 1];

@@ -60,7 +60,8 @@ int	Server::setUpSocket(int* sock_listen, const std::string& port)
 		if (*sock_listen == -1)
 			continue ;
 		//set SO_REUSEADDR option, but this make provoke to hijack the sokt it we launch the server serveral times!!
-		//we have to find a turnaround to fix this!! 
+		//we have to find a turnaround to fix this!!
+		std::cout << "Socket created for port: " << port << std::endl;
 		int optval = 1;
 		if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
 			close(*sock_listen);
@@ -72,6 +73,8 @@ int	Server::setUpSocket(int* sock_listen, const std::string& port)
 			close(*sock_listen);
 			continue ;
 		}
+		std::cout << "Bind successful for port: " << port << std::endl;
+
 	}
 	freeaddrinfo(addrs);
 	if (*sock_listen == -1)
@@ -106,9 +109,11 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	socklen_t 				client_addr_size;
 	int 					sock_server;
 	
+	std::cout << "inside accept new client" << std::endl;
 	client_addr_size = sizeof(client_addr);
 	sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
 	if (sock_server == -1) {
+		std::cout << "accept failed" << std::endl;
 		perror("accept");
 		return -1;
 	}
@@ -153,13 +158,14 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 		HttpRequestBase *NewReqObj = request.createRequestObj(request._method);
 		// std::cout << "before respond" << std::endl;
 		NewReqObj->respond(client_fd, "200");
-		// std::cout << "before clear" << std::endl;
+		std::cout << "before clear" << std::endl;
 		delete NewReqObj;
 		request.clear();
 		close_and_cleanup(epoll_fd, client_fd);
 		ongoingRequests.erase(client_fd);
 	}
 	else {
+		close_and_cleanup(epoll_fd, client_fd);
 		std::cout << "Request not complete yet" << std::endl;
 	}
 }
@@ -181,7 +187,7 @@ int Server::calculate_dynamic_timeout() {
 	return timeout_value;
 }
 
-int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
+int Server::handle_epoll_events(int epoll_fd) {
 	
 	struct epoll_event	events[MAX_EVENTS];
 	HttpRequestBase		request;
@@ -190,6 +196,7 @@ int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 
 	int timeout = calculate_dynamic_timeout();
 
+	std::cout << "Waiting for an epoll event..." << std::endl;
 	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
 	if (num_fds == -1) {
 		if (errno == EINTR) {
@@ -197,32 +204,47 @@ int Server::handle_epoll_events(int epoll_fd, int sock_listen) {
 		}
 		return perror("epoll_wait"), -1;
 	}
-
+	std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
 	if (num_fds == 0) {
 		std::cout << "Waiting for new clients or data from existing clients..." << std::endl;
 		return 1;
 	}
 
 	for (int i = 0; i < num_fds; i++) {
-		if (events[i].data.fd == sock_listen) {
-			while (true) {
-				client_fd = accept_new_client(epoll_fd, sock_listen);
-				if (client_fd == -1) {
-					if (errno == EAGAIN || errno == EWOULDBLOCK) {
-						// We have processed all incoming connections.
-						break;
-					} else {
-						perror("accept");
-						break;
-					}
+        inspect_epoll_event(events[i].events);
+
+		if (std::find(	sock_listens.begin(),
+						sock_listens.end(),
+						events[i].data.fd) != sock_listens.end()) {
+			std::cout << "inside for loop" << std::endl;
+			client_fd = accept_new_client(epoll_fd, events[i].data.fd);
+			std::cout << "After" << std::endl;
+			if (client_fd == -1) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK) {
+					// We have processed all incoming connections.
+					break;
+				} else {
+					perror("accept");
+					break;
 				}
-				handle_client_data(epoll_fd, client_fd);
 			}
+			handle_client_data(epoll_fd, client_fd);
+			std::cout << "Accepted new client with fd: " << client_fd << " on port: " << events[i].data.fd << std::endl;
 		} else {
 			handle_client_data(epoll_fd, events[i].data.fd);
 		}
+		std::cout << "outside while loop" << std::endl;
 	}
 	return 0;
+}
+
+void Server::inspect_epoll_event(uint32_t events) {
+    // Check and print the type of event
+    if (events & EPOLLIN) std::cout << "EPOLLIN Event" << std::endl;
+    if (events & EPOLLOUT) std::cout << "EPOLLOUT Event" << std::endl;
+    if (events & EPOLLERR) std::cout << "EPOLLERR Event" << std::endl;
+    if (events & EPOLLHUP) std::cout << "EPOLLHUP Event" << std::endl;
+    
 }
 
 void	Server::signal_handler(int sig)
@@ -261,22 +283,21 @@ void Server::start() {
 			perror("listen");
 			return ;
 		}
+		std::cout << "Listening on port: " << *it << std::endl;
 	}
 
     epoll_fd = setUpEpoll();
 	
-    if (epoll_fd != -1) {
-        while (run) {
-			for (std::vector<int>::iterator it = sock_listens.begin();
-				it != sock_listens.end();
-				++it) {
-				std::cout << "Listening on port " << *it << std::endl;
-	            if (handle_epoll_events(epoll_fd, *it) == -1)
-	                break;
-			}
-        }
-        close(epoll_fd);
+    if (epoll_fd == -1) {
+	    std::cerr << "Failed to set up epoll" << std::endl;
+        return;
     }
+    while (run) {
+        if (handle_epoll_events(epoll_fd) == -1)
+            break;
+    }
+
+	close(epoll_fd);
 	for (std::vector<int>::iterator it = sock_listens.begin();
 		it != sock_listens.end();
 		++it) {

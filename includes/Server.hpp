@@ -72,9 +72,11 @@ private:
     int                         accept_new_client(int epoll_fd, int sock_listen);
     void                        handle_client_data(int epoll_fd, int client_fd);
     int                         calculate_dynamic_timeout();
-    int                         handle_epoll_events(int epoll_fd, int sock_listen);
+    int                         handle_epoll_events(int epoll_fd);
     static void	                signal_handler(int sig);
     
+
+    void                        inspect_epoll_event(uint32_t events);
     std::vector<std::string>    getPorts();
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
