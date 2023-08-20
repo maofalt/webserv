@@ -1,7 +1,11 @@
 #ifndef CLIENTHANDLER_HPP
 #define CLIENTHANDLER_HPP
 
+
 # include <iostream>
+# include <unistd.h>
+# include <sys/epoll.h>
+# include "HttpRequestBase.hpp"
 
 /*
 ClientHandler Class:
@@ -20,34 +24,26 @@ Methods:
 
 class ClientHandler {
 private:
-  int             client_fd;
-  HttpRequestBase request;
+  int             _client_fd;
+  HttpRequestBase _request;
 
 public:
-    // Default constructor
-    ClientHandler();
-
-    // Copy constructor
-    ClientHandler(const ClientHandler& other);
-
-    // Copy assignment operator
-    ClientHandler& operator=(const ClientHandler& other);
-
+    ClientHandler(int fd, std::map<int, HttpRequestBase>&  ongoingRequests);
     // Destructor
     ~ClientHandler();
 
-    ClientHandler(int fd);
-
+    //Methods to handle 
     void readData();
-
-    void processData();
-
     void writeResponse();
-
     bool isRequestComplete();
+    void closeConnection(int epoll_fd);
 
-    void closeConnection();
 
+//Disable cnstructors and assignment operator
+private: 
+    ClientHandler();
+    ClientHandler(const ClientHandler& other);
+    ClientHandler& operator=(const ClientHandler& other);
 };
 
 std::ostream& operator<<(std::ostream& os, const ClientHandler & other);

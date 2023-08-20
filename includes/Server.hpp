@@ -75,6 +75,7 @@ private:
 
     //handle cllient Methods
     int                         accept_new_client(int epoll_fd, int sock_listen);
+    int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
     int                         handleClientEvent(int epoll_fd, int client_fd);
     void                        handle_client_data(int epoll_fd, int client_fd);
     

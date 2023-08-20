@@ -1,45 +1,47 @@
-#include "CLIENTHANDLER.hpp"
-
-// Default constructor
-ClientHandler::ClientHandler() {
-    // Implementation
-}
-
-// Copy constructor
-ClientHandler::ClientHandler(const ClientHandler& other) {
-    // Implementation
-}
-
-// Copy assignment operator
-ClientHandler& ClientHandler::operator=(const ClientHandler& other) {
-    // Implementation
-    return *this;
-}
+#include "ClientHandler.hpp"
 
 // Destructor
 ClientHandler::~ClientHandler() {
     // Implementation
 }
 
-ClientHandler(int fd) : client_fd(fd) {}
+ClientHandler::ClientHandler(int fd, std::map<int , HttpRequestBase>& ongoingRequests) : _client_fd(fd)
+{
+    // New client, create a HttpRequestBase for it, we need a getter for ongoingRequests
+    // since it's private.
+    if (ongoingRequests.find(_client_fd) == ongoingRequests.end()) {
+	    ongoingRequests[_client_fd] = HttpRequestBase();
+    }
+    
+    _request = ongoingRequests[_client_fd];
 
-void readData() {
-    // Read data from client socket.
-    // Possibly call processData() here if data forms a complete request.
 }
 
-void processData() {
-    // Process the request, determine response.
+void    ClientHandler::readData() {
+	_request.recv(_client_fd);
 }
 
-void writeResponse() {
-    // Write the response back to the client.
+// Write the response back to the client.
+void    ClientHandler::writeResponse() {
+    HttpRequestBase *NewReqObj = _request.createRequestObj(_request._method);
+	
+    NewReqObj->respond(_client_fd, "200");
+    delete NewReqObj;
+    _request.clear();
 }
 
-bool isRequestComplete() {
-    return request.isComplete();
+bool    ClientHandler::isRequestComplete() {
+    if (_request.isComplete()) {
+        return true;
+    }
+    return false;
 }
 
-void closeConnection() {
-    // Close the client socket.
+void    ClientHandler::closeConnection(int epoll_fd) {
+    struct epoll_event ev;
+    if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, _client_fd, &ev) == -1) {
+        perror("epoll_ctl: EPOLL_CTL_DEL");
+        // Handle error
+    }
+    close(_client_fd);
 }

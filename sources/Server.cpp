@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/20 18:56:59 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/20 20:55:15 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,7 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 	
 	
 	(void)epoll_fd; //we should use this variable to handle the error
-	
-	// HttpRequestBase request;
-	
+		
 	if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
 		// New client, create a HttpRequestBase for it
 		ongoingRequests[client_fd] = HttpRequestBase();
@@ -155,7 +153,6 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 
 	if (request.isComplete()) {
 		HttpRequestBase *NewReqObj = request.createRequestObj(request._method);
-		// std::cout << "before respond" << std::endl;
 		NewReqObj->respond(client_fd, "200");
 		std::cout << "before clear" << std::endl;
 		delete NewReqObj;
@@ -164,7 +161,6 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 		ongoingRequests.erase(client_fd);
 	}
 	else {
-		close_and_cleanup(epoll_fd, client_fd);
 		std::cout << "Request not complete yet" << std::endl;
 	}
 }
@@ -191,7 +187,6 @@ int Server::handle_epoll_events(int epoll_fd) {
 	struct epoll_event	events[MAX_EVENTS];
 	HttpRequestBase		request;
 	int					num_fds;
-	int					client_fd;
 
 	int timeout = calculate_dynamic_timeout();
 
@@ -217,8 +212,8 @@ int Server::handle_epoll_events(int epoll_fd) {
 			break ;
 		} 
 		// Else it's a client socket
-		int result = handleClientEvent(epoll_fd, events[i].data.fd);
-		if (result == 1) { continue ; } // Unknown client fd
+		handleClientEvent(epoll_fd, events[i].data.fd);
+		//if (result == 1) { continue ; } // Unknown client fd
 			
 	}
 	return 0;
@@ -231,28 +226,52 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
     	return 1;
 	}
 	
-	ClientHandler& client = clientHandlers[client_fd];
+	ClientHandler clientHandlers(client_fd, ongoingRequests);
+	//ClientHandler& client = clientHandlers;
 	
 	// Depending on the epoll event, decide the action on the client
 	if (client_fd & EPOLLIN) {
-    	client.readData();
+		try {
+    		client.readData();
+		} catch (const std::exception& e) {
+			close_and_cleanup(epoll_fd, client_fd);
+			client.erase(client_fd); 
+			ongoingRequests.erase(client_fd);
+			throw;
+		}
     	if (client.isRequestComplete()) {
-    	    client.writeResponse();  // or you could change epoll state to EPOLLOUT and let the epoll inform you when it's ready to write
-    	    client.closeConnection();  // if you want to close connection after sending response
-    	    clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+    		if (changeClientEpollMode(epoll_fd, client_fd, EPOLLOUT) != 0) {
+				client.closeConnection(epoll_fd);
+				ongoingRequests.erase(client_fd);
+				clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+			}
     	}
     }
     else if (client_fd & EPOLLOUT) {
         client.writeResponse();
+		close_and_cleanup(epoll_fd, client_fd);
+		clientHandlers.erase(client_fd); 
+		ongoingRequests.erase(client_fd);
     }
     else if (client_fd & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
         std::cerr << "Error on client fd: " << client_fd << std::endl;
-        client.closeConnection();
+        client.closeConnection(epoll_fd);
         clientHandlers.erase(client_fd);  // remove ClientHandler for this client
     }
 	return 0;
 }
 
+int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
+	
+	struct epoll_event ev;
+	ev.events = mode;
+	ev.data.fd = client_fd;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, client_fd, &ev) == -1) {
+		perror("epoll_ctl: EPOLL_CTL_MOD");
+		return -1;
+	}
+	return 0;
+}
 
 void Server::inspect_epoll_event(uint32_t events) {
     // Check and print the type of event
