@@ -20,7 +20,9 @@ Methods:
 
 class ClientHandler {
 private:
-    // Private members
+  int             client_fd;
+  HttpRequestBase request;
+
 public:
     // Default constructor
     ClientHandler();
@@ -33,6 +35,19 @@ public:
 
     // Destructor
     ~ClientHandler();
+
+    ClientHandler(int fd) : client_fd(fd) {}
+
+    void readData();
+
+    void processData();
+
+    void writeResponse();
+
+    bool isRequestComplete();
+
+    void closeConnection();
+
 };
 
 std::ostream& operator<<(std::ostream& os, const ClientHandler & other);

@@ -48,6 +48,7 @@ private:
     int                             epoll_fd;
     std::vector<int>                sock_listens;  // to list to multiple ports
     std::map<int, HttpRequestBase>  ongoingRequests;  // ongoing requests for each client_fd
+    std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	    run;
     // Configuration details can go here.
@@ -74,6 +75,7 @@ private:
     int                         calculate_dynamic_timeout();
     int                         handle_epoll_events(int epoll_fd);
     static void	                signal_handler(int sig);
+    void                        acceptNewClient(int listeningSocket);
     
 
     void                        inspect_epoll_event(uint32_t events);
