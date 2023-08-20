@@ -66,6 +66,7 @@ public:
     void    loadDefaultConfig(); // Load default configuration from config/default.conf;
     void    start();  // Start the server
     void    stop();  // Stop the server
+    Config  getConfig() {return this->_config;};
 
 private:
     // Encapsulate all the helper methods inside private scope

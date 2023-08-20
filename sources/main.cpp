@@ -22,6 +22,7 @@ int main(int ac, char **av) {
     else
         server.loadDefaultConfig();
 
+    std::cout << server.getConfig() << std::endl;
     // try {
     //     server.start();  // Starts listening on all ports and enters event loop.    
     // } catch (const std::exception& e) {
