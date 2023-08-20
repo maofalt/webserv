@@ -36,7 +36,7 @@ public:
     // Destructor
     ~ClientHandler();
 
-    ClientHandler(int fd) : client_fd(fd) {}
+    ClientHandler(int fd);
 
     void readData();
 

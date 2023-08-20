@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/20 16:59:14 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/20 18:56:59 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ void Server::handle_client_data(int epoll_fd, int client_fd) {
 	
 	
 	(void)epoll_fd; //we should use this variable to handle the error
-	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
 	
 	// HttpRequestBase request;
 	
@@ -199,44 +198,61 @@ int Server::handle_epoll_events(int epoll_fd) {
 	std::cout << "Waiting for an epoll event..." << std::endl;
 	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
 	if (num_fds == -1) {
-		if (errno == EINTR) {
-			return perror("epoll_wait"), -1;
-		}
+		if (errno == EINTR) { return perror("epoll_wait"), -1; }
 		return perror("epoll_wait"), -1;
 	}
+	
 	std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
-	if (num_fds == 0) {
-		std::cout << "Waiting for new clients or data from existing clients..." << std::endl;
-		return 1;
-	}
-
+	
 	for (int i = 0; i < num_fds; i++) {
         inspect_epoll_event(events[i].events);
-
+		
+		// Check if the event's fd is a listening socket
 		if (std::find(	sock_listens.begin(),
 						sock_listens.end(),
 						events[i].data.fd) != sock_listens.end()) {
-			std::cout << "inside for loop" << std::endl;
-			client_fd = accept_new_client(epoll_fd, events[i].data.fd);
-			std::cout << "After" << std::endl;
-			if (client_fd == -1) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK) {
-					// We have processed all incoming connections.
-					break;
-				} else {
-					perror("accept");
-					break;
-				}
-			}
-			//handle_client_data(epoll_fd, client_fd);
-			std::cout << "Accepted new client with fd: " << client_fd << " on port: " << events[i].data.fd << std::endl;
-		} else {
-			handle_client_data(epoll_fd, events[i].data.fd);
-		}
-		std::cout << "outside while loop" << std::endl;
+			if (accept_new_client(epoll_fd, events[i].data.fd)== -1) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
+				perror("accept"); }
+			break ;
+		} 
+		// Else it's a client socket
+		int result = handleClientEvent(epoll_fd, events[i].data.fd);
+		if (result == 1) { continue ; } // Unknown client fd
+			
 	}
 	return 0;
 }
+
+int		Server::handleClientEvent(int epoll_fd, int client_fd) {
+
+	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
+    	std::cerr << "Unknown client fd: " << client_fd << std::endl;
+    	return 1;
+	}
+	
+	ClientHandler& client = clientHandlers[client_fd];
+	
+	// Depending on the epoll event, decide the action on the client
+	if (client_fd & EPOLLIN) {
+    	client.readData();
+    	if (client.isRequestComplete()) {
+    	    client.writeResponse();  // or you could change epoll state to EPOLLOUT and let the epoll inform you when it's ready to write
+    	    client.closeConnection();  // if you want to close connection after sending response
+    	    clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+    	}
+    }
+    else if (client_fd & EPOLLOUT) {
+        client.writeResponse();
+    }
+    else if (client_fd & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+        std::cerr << "Error on client fd: " << client_fd << std::endl;
+        client.closeConnection();
+        clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+    }
+	return 0;
+}
+
 
 void Server::inspect_epoll_event(uint32_t events) {
     // Check and print the type of event

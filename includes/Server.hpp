@@ -68,18 +68,20 @@ public:
 
 private:
     // Encapsulate all the helper methods inside private scope
-    int                         setUpSocket(int* sock_listen, const std::string& port);
-    int                         setUpEpoll();
-    int                         accept_new_client(int epoll_fd, int sock_listen);
-    void                        handle_client_data(int epoll_fd, int client_fd);
-    int                         calculate_dynamic_timeout();
-    int                         handle_epoll_events(int epoll_fd);
-    static void	                signal_handler(int sig);
-    void                        acceptNewClient(int listeningSocket);
-    
-
-    void                        inspect_epoll_event(uint32_t events);
     std::vector<std::string>    getPorts();
+    int                         setUpSocket(int* sock_listen, const std::string& port);
+    int                         calculate_dynamic_timeout();
+    static void	                signal_handler(int sig);
+
+    //handle cllient Methods
+    int                         accept_new_client(int epoll_fd, int sock_listen);
+    int                         handleClientEvent(int epoll_fd, int client_fd);
+    void                        handle_client_data(int epoll_fd, int client_fd);
+    
+    //Multiplexing methods
+    int                         setUpEpoll();
+    void                        inspect_epoll_event(uint32_t events);
+    int                         handle_epoll_events(int epoll_fd);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
 public:
