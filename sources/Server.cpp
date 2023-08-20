@@ -18,7 +18,8 @@ const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_
 volatile sig_atomic_t Server::run = true; // Initialize the static member
 
 Server::Server() : 
-    epoll_fd(-1)
+    epoll_fd(-1),
+	defaultConf("./config/default.conf")
 {
 }
 
@@ -318,12 +319,43 @@ void Server::stop() {
         close(epoll_fd);
     }
 }
-    
+
+void Server::loadDefaultConfig() {
+	std::ifstream	file;
+
+	file.open(defaultConf.c_str(), std::fstream::in);
+	if (!file) {
+		std::cerr << "Config: error: failed to open default config file." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	if (!Config::checkNorm(file))
+		exit(EXIT_FAILURE);
+	_config = Config();
+	_config.setupConf(file);
+	std::cout << "Config = " << defaultConf << std::endl;
+	
+}
 
 void Server::loadConfig(const std::string& configPath) {
     // Load server configuration from the given path.
-    //create a specific bobject witha new class
-    (void)configPath;
+    // create a specific object with a new class
+    
+	std::ifstream	file;
+
+	file.open(configPath.c_str(), std::fstream::in);
+	if (!file) {
+		std::cerr << "Config: error: failed to open config file, using default config instead." << std::endl;
+		loadDefaultConfig();
+		return ;
+	}
+	if (!Config::checkNorm(file)) {
+		loadDefaultConfig();
+		return ;
+	}
+	_config = Config();
+	_config.setupConf(file);
+	std::cout << "Config = " << configPath << std::endl;
+
     return ;
 }
 

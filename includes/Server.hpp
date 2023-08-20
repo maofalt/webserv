@@ -1,23 +1,25 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <vector>
 #include <map>
+#include <vector>
 #include <string>
-#include <cstring>
-#include <iostream>
-#include <errno.h>  // For error handling
-#include <sys/types.h>  // Required for sockets
-#include <sys/socket.h>
+#include <stdio.h>
 #include <netdb.h>  // getaddrinfo
 #include <fcntl.h>  // O_NONBLOCK
-#include <unistd.h>  // close
-#include <sys/epoll.h>  // epoll
+#include <errno.h>  // For error handling
+#include <cstring>
 #include <signal.h>  // signal handling
 #include <stdlib.h>
-#include <stdio.h>
+#include <iostream>
+#include <unistd.h>  // close
+#include <sys/epoll.h>  // epoll
+#include <sys/types.h>  // Required for sockets
+#include <sys/socket.h>
 
-#include "ClientHandler.hpp" 
+#include "Config.hpp"
+#include "ClientHandler.hpp"
+#include "HttpRequestBase.hpp"
 
 #define PORT "8694"
 #define PORTAL "8000"
@@ -40,16 +42,15 @@ Methods:
             - Load and interpret the configuration file.
 */
 
-#include "ClientHandler.hpp"  // Assuming you'll create this
-#include "HttpRequestBase.hpp"
-
 class Server {
 private:
     int                             epoll_fd;
     std::vector<int>                sock_listens;  // to list to multiple ports
     std::map<int, HttpRequestBase>  ongoingRequests;  // ongoing requests for each client_fd
+    Config                          _config;
 
-    static volatile sig_atomic_t	    run;
+    static volatile sig_atomic_t	run;
+    std::string              defaultConf;
     // Configuration details can go here.
     // E.g., struct Config or std::map<std::string, std::string> config;
     
@@ -61,7 +62,8 @@ private://This way they can't be used, since it doesn't make sense implementing 
     Server& operator=(const Server& other);
     
 public:
-    void    loadConfig(const std::string& configPath);  // Load server configurations from a file
+    void    loadConfig(const std::string& configPath);  // Load server configurations from a file;
+    void    loadDefaultConfig(); // Load default configuration from config/default.conf;
     void    start();  // Start the server
     void    stop();  // Stop the server
 
