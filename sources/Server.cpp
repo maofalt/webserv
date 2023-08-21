@@ -130,7 +130,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	}
 
 	//add to clientHandlers
-	clientHandlers[sock_server] = ClientHandler(sock_server, ongoingRequests);
+	clientHandlers[sock_server] = ClientHandler(sock_server, ongoingRequests.find(sock_server)->second);
 	return sock_server;
 }
 

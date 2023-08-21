@@ -12,16 +12,10 @@ _client_fd(other._client_fd),
 _request(other._request)
 {}
 
-ClientHandler::ClientHandler(int fd, std::map<int, HttpRequestBase>& ongoingRequests) : _client_fd(fd)
+ClientHandler::ClientHandler(int fd, HttpRequestBase request) :
+    _client_fd(fd),
+    _request(request)
 {
-    // New client, create a HttpRequestBase for it, we need a getter for ongoingRequests
-    // since it's private.
-    if (ongoingRequests.find(_client_fd) == ongoingRequests.end()) {
-	    ongoingRequests[_client_fd] = HttpRequestBase();
-    }
-    
-    _request = ongoingRequests[_client_fd];
-
 }
 
 // = operator overload
@@ -40,7 +34,10 @@ void    ClientHandler::readData() {
 // Write the response back to the client.
 void    ClientHandler::writeResponse() {
     HttpRequestBase *NewReqObj = _request.createRequestObj(_request._method);
-	
+	if (NewReqObj == NULL) {
+        std::cout << "Error: Request object failed" << std::endl;
+        return;
+    }
     NewReqObj->respond(_client_fd, "200");
     delete NewReqObj;
     _request.clear();

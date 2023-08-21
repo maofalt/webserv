@@ -29,7 +29,7 @@ private:
 
 public:
     ClientHandler();
-    ClientHandler(int fd, std::map<int, HttpRequestBase>&  ongoingRequests);
+    ClientHandler(int fd, HttpRequestBase request);
     ClientHandler(const ClientHandler& other);
     ClientHandler& operator=(const ClientHandler& other);
     // Destructor
