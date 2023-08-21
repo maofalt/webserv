@@ -120,6 +120,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 
 	std::cout << "New client connected on descriptor " << sock_server << "!" << std::endl;
 	
+	//add to Epoll
 	event.events = EPOLLIN;
 	event.data.fd = sock_server;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
@@ -127,6 +128,9 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 		close(sock_server);
 		return -1;
 	}
+
+	//add to clientHandlers
+	clientHandlers[sock_server] = ClientHandler(sock_server, ongoingRequests);
 	return sock_server;
 }
 
@@ -226,8 +230,7 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
     	return 1;
 	}
 	
-	ClientHandler clientHandlers(client_fd, ongoingRequests);
-	//ClientHandler& client = clientHandlers;
+	ClientHandler& client = clientHandlers[client_fd];
 	
 	// Depending on the epoll event, decide the action on the client
 	if (client_fd & EPOLLIN) {
@@ -235,7 +238,7 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
     		client.readData();
 		} catch (const std::exception& e) {
 			close_and_cleanup(epoll_fd, client_fd);
-			client.erase(client_fd); 
+			clientHandlers.erase(client_fd); 
 			ongoingRequests.erase(client_fd);
 			throw;
 		}

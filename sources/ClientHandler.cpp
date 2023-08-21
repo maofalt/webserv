@@ -1,11 +1,18 @@
 #include "ClientHandler.hpp"
 
-// Destructor
-ClientHandler::~ClientHandler() {
-    // Implementation
-}
+ClientHandler::ClientHandler() : _client_fd(-1), _request() 
+{} 
 
-ClientHandler::ClientHandler(int fd, std::map<int , HttpRequestBase>& ongoingRequests) : _client_fd(fd)
+ClientHandler::~ClientHandler() 
+{}
+
+//constructor by copy
+ClientHandler::ClientHandler(const ClientHandler& other) : 
+_client_fd(other._client_fd),
+_request(other._request)
+{}
+
+ClientHandler::ClientHandler(int fd, std::map<int, HttpRequestBase>& ongoingRequests) : _client_fd(fd)
 {
     // New client, create a HttpRequestBase for it, we need a getter for ongoingRequests
     // since it's private.
@@ -15,6 +22,15 @@ ClientHandler::ClientHandler(int fd, std::map<int , HttpRequestBase>& ongoingReq
     
     _request = ongoingRequests[_client_fd];
 
+}
+
+// = operator overload
+ClientHandler& ClientHandler::operator=(const ClientHandler& other) {
+    if (this != &other) {
+        _client_fd = other._client_fd;
+        _request = other._request;
+    }
+    return *this;
 }
 
 void    ClientHandler::readData() {

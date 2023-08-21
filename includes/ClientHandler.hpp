@@ -28,7 +28,10 @@ private:
   HttpRequestBase _request;
 
 public:
+    ClientHandler();
     ClientHandler(int fd, std::map<int, HttpRequestBase>&  ongoingRequests);
+    ClientHandler(const ClientHandler& other);
+    ClientHandler& operator=(const ClientHandler& other);
     // Destructor
     ~ClientHandler();
 
@@ -41,9 +44,7 @@ public:
 
 //Disable cnstructors and assignment operator
 private: 
-    ClientHandler();
-    ClientHandler(const ClientHandler& other);
-    ClientHandler& operator=(const ClientHandler& other);
+   
 };
 
 std::ostream& operator<<(std::ostream& os, const ClientHandler & other);
