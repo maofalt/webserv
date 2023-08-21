@@ -12,7 +12,7 @@
 
 #include "Config.hpp"
 
-Config::Config(/* args */) {
+Config::Config(/* args */) : _tokens(" \t\n;{}"), _whiteSp(" \t"){
 }
 
 Config::~Config() {
@@ -39,23 +39,32 @@ void	Config::readConf(std::ifstream & file) {
 	{
 		std::getline(file, line);
 		removeComments(line);
-		rawContent.push_back(line + "\n");
+		_rawContent.push_back(line + "\n");
 	}
 	file.close();
 }
 
-void	Config::splitSemiCol()
+std::vector<std::string>	Config::getRawContent() const {
+	return this->_rawContent;
+}
+
+std::vector<std::string>	Config::getSplitContent() const {
+	return this->_splitContent;
+}
+
+
+void	Config::rmWhiteSpaces()
 {
 	// size_t	countSemiCol;
 
-	// for (size_t i=0; i<splitContent.size(); i++) {
+	// for (size_t i=0; i<_splitContent.size(); i++) {
 	// 	countSemiCol = 0;
 	// 	while (1) {
-	// 		start = splitContent[i].find_first_of(";");
+	// 		start = _splitContent[i].find_first_of(";");
 	// 		if (start == std::string::npos)
 	// 			break;
-	// 		splitContent[i].erase(start, 1);
-	// 		splitContent.insert(splitContent.begin() + i + 1, ";");
+	// 		_splitContent[i].erase(start, 1);
+	// 		_splitContent.insert(_splitContent.begin() + i + 1, ";");
 	// 		countSemiCol++;
 	// 	}
 	// 	i += countSemiCol;
@@ -63,32 +72,40 @@ void	Config::splitSemiCol()
 }
 
 void	Config::splitConf() {
-	size_t	size = rawContent.size();
+	size_t	size = _rawContent.size();
 	size_t	start;
 	size_t	end;
 
 	for (size_t i=0; i<size; i++) {
-		while (!rawContent[i].empty()) {
-			start = rawContent[i].find_first_not_of(" \t");
+		while (!_rawContent[i].empty()) {
+			start = _rawContent[i].find_first_not_of(_tokens);
 			if (start != std::string::npos) {
-				end = rawContent[i].find_first_of(" \t", start);
-				if (end != std::string::npos)
-					splitContent.push_back(rawContent[i].substr(start, end - start));
-				else
-					splitContent.push_back(rawContent[i].substr(start, rawContent[i].size() - start));
+				end = _rawContent[i].find_first_of(_tokens, start);
+				if (end != std::string::npos) {
+					_splitContent.push_back(_rawContent[i].substr(start, end - start));
+					while (_tokens.find(_rawContent[i][end]) != std::string::npos) {
+						if (_whiteSp.find(_rawContent[i][end]) == std::string::npos)
+							_splitContent.push_back(_rawContent[i].substr(end, 1));
+						end++;
+					}
+				}
 			}
-			rawContent[i].erase(0, end);
+			else {
+				int	j = 0;
+				while (_tokens.find(_rawContent[i][j]) != std::string::npos) {
+					if (_whiteSp.find(_rawContent[i][j]) == std::string::npos)
+						_splitContent.push_back(_rawContent[i].substr(j, 1));
+					j++;
+				}
+			}
+			_rawContent[i].erase(0, end);
 		}
 	}
-	splitSemiCol(); // need to put '\n' and ';' alone;
 }
 
 bool	Config::setupConf(std::ifstream & file) {
 	readConf(file);
 	splitConf();
-	// if (checkSyntax())
-	// 	return 1;
-	// std::cout << rawContent << std::endl;
 	return 0;
 }
 
@@ -98,7 +115,7 @@ std::ostream& operator<<(std::ostream& os, const Config & conf) {
 	}
 	std::cout << "==============================================================" << std::endl;
 	for (size_t i=0; i<conf.getSplitContent().size(); i++) {
-		os << conf.getSplitContent()[i] << std::endl;
+		os << "[" << conf.getSplitContent()[i] << "]";// << std::endl;
 	}
 	return os;
 }

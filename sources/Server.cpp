@@ -328,8 +328,6 @@ void Server::loadDefaultConfig() {
 		std::cerr << "Config: error: failed to open default config file." << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	if (Config::checkNorm(file))
-		exit(EXIT_FAILURE);
 	_config = Config();
 	if (_config.setupConf(file)) {
 		exit(EXIT_FAILURE);
@@ -350,13 +348,10 @@ void Server::loadConfig(const std::string& configPath) {
 		loadDefaultConfig();
 		return ;
 	}
-	if (Config::checkNorm(file)) {
-		loadDefaultConfig();
-		return ;
-	}
 	_config = Config();
 	if (_config.setupConf(file)) {
-		exit(EXIT_FAILURE);
+		loadDefaultConfig();
+		return ;
 	}
 	std::cout << "Config = " << configPath << std::endl;
 
