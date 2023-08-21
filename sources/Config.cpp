@@ -12,17 +12,10 @@
 
 #include "Config.hpp"
 
-Config::Config(/* args */) : _tokens(" \t\n;{}"), _whiteSp(" \t"){
+Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t"){
 }
 
 Config::~Config() {
-}
-
-bool	Config::checkNorm(std::ifstream & file) {
-	(void)file;
-	// if error
-	// file.close();
-	return 0;
 }
 
 void	removeComments(std::string &line) {
@@ -52,23 +45,37 @@ std::vector<std::string>	Config::getSplitContent() const {
 	return this->_splitContent;
 }
 
+bool	Config::basicCheck() { // ! need to refacto this monstruosity !
+	int	bracketOpen = 0;
+	int	countLines = 1;
+	int	err = 0;
 
-void	Config::rmWhiteSpaces()
-{
-	// size_t	countSemiCol;
-
-	// for (size_t i=0; i<_splitContent.size(); i++) {
-	// 	countSemiCol = 0;
-	// 	while (1) {
-	// 		start = _splitContent[i].find_first_of(";");
-	// 		if (start == std::string::npos)
-	// 			break;
-	// 		_splitContent[i].erase(start, 1);
-	// 		_splitContent.insert(_splitContent.begin() + i + 1, ";");
-	// 		countSemiCol++;
-	// 	}
-	// 	i += countSemiCol;
-	// }
+	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
+	it != _splitContent.end(); it++) {
+		if (*it == "\n") {
+			countLines++;
+			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
+			&& *(it - 1) != "{"  && *(it - 1) != "}") {
+				std::cerr << _confFileName + ": error: expected ';' line " << countLines - 1 << std::endl;
+				err++;
+			}
+		}
+		else if (*it == "{")
+			bracketOpen++;
+		else if (*it == "}")
+			bracketOpen--;
+		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
+			std::cerr << _confFileName + ": error: expected '\\n' after ';' line " << countLines << std::endl;
+			err++;
+		}
+		if (bracketOpen < 0) {
+			return std::cerr << _confFileName + ": error: Extra closing bracket line " << std::endl, err;
+		}
+	}
+	if (bracketOpen > 0) {
+		return std::cerr << _confFileName + ": error: Missing closing bracket" << std::endl, err + 1;
+	}
+	return (err != 0 ? err : 0);
 }
 
 void	Config::splitConf() {
@@ -103,9 +110,15 @@ void	Config::splitConf() {
 	}
 }
 
-bool	Config::setupConf(std::ifstream & file) {
+bool	Config::setupConf(std::ifstream & file, std::string fileName) {
+	_confFileName = fileName;
 	readConf(file);
 	splitConf();
+	if (basicCheck())
+		return 1;
+
+	// create config;
+
 	return 0;
 }
 
@@ -115,7 +128,8 @@ std::ostream& operator<<(std::ostream& os, const Config & conf) {
 	}
 	std::cout << "==============================================================" << std::endl;
 	for (size_t i=0; i<conf.getSplitContent().size(); i++) {
-		os << "[" << conf.getSplitContent()[i] << "]";// << std::endl;
+		os << "[" << conf.getSplitContent()[i] << "]";
+		// os << std::endl;
 	}
 	return os;
 }

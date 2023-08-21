@@ -23,18 +23,18 @@ class Config {
 		std::vector<std::string>	_splitContent;
 		std::string					_tokens;
 		std::string					_whiteSp;
+		std::string					_confFileName;
 		// vector
 
 	public:
-		Config(/* args */);
+		// missing coplien !!!!;
+		Config();
 		~Config();
 
-		static bool					checkNorm(std::ifstream & file);
 		void						readConf(std::ifstream & file);
-		void						splitSemiCol();
-		void						rmWhiteSpaces();
 		void						splitConf();
-		bool						setupConf(std::ifstream & file);
+		bool						basicCheck();
+		bool						setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
 };

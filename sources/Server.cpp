@@ -329,7 +329,7 @@ void Server::loadDefaultConfig() {
 		exit(EXIT_FAILURE);
 	}
 	_config = Config();
-	if (_config.setupConf(file)) {
+	if (_config.setupConf(file, defaultConf)) {
 		exit(EXIT_FAILURE);
 	}
 	std::cout << "Config = " << defaultConf << std::endl;
@@ -349,7 +349,7 @@ void Server::loadConfig(const std::string& configPath) {
 		return ;
 	}
 	_config = Config();
-	if (_config.setupConf(file)) {
+	if (_config.setupConf(file, configPath)) {
 		loadDefaultConfig();
 		return ;
 	}
