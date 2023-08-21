@@ -129,6 +129,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 		return -1;
 	}
 
+	std::cout << "Added client on descriptor " << sock_server << " to epoll" << std::endl;
 	//add to clientHandlers
 	clientHandlers[sock_server] = ClientHandler(sock_server, ongoingRequests.find(sock_server)->second);
 	return sock_server;
@@ -216,6 +217,7 @@ int Server::handle_epoll_events(int epoll_fd) {
 			break ;
 		} 
 		// Else it's a client socket
+		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
 		handleClientEvent(epoll_fd, events[i].data.fd);
 		//if (result == 1) { continue ; } // Unknown client fd
 			
@@ -231,11 +233,13 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 	}
 	
 	ClientHandler& client = clientHandlers[client_fd];
-	
+	std::cout << "Client " << client_fd << "exists!!" << std::endl;
+
 	// Depending on the epoll event, decide the action on the client
 	if (client_fd & EPOLLIN) {
 		try {
     		client.readData();
+			std::cout << "Data read" << std::endl;
 		} catch (const std::exception& e) {
 			close_and_cleanup(epoll_fd, client_fd);
 			clientHandlers.erase(client_fd); 
@@ -243,15 +247,19 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 			throw;
 		}
     	if (client.isRequestComplete()) {
+			std::cout << "Request complete" << std::endl;
     		if (changeClientEpollMode(epoll_fd, client_fd, EPOLLOUT) != 0) {
 				client.closeConnection(epoll_fd);
 				ongoingRequests.erase(client_fd);
 				clientHandlers.erase(client_fd);  // remove ClientHandler for this client
 			}
+			std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
     	}
     }
     else if (client_fd & EPOLLOUT) {
+		std::cout << "Writing response" << std::endl;
         client.writeResponse();
+		std::cout << "Response written" << std::endl;
 		close_and_cleanup(epoll_fd, client_fd);
 		clientHandlers.erase(client_fd); 
 		ongoingRequests.erase(client_fd);
