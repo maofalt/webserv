@@ -45,6 +45,14 @@ std::vector<std::string>	Config::getSplitContent() const {
 	return this->_splitContent;
 }
 
+std::vector< struct server >	Config::getServList() const {
+	return this->_servList;
+}
+
+std::map< std::string, std::vector< std::string > >	Config::getConfData() const {
+	return this->_confData;
+}
+
 bool	Config::basicCheck() { // ! need to refacto this monstruosity !
 	int	bracketOpen = 0;
 	int	countLines = 1;
@@ -110,6 +118,31 @@ void	Config::splitConf() {
 	}
 }
 
+bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line) {
+	if (*(++it) != "{")
+		return std::cerr << _confFileName + ": error: missing '{' for location block line " << line << std::endl, 1;
+	return 0;
+}
+
+bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
+	if (*(++it) != "{")
+		return std::cerr << _confFileName + ": error: missing '{' for server block line " << line << std::endl, 1;
+	
+	struct server	newServ;
+
+	while (++it != _splitContent.end() && *it != "}") {
+		if (*it == "location")
+			parseLocConf(it, line);
+		else {
+			std::string	key = *it;
+			while (++it != _splitContent.end() && *it != ";")
+				newServ._servConfig[key].push_back(*it); // maybe vector instead, and just push_back servConfig[key];
+		}
+	}
+	_servList.push_back(newServ);
+	return 0;
+}
+
 bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 	_confFileName = fileName;
 	readConf(file);
@@ -117,19 +150,86 @@ bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 	if (basicCheck())
 		return 1;
 
-	// create config;
+	int	line = 1;
+	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
+	it != _splitContent.end(); it++) {
+		if (*it == "\n")
+			line++;
+		// else if (*it == "server")
+		// 	parseServConf(it, line);
+		else {
+			std::string	key = *(it++);
+			while (it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}") {
+				_confData[key].push_back(*it);
+				it++;
+			}
+		}
+	}
 
 	return 0;
 }
 
-std::ostream& operator<<(std::ostream& os, const Config & conf) {
-	for (size_t i=0; i<conf.getRawContent().size(); i++) {
-		os << conf.getRawContent()[i];
+void	printLocStruct(std::ostream& os, struct location & loc) {
+	os << loc._path + ": " << std::endl;
+	for (std::map< std::string, std::vector< std::string > >::iterator \
+	it = loc._locConfig.begin(); it != loc._locConfig.end(); it++) {
+		os << it->first << " : ";
+		for (size_t i=0; i<it->second.size(); i++) {
+			os << it->second[i] << (i == it->second.size() - 1 ? "" : ", ");
+		}
+		it++;
+		os << std::endl;
 	}
-	std::cout << "==============================================================" << std::endl;
+}
+
+void	printServStruct(std::ostream& os, struct server & serv) {
+	for (std::map< std::string, std::vector< std::string > >::iterator \
+	it = serv._servConfig.begin(); it != serv._servConfig.end(); it++) {
+		os << it->first << " : ";
+		for (size_t i=0; i<it->second.size(); i++) {
+			os << it->second[i] << (i == it->second.size() - 1 ? "" : ", ");
+		}
+		it++;
+		os << std::endl;
+	}
+	os << "Locations : " << std::endl;
+	for (size_t i=0; i<serv._locations.size(); i++) {
+		printLocStruct(os, serv._locations[i]);
+	}
+}
+
+std::ostream& operator<<(std::ostream& os, const Config & conf) {
 	for (size_t i=0; i<conf.getSplitContent().size(); i++) {
 		os << "[" << conf.getSplitContent()[i] << "]";
 		// os << std::endl;
 	}
+	os << std::endl;
+	os << "==========================================================================" << std::endl;
+	os << std::endl;
+
+	std::map< std::string, std::vector< std::string > >	config = conf.getConfData();
+	std::map< std::string, std::vector< std::string > >::iterator \
+	it = config.begin();
+	os << "Config Data : " << std::endl;
+	while (it != config.end()) {
+		os << it->first << " : ";
+		for (size_t i=0; i<it->second.size(); i++) {
+			os << it->second[i] << (i == it->second.size() - 1 ? "" : ", ");
+		}
+		it++;
+		os << std::endl;
+	}
+
+	os << std::endl;
+	os << "==========================================================================" << std::endl;
+	os << std::endl;
+
+	std::vector< struct server >	servers = conf.getServList();
+	for (size_t i=0; i<servers.size(); i++) {
+		printServStruct(os, servers[i]);
+	}
+
 	return os;
 }
+
+// !! CONFIG SETUP LEAKS WHEN DEFAULT FILES HAS ERROR TOO !!;

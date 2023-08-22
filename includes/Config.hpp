@@ -15,16 +15,29 @@
 
 #include <vector>
 #include <fstream>
+#include <map>
 #include <iostream>
+
+struct location {
+	std::string 								_path;
+	std::map< std::string, std::vector< std::string > >	_locConfig;
+};
+
+struct server {
+	std::map< std::string, std::vector< std::string > >	_servConfig;
+	std::vector< struct location >						_locations;
+};
+
 
 class Config {
 	private:
-		std::vector<std::string>	_rawContent;
-		std::vector<std::string>	_splitContent;
-		std::string					_tokens;
-		std::string					_whiteSp;
-		std::string					_confFileName;
-		// vector
+		std::string									_tokens;
+		std::string									_whiteSp;
+		std::string									_confFileName;
+		std::vector< std::string >					_rawContent;
+		std::vector< std::string >					_splitContent;
+		std::vector< struct server >				_servList;
+		std::map< std::string, std::vector< std::string > >	_confData;
 
 	public:
 		// missing coplien !!!!;
@@ -34,9 +47,13 @@ class Config {
 		void						readConf(std::ifstream & file);
 		void						splitConf();
 		bool						basicCheck();
+		bool						parseLocConf(std::vector<std::string>::iterator & it, int & line);
+		bool						parseServConf(std::vector<std::string>::iterator & it, int & line);
 		bool						setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
+		std::vector< struct server >	getServList() const;
+		std::map< std::string, std::vector< std::string > >	getConfData() const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Config & conf);
