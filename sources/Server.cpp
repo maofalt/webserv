@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/22 16:51:04 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 18:02:44 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,41 +135,6 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	return sock_server;
 }
 
-void Server::handle_client_data(int epoll_fd, int client_fd) {
-	
-	
-	(void)epoll_fd; //we should use this variable to handle the error
-		
-	if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
-		// New client, create a HttpRequestBase for it
-		ongoingRequests[client_fd] = HttpRequestBase();
-	}
-
-	HttpRequestBase& request = ongoingRequests[client_fd];
-	
-	try {
-		request.recv(client_fd);
-	} catch (const std::exception& e) {
-		std::cerr << e.what() << '\n';
-		close_and_cleanup(epoll_fd, client_fd);
-		ongoingRequests.erase(client_fd);
-		throw;  // return would be beter	
-	} 
-
-	if (request.isComplete()) {
-		HttpRequestBase *NewReqObj = request.createRequestObj(request._method);
-		NewReqObj->respond(client_fd, "200");
-		std::cout << "before clear" << std::endl;
-		delete NewReqObj;
-		request.clear();
-		close_and_cleanup(epoll_fd, client_fd);
-		ongoingRequests.erase(client_fd);
-	}
-	else {
-		std::cout << "Request not complete yet" << std::endl;
-	}
-}
-
 //if we want to ahve a more robust logi for time out
 // if we know that the server is under heavy load, 
 // might opt for a longer timeout, and during idle times, a shorter one.
@@ -247,14 +212,12 @@ int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 		} catch (const std::exception& e) {
 			close_and_cleanup(epoll_fd, client_fd);
 			clientHandlers.erase(client_fd); 
-			ongoingRequests.erase(client_fd);
 			throw;
 		}
     	if (client.isRequestComplete()) {
 			std::cout << "Request complete" << std::endl;
     		if (changeClientEpollMode(epoll_fd, client_fd, EPOLLOUT) != 0) {
 				client.closeConnection(epoll_fd);
-				ongoingRequests.erase(client_fd);
 				clientHandlers.erase(client_fd);  // remove ClientHandler for this client
 			}
 			std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
@@ -266,7 +229,6 @@ int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 		std::cout << "Response written" << std::endl;
 		close_and_cleanup(epoll_fd, client_fd);
 		clientHandlers.erase(client_fd); 
-		ongoingRequests.erase(client_fd);
     }
     else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
         std::cerr << "Error on client fd: " << client_fd << std::endl;

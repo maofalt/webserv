@@ -35,6 +35,11 @@ public:
     // Destructor
     ~ClientHandler();
 
+    // Getters
+      HttpRequestBase getRequest() const;
+    // Setters
+
+
     //Methods to handle 
     void readData();
     void writeResponse();
