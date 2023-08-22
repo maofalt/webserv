@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequest.hpp                                    :+:      :+:    :+:   */
+/*   HttpRequestBase.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/10 06:18:27 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/14 16:45:34 by motero           ###   ########.fr       */
+/*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
+/*   Updated: 2023/08/20 14:42:14 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUEST_HPP
-# define HTTPREQUEST_HPP
+#ifndef HTTPREQUESTBASE_HPP
+#define HTTPREQUESTBASE_HPP
 
-# include <exception>
-# include <iostream>
-# include <map>
-# include <string>
-# include <vector>
+#include <map>
+// #include <string>
+#include <time.h>
+#include <vector>
+#include <sstream>
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <exception>
+#include <algorithm>
+#include <sys/types.h>
+#include <sys/socket.h>
+
 
 # define CRLF "\r\n"
 # define CRLF_DOUBLE "\r\n\r\n"
@@ -29,16 +37,16 @@
 # define BUFFER_SIZE_REQUEST 4096
 # define SIZE_MAX_REQUEST 32768
 
-//class Config
-//{
-//	public:
-//		bool	oversized(const std::string &str) const {return (str.size() > 2048);}
-//};
+/*
+Purpose:            To act as a base class for all HTTP request types.
+Attributes/Methods: We already got a good starting point with the 
+                    existing HttpRequestBase class. 
+                    Refactor this to make it more generic 
+                    (i.e., remove GET-specific behavior).
+*/
 
-//2 times public . 1st is privatew?
-class HttpRequest
-{
-	public:
+class HttpRequestBase {
+    public:
 	// Method
 		std::string	_method;
 		std::string	_uri;
@@ -68,26 +76,32 @@ class HttpRequest
 
 	public:
 	// Coplien
-		HttpRequest(void);
-		HttpRequest(HttpRequest const &rhs);
-		~HttpRequest(void);
-		HttpRequest	&operator=(HttpRequest const &rhs);
+		HttpRequestBase(void);
+		HttpRequestBase(HttpRequestBase const &rhs);
+		virtual ~HttpRequestBase(void);
+		HttpRequestBase	&operator=(HttpRequestBase const &rhs);
 
 	// Methods
-		void	clear(void);
-		int		recv(int fd);
-		bool	isComplete(void) const;
-		int		respond(int fd, std::string status);
+		void	        clear(void);
+		int		        recv(int fd);
+		bool	        isComplete(void) const;
+		virtual int		respond(int fd, std::string status);
+        HttpRequestBase *createRequestObj(const std::string RequestType);
 
 	// Operators
-		friend std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs);
+		friend std::ostream	&operator<<(std::ostream &out, const HttpRequestBase &rhs);
 
 	// Exceptions
 		class Error;
 };
 
+struct RequestsTab{
+    std::string type;
+    HttpRequestBase* (*createRequest)(const HttpRequestBase&);
+};
+
 // Exceptions
-class HttpRequest::Error : public std::exception
+class HttpRequestBase::Error : public std::exception
 {
 	private:
 		char	_type[4];
@@ -96,4 +110,5 @@ class HttpRequest::Error : public std::exception
 		const char	*what(void) const throw();
 };
 
+std::ostream& operator<<(std::ostream& os, const HttpRequestBase & other);
 #endif

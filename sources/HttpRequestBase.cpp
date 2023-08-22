@@ -1,26 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequest.cpp                                    :+:      :+:    :+:   */
+/*   HttpRequestBase.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/18 19:30:33 by rgarrigo         ###   ########.fr       */
+/*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
+/*   Updated: 2023/08/22 21:48:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <time.h>
-#include <vector>
-#include "HttpRequest.hpp"
+#include "HttpRequestBase.hpp"
+#include "HttpRequestGET.hpp"
+#include "HttpRequestPOST.hpp"
+#include "HttpRequestDELETE.hpp"
+
+// #include "HttpRequestBase.hpp"
 
 // Static member variables
 static std::vector<std::string>	getMethodsForbidden(void)
@@ -72,13 +67,13 @@ static std::map<std::string, std::string>	getContentType(void)
 	return (content_type);
 }
 
-std::vector<std::string>			HttpRequest::_methods_forbidden = getMethodsForbidden();
-std::vector<std::string>			HttpRequest::_methods_ok = getMethodsOk();
-std::map<std::string, std::string>	HttpRequest::_description = getDescription();
-std::map<std::string, std::string>	HttpRequest::_content_type = getContentType();
+std::vector<std::string>			HttpRequestBase::_methods_forbidden = getMethodsForbidden();
+std::vector<std::string>			HttpRequestBase::_methods_ok = getMethodsOk();
+std::map<std::string, std::string>	HttpRequestBase::_description = getDescription();
+std::map<std::string, std::string>	HttpRequestBase::_content_type = getContentType();
 
 // Coplien
-HttpRequest::HttpRequest(void):
+HttpRequestBase::HttpRequestBase(void):
 	_method(""),
 	_uri(""),
 	_protocol(""),
@@ -89,7 +84,7 @@ HttpRequest::HttpRequest(void):
 	_bodyComplete(false)
 {
 }
-HttpRequest::HttpRequest(HttpRequest const &rhs):
+HttpRequestBase::HttpRequestBase(HttpRequestBase const &rhs):
 	_method(rhs._method),
 	_uri(rhs._uri),
 	_protocol(rhs._protocol),
@@ -101,11 +96,11 @@ HttpRequest::HttpRequest(HttpRequest const &rhs):
 {
 }
 
-HttpRequest::~HttpRequest(void)
+HttpRequestBase::~HttpRequestBase(void)
 {
 }
 
-HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
+HttpRequestBase	&HttpRequestBase::operator=(HttpRequestBase const &rhs)
 {
 	_method = rhs._method;
 	_uri = rhs._uri;
@@ -119,11 +114,11 @@ HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
 }
 
 // _verifyHeader
-void	HttpRequest::_verifyHeader(void) const
+void	HttpRequestBase::_verifyHeader(void) const
 {
-	if (find(HttpRequest::_methods_forbidden.begin(), HttpRequest::_methods_forbidden.end(), _method) != HttpRequest::_methods_forbidden.end())
+	if (find(HttpRequestBase::_methods_forbidden.begin(), HttpRequestBase::_methods_forbidden.end(), _method) != HttpRequestBase::_methods_forbidden.end())
 		throw (Error("405"));
-	if (find(HttpRequest::_methods_ok.begin(), HttpRequest::_methods_ok.end(), _method) == HttpRequest::_methods_ok.end())
+	if (find(HttpRequestBase::_methods_ok.begin(), HttpRequestBase::_methods_ok.end(), _method) == HttpRequestBase::_methods_ok.end())
 		throw (Error("501"));
 }
 
@@ -148,7 +143,7 @@ static void	setBuffer(std::string &buffer,
 
 	it2 = search(it, end, crlf.begin(), crlf.end());
 	if (it2 == end)
-		throw (HttpRequest::Error("400"));
+		throw (HttpRequestBase::Error("400"));
 	buffer = std::string(it, it2);
 	it = it2 + (crlf.end() - crlf.begin());
 }
@@ -158,7 +153,7 @@ static void	setBuffer(std::string &buffer,
 	(e.g., GET, POST), the request URI, and the HTTP version
 	?? : Should we verify that the htpp version is 1.1?
 */
-void	HttpRequest::_parseMethod(const std::string &method)
+void	HttpRequestBase::_parseMethod(const std::string &method)
 {
 	size_t	first_sp;
 	size_t	second_sp;
@@ -185,7 +180,7 @@ void	HttpRequest::_parseMethod(const std::string &method)
 	?? : if there are semicolon (diffrent parameters) should we split them or 
 	keep them as a unique value ?
 */
-void	HttpRequest::_parseHeaderField(const std::string &field)
+void	HttpRequestBase::_parseHeaderField(const std::string &field)
 {
 	// Find the first semicolon to separate the name and value
 	std::string	name;
@@ -223,7 +218,7 @@ Then we parse the method, uri and protocol
 Then we parse the header fields
 ?? : do we need to verify anything else besides if the methods is correct ? 
 */
-void	HttpRequest::_parseHeader(void)
+void	HttpRequestBase::_parseHeader(void)
 {
 	std::string				buffer;
 	std::string::iterator	it;
@@ -252,7 +247,7 @@ rather than implementing them
 	error ? we ignore the bdy?send a timeout suing 413 error ?
 	
 */
-void	HttpRequest::_parseBody(void)
+void	HttpRequestBase::_parseBody(void)
 {
 	// When the body is chunked, the size of the chunked data is unknown
 	if (_field.count(TRANSFER_ENCODING)
@@ -287,7 +282,7 @@ void	HttpRequest::_parseBody(void)
 }
 
 // _rawHeaderComplete
-bool	HttpRequest::_rawHeaderComplete(void) const
+bool	HttpRequestBase::_rawHeaderComplete(void) const
 {
 	return (_raw.find(CRLF_DOUBLE) != std::string::npos);
 }
@@ -301,7 +296,7 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 	// 1. Get the size of the next field
 	try { size = std::atoi(&*it); }
 	catch (std::exception &e) {
-		throw (HttpRequest::Error("400")); }
+		throw (HttpRequestBase::Error("400")); }
 	// 2. Find the end of the field
 	it = search(it, end, crlf.begin(), crlf.end());
 	// 3. Skip the field
@@ -311,7 +306,7 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 }
 
 
-bool	HttpRequest::_rawBodyComplete(void)
+bool	HttpRequestBase::_rawBodyComplete(void)
 {
 	// If Transfer-Encoding is chunked, search for a double CRLF
 	if (_field.count(TRANSFER_ENCODING)
@@ -342,8 +337,7 @@ bool	HttpRequest::_rawBodyComplete(void)
 	return (true);
 }
 
-// recv to be replaced by epoll, poll or select or any equivalent!
-int	HttpRequest::recv(int fd)
+int	HttpRequestBase::recv(int fd)
 {
 	char	buffer[BUFFER_SIZE_REQUEST + 1];
 	int		count;
@@ -377,13 +371,13 @@ int	HttpRequest::recv(int fd)
 }
 
 // isComplete
-bool	HttpRequest::isComplete(void) const
+bool	HttpRequestBase::isComplete(void) const
 {
 	return (_headerComplete && _bodyComplete);
 }
 
 // clear
-void	HttpRequest::clear(void)
+void	HttpRequestBase::clear(void)
 {
 	_method.clear();
 	_uri.clear();
@@ -405,102 +399,18 @@ std::string	numberToString(T nb)
 
 // respond
 // Dow e ahve righ to use send ? or we need to sue other ?
-int	HttpRequest::respond(int fd, std::string status)
+int	HttpRequestBase::respond(int fd, std::string status)
 {
-	std::string			response;
-	std::stringstream	buffer;
-	std::string			body;
-	std::string			extension;
+	(void)fd;
+	(void)status;
 
-	std::cout << "\033[31mRequest:\033[0m" << std::endl;
-	std::cout << *this << std::endl;
-
-	if (_uri == "/")
-		_uri = "/index.html";
-
-	// we try to open the requested page and if it fails we send a 404 error
-	_uri = "./site" + _uri;
-	std::ifstream	file(_uri.c_str());
-	if (!file.is_open())
-	{
-		std::cerr << "File not opened" << std::endl;
-		_uri = "./site/errors/404.html";
-		status = "404";
-		std::ifstream	file2(_uri.c_str());
-		if (!file2.is_open())
-			return (1);
-		std::cout << "404 opened" << std::endl;
-		buffer << file2.rdbuf();
-	}
-	buffer << file.rdbuf();
-	file.close();
-	body = buffer.str();
-
-	// we build the response
-	// 1- Status line HTTP-Version Status-Code Reason-Phrase CRLF
-	
-	response += _protocol;
-	response += " ";
-	response += status;
-	response += " ";
-	response += _description[status];
-	response += "\r\n";
-
-// 2- Date: Date and time of the message CRLF
-	char	time_buffer[1000];
-	time_t	now = time(0);
-	struct tm	tm = *gmtime(&now);
-	strftime(time_buffer, 1000, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-	response += "Date: ";
-	response += time_buffer;
-	response += "\r\n";
-
-// 3- Server: Information about the server CRLF
-	response += "Server: ";
-	response += "Webserv";
-	response += "\r\n";
-
-// 4- Content-Type: Type of the message body CRLF
-	extension = _uri.substr(_uri.find_last_of(".") + 1);
-	response += "Content-Type: ";
-	response += _content_type[extension];
-	response += "\r\n";
-
-// 5- Content-Length: Size of the message body in bytes CRLF
-	response += "Content-Length: ";
-	response += numberToString(body.size());
-	response += "\r\n";
-
-	response += "Connection: ";
-	response += "keep-alive";
-	response += "\r\n";
-
-	response += "Accept-Ranges: ";
-	response += "bytes";
-	response += "\r\n";
-
-	response += "\r\n";
-
-	response += body;
-
-	std::cout << "\033[32mResponse:\033[0m" << std::endl;
-	if (extension == "html" || extension == "css")
-	{
-		std::cout << response.substr(0, 4096) << std::endl;
-		if (response.size() > 4096)
-			std::cout << "[...]" << std::endl;
-	}
-	else
-		std::cout << "File \"" << _uri << "\" not printable" << std::endl;
-
-	send(fd, response.c_str(), response.size(), 0);
-	return (0);
+	return std::cerr << "Error: responding from the base class" << std::endl, -1;
 }
 
 // operator<<
-std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs)
+std::ostream	&operator<<(std::ostream &out, const HttpRequestBase &rhs)
 {
-	out << "HTTP Request" << std::endl;
+	out << "HTTP Request: " << std::endl;
 	out << "Method: " << rhs._method << std::endl;
 	out << "URI: " << rhs._uri << std::endl;
 	out << "Protocol: " << rhs._protocol << std::endl;
@@ -517,7 +427,36 @@ std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs)
 }
 
 // Exception
-const char	*HttpRequest::Error::what(void) const throw()
+const char	*HttpRequestBase::Error::what(void) const throw()
 {
 	return (_type);
+}
+
+HttpRequestBase *createGETRequest(const HttpRequestBase & base) {
+	return new HttpRequestGET(base);
+}
+
+HttpRequestBase *createPOSTRequest(const HttpRequestBase & base) {
+	return new HttpRequestPOST(base);
+}
+
+HttpRequestBase *createDELETERequest(const HttpRequestBase & base) {
+	return new HttpRequestDELETE(base);
+}
+
+HttpRequestBase *HttpRequestBase::createRequestObj(const std::string RequestType) {
+	RequestsTab requestsTab[] = {
+        {"GET", &createGETRequest},
+        {"POST", &createPOSTRequest},
+        {"DELETE", &createDELETERequest},
+        {"", NULL}
+    };
+
+	for (int i=0; requestsTab[i].createRequest != NULL; i++)
+	{
+		if (requestsTab[i].type == RequestType)
+			return requestsTab[i].createRequest(*this);
+	}
+	// return ErrorClass with message and potentially error page or something, but for now NULL;
+	return NULL;
 }
