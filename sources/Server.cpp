@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/22 18:06:36 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 19:38:58 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,25 +77,34 @@ int	Server::setUpSocket(int* sock_listen, const std::string& port)
 	return (0);
 }
 
+/**
+ * Set up epoll.
+ * @return epoll file descriptor.
+ */
 int Server::setUpEpoll() {
+	// Create epoll
 	int epoll_fd = epoll_create(2);
 	if (epoll_fd == -1) {
 		return perror("epoll_create1"), -1;
 	}
-
+	
+	// Add each socket to epoll
 	for (std::vector<int>::iterator it = sock_listens.begin();
 		it != sock_listens.end(); ++it) {
 		
+		// Set up epoll event struct and set it to for read events
 		struct epoll_event ev;
 		ev.events = EPOLLIN;
 		ev.data.fd = *it;
 		
+		// Add socket to epoll
 		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1) {
 			return perror(strerror(errno)), -1;
 		}
 	}
 	return epoll_fd;
 }
+
 
 int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	
@@ -104,11 +113,9 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	socklen_t 				client_addr_size;
 	int 					sock_server;
 	
-	std::cout << "inside accept new client" << std::endl;
 	client_addr_size = sizeof(client_addr);
 	sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
 	if (sock_server == -1) {
-		std::cout << "accept failed" << std::endl;
 		perror("accept");
 		return -1;
 	}
@@ -124,7 +131,6 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 		return -1;
 	}
 
-	std::cout << "Added client on descriptor " << sock_server << " to epoll" << std::endl;
 	//add to clientHandlers
 	clientHandlers[sock_server] = ClientHandler(sock_server, HttpRequestBase());
 	return sock_server;
