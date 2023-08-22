@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/20 20:55:15 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 16:51:04 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,19 +214,20 @@ int Server::handle_epoll_events(int epoll_fd) {
 			if (accept_new_client(epoll_fd, events[i].data.fd)== -1) {
 				if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
 				perror("accept"); }
-			break ;
+			continue;
 		} 
 		// Else it's a client socket
-		std::cout << "Handling client " << events[--i].data.fd << "event" << std::endl;
-		handleClientEvent(epoll_fd, events[i].data.fd);
-		//if (result == 1) { continue ; } // Unknown client fd
+		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
+		handleClientEvent(epoll_fd, events[i]);
 			
 	}
 	return 0;
 }
 
-int		Server::handleClientEvent(int epoll_fd, int client_fd) {
+int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 
+	int client_fd = event.data.fd;
+	
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
     	std::cerr << "Unknown client fd: " << client_fd << std::endl;
     	return 1;
@@ -235,11 +236,10 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 	ClientHandler& client = clientHandlers[client_fd];
 	std::cout << "Client " << client_fd << "exists!!" << std::endl;
 
-	 inspect_epoll_event(client_fd);
-	 inspect_epoll_event(client_fd);
+	 inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client
-	if (client_fd & EPOLLIN) {
+	if (event.events & EPOLLIN) {
 		try {
     		std::cout << "Reading data" << std::endl;
 			client.readData();
@@ -260,7 +260,7 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 			std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
     	}
     }
-    else if (client_fd & EPOLLOUT) {
+    else if (event.events & EPOLLOUT) {
 		std::cout << "Writing response" << std::endl;
         client.writeResponse();
 		std::cout << "Response written" << std::endl;
@@ -268,7 +268,7 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 		clientHandlers.erase(client_fd); 
 		ongoingRequests.erase(client_fd);
     }
-    else if (client_fd & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+    else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
         std::cerr << "Error on client fd: " << client_fd << std::endl;
         client.closeConnection(epoll_fd);
         clientHandlers.erase(client_fd);  // remove ClientHandler for this client
