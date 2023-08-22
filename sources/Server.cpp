@@ -131,7 +131,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 
 	std::cout << "Added client on descriptor " << sock_server << " to epoll" << std::endl;
 	//add to clientHandlers
-	clientHandlers[sock_server] = ClientHandler(sock_server, ongoingRequests.find(sock_server)->second);
+	clientHandlers[sock_server] = ClientHandler(sock_server, HttpRequestBase());
 	return sock_server;
 }
 
@@ -217,7 +217,7 @@ int Server::handle_epoll_events(int epoll_fd) {
 			break ;
 		} 
 		// Else it's a client socket
-		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
+		std::cout << "Handling client " << events[--i].data.fd << "event" << std::endl;
 		handleClientEvent(epoll_fd, events[i].data.fd);
 		//if (result == 1) { continue ; } // Unknown client fd
 			
@@ -235,10 +235,14 @@ int		Server::handleClientEvent(int epoll_fd, int client_fd) {
 	ClientHandler& client = clientHandlers[client_fd];
 	std::cout << "Client " << client_fd << "exists!!" << std::endl;
 
+	 inspect_epoll_event(client_fd);
+	 inspect_epoll_event(client_fd);
+
 	// Depending on the epoll event, decide the action on the client
 	if (client_fd & EPOLLIN) {
 		try {
-    		client.readData();
+    		std::cout << "Reading data" << std::endl;
+			client.readData();
 			std::cout << "Data read" << std::endl;
 		} catch (const std::exception& e) {
 			close_and_cleanup(epoll_fd, client_fd);
