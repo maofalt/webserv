@@ -149,7 +149,7 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	if (*(++it) != "{") {
 		line += (*it == "\n");
-		return std::cerr << _confFileName + ": error: missing '{' for server block line " + *it << line << std::endl, 1;
+		return std::cerr << _confFileName + ": error: missing '{' for server block line " << line << std::endl, 1;
 	}
 	
 	struct server	newServ;
