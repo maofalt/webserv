@@ -23,6 +23,7 @@
 #define PORTAL "8000"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
+#define MAX_EVENTS 10
 /*
 Server Class:
 

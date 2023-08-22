@@ -6,21 +6,16 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/22 18:02:44 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 18:06:36 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-//to make a define with this
-const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
-
 volatile sig_atomic_t Server::run = true; // Initialize the static member
 
 Server::Server() : 
-    epoll_fd(-1)
-{
-}
+    epoll_fd(-1){}
 
 Server::~Server() {
     stop();
