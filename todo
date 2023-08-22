@@ -43,6 +43,8 @@
 
 # 3. Configure Server Settings:
 - [ ] Implement configuration file parsing:
+    - [✓] Parse configuration file.
+    - [✓] Handle errors.
     - [ ] Allow customization for port, host, server names, etc.
     - [ ] Setup default error pages.
     - [ ] Limit client body size.

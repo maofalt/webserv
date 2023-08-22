@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/22 20:00:02 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 20:19:38 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@ int	Server::setUpSocket(int* sock_listen, const std::string& port)
 	int				status;
 	
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
+	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags |= AI_PASSIVE;
 	status = getaddrinfo(NULL, port.c_str(), &hints, &addrs);
 	if (status) {
 		std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
