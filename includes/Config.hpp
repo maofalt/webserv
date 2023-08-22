@@ -18,6 +18,8 @@
 #include <map>
 #include <iostream>
 
+# define DISPLAY_CONF 0
+
 struct location {
 	std::vector< std::string >								_paths;
 	std::map< std::string, std::vector< std::string > >	_locConfig;

@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Config.hpp"
 #include "Server.hpp"
-
 
 int main(int ac, char **av) {
 
@@ -22,14 +22,16 @@ int main(int ac, char **av) {
     else
         server.loadDefaultConfig();
 
-    std::cout << server.getConfig() << std::endl;
-    // try {
-    //     server.start();  // Starts listening on all ports and enters event loop.    
-    // } catch (const std::exception& e) {
-    //     std::cerr << e.what() << std::endl;
-    //     std::cerr << "error errror." << std::endl;
-    //     return 1;
-    // }
+    if (DISPLAY_CONF)
+        std::cout << server.getConfig() << std::endl;
+
+    try {
+        server.start();  // Starts listening on all ports and enters event loop.    
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << "error errror." << std::endl;
+        return 1;
+    }
 
     return 0;
 }
