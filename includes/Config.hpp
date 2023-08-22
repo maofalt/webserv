@@ -19,7 +19,7 @@
 #include <iostream>
 
 struct location {
-	std::string 								_path;
+	std::vector< std::string >								_paths;
 	std::map< std::string, std::vector< std::string > >	_locConfig;
 };
 
@@ -47,7 +47,7 @@ class Config {
 		void						readConf(std::ifstream & file);
 		void						splitConf();
 		bool						basicCheck();
-		bool						parseLocConf(std::vector<std::string>::iterator & it, int & line);
+		bool						parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
 		bool						parseServConf(std::vector<std::string>::iterator & it, int & line);
 		bool						setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
