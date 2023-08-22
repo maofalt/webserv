@@ -6,14 +6,11 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/18 22:28:36 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/22 20:00:02 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-//to make a define with this
-const int MAX_EVENTS = 10;  // Number of maximum events to be returned by epoll_wait to transfom in a define
 
 volatile sig_atomic_t Server::run = true; // Initialize the static member
 
@@ -83,25 +80,34 @@ int	Server::setUpSocket(int* sock_listen, const std::string& port)
 	return (0);
 }
 
+/**
+ * Set up epoll.
+ * @return epoll file descriptor.
+ */
 int Server::setUpEpoll() {
+	// Create epoll
 	int epoll_fd = epoll_create(2);
 	if (epoll_fd == -1) {
 		return perror("epoll_create1"), -1;
 	}
-
+	
+	// Add each socket to epoll
 	for (std::vector<int>::iterator it = sock_listens.begin();
 		it != sock_listens.end(); ++it) {
 		
+		// Set up epoll event struct and set it to for read events
 		struct epoll_event ev;
 		ev.events = EPOLLIN;
 		ev.data.fd = *it;
 		
+		// Add socket to epoll
 		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1) {
 			return perror(strerror(errno)), -1;
 		}
 	}
 	return epoll_fd;
 }
+
 
 int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	
@@ -110,17 +116,16 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	socklen_t 				client_addr_size;
 	int 					sock_server;
 	
-	std::cout << "inside accept new client" << std::endl;
 	client_addr_size = sizeof(client_addr);
 	sock_server = accept(sock_listen, (struct sockaddr *)&client_addr, &client_addr_size);
 	if (sock_server == -1) {
-		std::cout << "accept failed" << std::endl;
 		perror("accept");
 		return -1;
 	}
 
 	std::cout << "New client connected on descriptor " << sock_server << "!" << std::endl;
 	
+	//add to Epoll
 	event.events = EPOLLIN;
 	event.data.fd = sock_server;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
@@ -128,47 +133,10 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 		close(sock_server);
 		return -1;
 	}
+
+	//add to clientHandlers
+	clientHandlers[sock_server] = ClientHandler(sock_server, HttpRequestBase());
 	return sock_server;
-}
-
-void Server::handle_client_data(int epoll_fd, int client_fd) {
-	
-	
-	(void)epoll_fd; //we should use this variable to handle the error
-	std::cout << "Receiving data from client on descriptor " << client_fd << std::endl;
-	
-	// HttpRequestBase request;
-	
-	if (ongoingRequests.find(client_fd) == ongoingRequests.end()) {
-		// New client, create a HttpRequestBase for it
-		ongoingRequests[client_fd] = HttpRequestBase();
-	}
-
-	HttpRequestBase& request = ongoingRequests[client_fd];
-	
-	try {
-		request.recv(client_fd);
-	} catch (const std::exception& e) {
-		std::cerr << e.what() << '\n';
-		close_and_cleanup(epoll_fd, client_fd);
-		ongoingRequests.erase(client_fd);
-		throw;  // return would be beter	
-	} 
-
-	if (request.isComplete()) {
-		HttpRequestBase *NewReqObj = request.createRequestObj(request._method);
-		// std::cout << "before respond" << std::endl;
-		NewReqObj->respond(client_fd, "200");
-		std::cout << "before clear" << std::endl;
-		delete NewReqObj;
-		request.clear();
-		close_and_cleanup(epoll_fd, client_fd);
-		ongoingRequests.erase(client_fd);
-	}
-	else {
-		close_and_cleanup(epoll_fd, client_fd);
-		std::cout << "Request not complete yet" << std::endl;
-	}
 }
 
 //if we want to ahve a more robust logi for time out
@@ -193,48 +161,95 @@ int Server::handle_epoll_events(int epoll_fd) {
 	struct epoll_event	events[MAX_EVENTS];
 	HttpRequestBase		request;
 	int					num_fds;
-	int					client_fd;
 
 	int timeout = calculate_dynamic_timeout();
 
 	std::cout << "Waiting for an epoll event..." << std::endl;
 	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
 	if (num_fds == -1) {
-		if (errno == EINTR) {
-			return perror("epoll_wait"), -1;
-		}
+		if (errno == EINTR) { return perror("epoll_wait"), -1; }
 		return perror("epoll_wait"), -1;
 	}
+	
 	std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
-	if (num_fds == 0) {
-		std::cout << "Waiting for new clients or data from existing clients..." << std::endl;
-		return 1;
-	}
-
+	
 	for (int i = 0; i < num_fds; i++) {
         inspect_epoll_event(events[i].events);
-
+		
+		// Check if the event's fd is a listening socket
 		if (std::find(	sock_listens.begin(),
 						sock_listens.end(),
 						events[i].data.fd) != sock_listens.end()) {
-			std::cout << "inside for loop" << std::endl;
-			client_fd = accept_new_client(epoll_fd, events[i].data.fd);
-			std::cout << "After" << std::endl;
-			if (client_fd == -1) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK) {
-					// We have processed all incoming connections.
-					break;
-				} else {
-					perror("accept");
-					break;
-				}
-			}
-			handle_client_data(epoll_fd, client_fd);
-			std::cout << "Accepted new client with fd: " << client_fd << " on port: " << events[i].data.fd << std::endl;
-		} else {
-			handle_client_data(epoll_fd, events[i].data.fd);
+			if (accept_new_client(epoll_fd, events[i].data.fd)== -1) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
+				perror("accept"); }
+			continue;
+		} 
+		// Else it's a client socket
+		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
+		handleClientEvent(epoll_fd, events[i]);
+			
+	}
+	return 0;
+}
+
+int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
+
+	int client_fd = event.data.fd;
+	
+	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
+    	std::cerr << "Unknown client fd: " << client_fd << std::endl;
+    	return 1;
+	}
+	
+	ClientHandler& client = clientHandlers[client_fd];
+	std::cout << "Client " << client_fd << "exists!!" << std::endl;
+
+	 inspect_epoll_event(event.events);
+
+	// Depending on the epoll event, decide the action on the client
+	if (event.events & EPOLLIN) {
+		try {
+    		std::cout << "Reading data" << std::endl;
+			client.readData();
+			std::cout << "Data read" << std::endl;
+		} catch (const std::exception& e) {
+			close_and_cleanup(epoll_fd, client_fd);
+			clientHandlers.erase(client_fd); 
+			throw;
 		}
-		std::cout << "outside while loop" << std::endl;
+    	if (client.isRequestComplete()) {
+			std::cout << "Request complete" << std::endl;
+    		if (changeClientEpollMode(epoll_fd, client_fd, EPOLLOUT) != 0) {
+				client.closeConnection(epoll_fd);
+				clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+			}
+			std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
+    	}
+    }
+    else if (event.events & EPOLLOUT) {
+		std::cout << "Writing response" << std::endl;
+        client.writeResponse();
+		std::cout << "Response written" << std::endl;
+		close_and_cleanup(epoll_fd, client_fd);
+		clientHandlers.erase(client_fd); 
+    }
+    else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+        std::cerr << "Error on client fd: " << client_fd << std::endl;
+        client.closeConnection(epoll_fd);
+        clientHandlers.erase(client_fd);  // remove ClientHandler for this client
+    }
+	return 0;
+}
+
+int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
+	
+	struct epoll_event ev;
+	ev.events = mode;
+	ev.data.fd = client_fd;
+	if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, client_fd, &ev) == -1) {
+		perror("epoll_ctl: EPOLL_CTL_MOD");
+		return -1;
 	}
 	return 0;
 }

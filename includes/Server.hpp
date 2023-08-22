@@ -25,6 +25,7 @@
 #define PORTAL "8000"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
+#define MAX_EVENTS 10
 /*
 Server Class:
 
@@ -48,6 +49,7 @@ private:
     std::vector<int>                sock_listens;  // to list to multiple ports
     std::map<int, HttpRequestBase>  ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
+    std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	run;
     std::string              defaultConf;
@@ -70,17 +72,20 @@ public:
 
 private:
     // Encapsulate all the helper methods inside private scope
-    int                         setUpSocket(int* sock_listen, const std::string& port);
-    int                         setUpEpoll();
-    int                         accept_new_client(int epoll_fd, int sock_listen);
-    void                        handle_client_data(int epoll_fd, int client_fd);
-    int                         calculate_dynamic_timeout();
-    int                         handle_epoll_events(int epoll_fd);
-    static void	                signal_handler(int sig);
-    
-
-    void                        inspect_epoll_event(uint32_t events);
     std::vector<std::string>    getPorts();
+    int                         setUpSocket(int* sock_listen, const std::string& port);
+    int                         calculate_dynamic_timeout();
+    static void	                signal_handler(int sig);
+
+    //handle cllient Methods
+    int                         accept_new_client(int epoll_fd, int sock_listen);
+    int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
+    int                         handleClientEvent(int epoll_fd, struct epoll_event& event);
+    
+    //Multiplexing methods
+    int                         setUpEpoll();
+    void                        inspect_epoll_event(uint32_t events);
+    int                         handle_epoll_events(int epoll_fd);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
 public:
