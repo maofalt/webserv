@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 17:12:36 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 18:23:40 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,22 @@ Server::~Server() {
     stop();
 }
 
+
+/**
+ * @brief Starts the server's operation by setting up sockets, epoll, and handling events.
+ *
+ * @details This method initializes the server's operation, including setting up sockets
+ *          on specified ports, configuring epoll for event handling, and continuously
+ *          handling epoll events until instructed to stop.
+ *
+ * @pre The server must have been properly initialized before calling this method.
+ * @post After the method execution, the server will have completed its operation and
+ *       released any resources acquired during its runtime.
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during socket setup or epoll configuration.
+ *
+ * @note This method is public and forms the core functionality of the server.
+ */
 void Server::start() {
     run = true;
     signal(SIGINT, signal_handler); // Register signal handler
@@ -65,25 +81,37 @@ void Server::start() {
 	}
 }
 
+
+/**
+ * Initialize a socket for the server.
+ *
+ * @param ad          A pointer to the addrinfo structure containing socket details.
+ * @param sock_listen A pointer to an integer that will store the created socket's descriptor.
+ * @param port        The port number for which the socket will be initialized.
+ *
+ * @return 0 on success, -1 on error.
+ */
 int Server::initializeSocket(const addrinfo* ad,
 							int* sock_listen,
 							const std::string& port) {
 
 	int optval = 1;
-							
+    // Create a socket with the specified address family, socket type, and protocol				
     *sock_listen = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
     if (*sock_listen == -1) {
         std::cerr << "Socket error: " << strerror(errno) << std::endl;
         return -1;
     }
-
-    std::cout << "Socket created for port: " << port << std::endl;
+	std::cout << "Socket created for port: " << port << std::endl;
+	
+	// Set the socket option to reuse the address (SO_REUSEADDR) to avoid "Address already in use" errors
     if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
         std::cerr << "Setsockopt error: " << strerror(errno) << std::endl;
         close(*sock_listen);
         return -1;
     }
 
+    // Bind the socket to the provided address and port
     if (bind(*sock_listen, ad->ai_addr, ad->ai_addrlen) == -1) {
         std::cerr << "Bind error: " << strerror(errno) << std::endl;
         close(*sock_listen);
@@ -94,16 +122,27 @@ int Server::initializeSocket(const addrinfo* ad,
     return 0;
 }
 
-/*
-INPUT :	A pointer to an integer representing the socket file descriptor.
-OUTPUT :0 if successfully sets the socket for listening, -1 if it fails to bind, 
-		2 if there's an error with address information.
-DESCRIPTION : This function prepares a socket for accepting connections. 
-		It uses TCP over IPv4 (AF_INET and SOCK_STREAM). The port is defined by
-		the macro PORT.
-		The function iterates over the possible addresses returned by getaddrinfo,
-		trying to bind to each one until it succeeds or runs out of options.
-*/
+/**
+ * @brief Prepares a socket for accepting connections.
+ *
+ * @param sock_listen A pointer to an integer that will store the created socket's descriptor.
+ * @param port The port number for which the socket will be initialized.
+ *
+ * @return 0 on success, -1 on error.
+ *
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during socket setup or binding.
+ * @details This function sets up a socket for accepting incoming connections. It uses TCP
+ *          over IPv4 (AF_INET and SOCK_STREAM) to create the socket. The port is defined by
+ *          the provided 'port' parameter. The function iterates over the possible addresses
+ *          returned by getaddrinfo, attempting to bind to each one until it succeeds or
+ *          exhausts all options. If successful, the initialized socket descriptor is stored
+ *          in 'sock_listen'. If binding fails for all addresses, an error code is returned.
+ * @pre The server must have been properly initialized before calling this function.
+ * @post If successful, the 'sock_listen' parameter will be populated with a valid socket
+ *       descriptor that's ready for accepting connections.
+ * @note This method is private and forms an essential part of the server's socket setup process.
+ */
 int Server::setUpSocket(int* sock_listen, const std::string& port) {
     addrinfo hints, *addrs, *ad;
     int status;
