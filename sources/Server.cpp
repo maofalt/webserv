@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 20:45:27 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 20:49:08 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,8 +237,24 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
 
 
 /**
- * Set up epoll.
- * @return epoll file descriptor.
+ * @brief Sets up epoll for managing socket events.
+ *
+ * @return The epoll file descriptor on success, -1 on error.
+ *
+ * @details This method initializes an epoll instance for efficiently managing socket
+ *          events. For each socket descriptor in the 'sock_listens' collection, it sets up
+ *          an epoll event structure and registers the socket for read events. The method
+ *          then adds each socket to the epoll instance. If successful, the epoll file
+ *          descriptor is returned; otherwise, an error code is returned.
+ * @pre The server's listening sockets should have been successfully initialized and stored
+ *      in the 'sock_listens' collection.
+ * @post The epoll instance will be set up to efficiently handle incoming socket events.
+ * @usage This method is typically invoked within the server's setup routine, specifically
+ *        after initializing the server's listening sockets. The returned epoll file
+ *        descriptor is used for efficient event handling during the server's operation.
+ * @note The epoll instance is a key component for efficiently managing multiple socket
+ *       events. Errors during epoll creation or socket event registration are handled,
+ *       and the method returns -1 to indicate failure.
  */
 int Server::setUpEpoll() {
 	// Create epoll
@@ -267,16 +283,22 @@ int Server::setUpEpoll() {
 	return epoll_fd;
 }
 
-
+/**
+ * @brief Cleans up epoll and closes sockets.
+ * 
+ * @param epoll_fd 
+ * @param failed_it 
+ * @return true 
+ * @return false 
+ */
 bool Server::cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it) {
     for (std::vector<int>::iterator it = failed_it; it != sock_listens.begin(); --it) {
         if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, *it, NULL) == -1) {
-            // Logging the error or additional handling might be useful here.
             perror("epoll_ctl EPOLL_CTL_DEL");
         }
     }
-    return false; // Return false indicating cleanup was needed.
-}
+    return false; 
+
 
 
 int Server::accept_new_client(int epoll_fd, int sock_listen) {
