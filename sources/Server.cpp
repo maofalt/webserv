@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 19:44:24 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 19:47:41 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,30 @@ void Server::start() {
 	cleanup();
 }
 
+/**
+ * @brief Initializes a socket for a specific port.
+ *
+ * @param ad A pointer to the addrinfo structure containing socket details.
+ * @param sock_listen A pointer to an integer that will store the created socket's descriptor.
+ * @param port The port number for which the socket will be initialized.
+ *
+ * @return 0 on success, -1 on error.
+ *
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during socket initialization, option configuration, or binding.
+ * @details This method initializes a socket for a specific port using the provided 'addrinfo'
+ *          structure. The socket is created with the specified address family, socket type,
+ *          and protocol. It also sets the socket option 'SO_REUSEADDR' to avoid "Address
+ *          already in use" errors. The socket is then bound to the provided address and port.
+ *          If any step fails, an error code is returned.
+ * @post If successful, the 'sock_listen' parameter will be populated with a valid socket
+ *       descriptor ready for use.
+ * @usage This method is typically called inside a loop that iterates over multiple ports to
+ *        prepare sockets for accepting connections on each port. If an error occurs during
+ *        the setup of a socket, the entire server might be closed rather than continuing
+ *        with non-functional ports.
+ * @note This method is used internally and is not intended to be directly called by user code.
+ */
 bool Server::initializeSockets() {
     std::vector<std::string> ports = getPorts();
     for (std::vector<std::string>::const_iterator it = ports.begin(); it != ports.end(); ++it) {
