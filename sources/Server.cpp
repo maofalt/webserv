@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/22 20:28:48 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 17:12:36 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,76 @@ Server::~Server() {
     stop();
 }
 
+void Server::start() {
+    run = true;
+    signal(SIGINT, signal_handler); // Register signal handler
+	
+	// Loop over ports
+	std::vector<std::string> ports = getPorts();
+	for (std::vector<std::string>::const_iterator it = ports.begin();
+		it != ports.end();
+		++it) {
+		int socket;
+		if (setUpSocket(&socket, *it) == -1) {
+			std::cerr << "Failed to set up socket at port" <<  socket << std::endl;
+			continue ;
+		}
+		sock_listens.push_back(socket);
+    	if (listen(socket, BACKLOG) == -1) {
+			perror("listen");
+			return ;
+		}
+		std::cout << "Listening on port: " << *it << std::endl;
+	}
+
+    epoll_fd = setUpEpoll();
+	
+    if (epoll_fd == -1) {
+	    std::cerr << "Failed to set up epoll" << std::endl;
+        return;
+    }
+    while (run) {
+        if (handle_epoll_events(epoll_fd) == -1)
+            break;
+    }
+
+	close(epoll_fd);
+	for (std::vector<int>::iterator it = sock_listens.begin();
+		it != sock_listens.end();
+		++it) {
+			close(*it);
+	}
+}
+
+int Server::initializeSocket(const addrinfo* ad,
+							int* sock_listen,
+							const std::string& port) {
+
+	int optval = 1;
+							
+    *sock_listen = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
+    if (*sock_listen == -1) {
+        std::cerr << "Socket error: " << strerror(errno) << std::endl;
+        return -1;
+    }
+
+    std::cout << "Socket created for port: " << port << std::endl;
+    if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+        std::cerr << "Setsockopt error: " << strerror(errno) << std::endl;
+        close(*sock_listen);
+        return -1;
+    }
+
+    if (bind(*sock_listen, ad->ai_addr, ad->ai_addrlen) == -1) {
+        std::cerr << "Bind error: " << strerror(errno) << std::endl;
+        close(*sock_listen);
+        return -1;
+    }
+
+    std::cout << "Bind successful for port: " << port << std::endl;
+    return 0;
+}
+
 /*
 INPUT :	A pointer to an integer representing the socket file descriptor.
 OUTPUT :0 if successfully sets the socket for listening, -1 if it fails to bind, 
@@ -33,53 +103,41 @@ DESCRIPTION : This function prepares a socket for accepting connections.
 		the macro PORT.
 		The function iterates over the possible addresses returned by getaddrinfo,
 		trying to bind to each one until it succeeds or runs out of options.
-QUESTION : Method binds to all addresses returned by getaddrinfo. And not jsut
-		the 1st one. It seems to me it will overwrite the socket file descriptor
-		each time it binds to a new address.
-		Shouldn't it just bind to the first address returned by getaddrinfo?
 */
-int	Server::setUpSocket(int* sock_listen, const std::string& port)
-{
-	struct addrinfo	hints;
-	struct addrinfo	*addrs;
-	int				status;
-	
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags |= AI_PASSIVE;
-	status = getaddrinfo(NULL, port.c_str(), &hints, &addrs);
-	if (status) {
-		std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
-		return (2);
-	}
-	for (struct addrinfo *ad = addrs; ad != NULL; ad = ad->ai_next)
-	{
-		*sock_listen = socket(ad->ai_family, ad->ai_socktype, ad->ai_protocol);
-		if (*sock_listen == -1)
-			continue ;
-		//set SO_REUSEADDR option, but this make provoke to hijack the sokt it we launch the server serveral times!!
-		//we have to find a turnaround to fix this!!
-		std::cout << "Socket created for port: " << port << std::endl;
-		int optval = 1;
-		if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
-			close(*sock_listen);
-			return perror(strerror(errno)), -1;
-		}
-		status = bind(*sock_listen, ad->ai_addr, ad->ai_addrlen);
-		if (status == -1)
-		{
-			close(*sock_listen);
-			continue ;
-		}
-		std::cout << "Bind successful for port: " << port << std::endl;
+int Server::setUpSocket(int* sock_listen, const std::string& port) {
+    addrinfo hints, *addrs, *ad;
+    int status;
 
-	}
-	freeaddrinfo(addrs);
-	if (*sock_listen == -1)
-		return (-1);
-	return (0);
+    // Setup addrinfo structure
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags |= AI_PASSIVE;
+
+    status = getaddrinfo(NULL, port.c_str(), &hints, &addrs);
+    if (status) {
+        std::cerr << "getaddrinfo: " << gai_strerror(status) << std::endl;
+        return 2;
+    }
+
+	// Iterate over possible addresses and bind to the first one that works
+    for (ad = addrs; ad != NULL; ad = ad->ai_next) {
+        if (initializeSocket(ad, sock_listen, port) == 0) {
+            break;
+        }
+    }
+
+    freeaddrinfo(addrs);
+	
+	// If ad is NULL, then we failed to bind to any address
+    if (ad == NULL) {
+        std::cerr << "Failed to bind to any address" << std::endl;
+        return -1;
+    }
+
+    return 0;
 }
+
 
 /**
  * Set up epoll.
@@ -279,47 +337,6 @@ std::vector<std::string> Server::getPorts() {
 	ports.push_back(PORT);
 	
 	return ports;
-}
-
-void Server::start() {
-    run = true;
-    signal(SIGINT, signal_handler); // Register signal handler
-	
-	// Loop over ports
-	std::vector<std::string> ports = getPorts();
-	for (std::vector<std::string>::const_iterator it = ports.begin();
-		it != ports.end();
-		++it) {
-		int socket;
-		if (setUpSocket(&socket, *it) == -1) {
-			std::cerr << "Failed to set up socket at port" <<  socket << std::endl;
-			continue ;
-		}
-		sock_listens.push_back(socket);
-    	if (listen(socket, BACKLOG) == -1) {
-			perror("listen");
-			return ;
-		}
-		std::cout << "Listening on port: " << *it << std::endl;
-	}
-
-    epoll_fd = setUpEpoll();
-	
-    if (epoll_fd == -1) {
-	    std::cerr << "Failed to set up epoll" << std::endl;
-        return;
-    }
-    while (run) {
-        if (handle_epoll_events(epoll_fd) == -1)
-            break;
-    }
-
-	close(epoll_fd);
-	for (std::vector<int>::iterator it = sock_listens.begin();
-		it != sock_listens.end();
-		++it) {
-			close(*it);
-	}
 }
 
 void Server::stop() {

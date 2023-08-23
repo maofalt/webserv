@@ -73,6 +73,7 @@ public:
 private:
     // Encapsulate all the helper methods inside private scope
     std::vector<std::string>    getPorts();
+    int                         initializeSocket(const addrinfo* ad, int* sock_listen, const std::string& port);
     int                         setUpSocket(int* sock_listen, const std::string& port);
     int                         calculate_dynamic_timeout();
     static void	                signal_handler(int sig);
