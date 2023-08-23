@@ -130,14 +130,6 @@ test: all
 	@PID=$$(ps -ax | grep -F ./$(NAME) | grep -v "grep" | awk '{print $$1}')
 	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
 
-test: all
-	@docker-compose -f ./test/docker-compose.yml up -d --build 2>/dev/null
-	@(>/dev/null 2>/dev/null ./$(NAME) &)
-	@zsh test/test.sh
-	@docker-compose -f ./test/docker-compose.yml down 2>/dev/null
-	@PID=$$(ps -ax | grep -F ./$(NAME) | grep -v "grep" | awk '{print $$1}')
-	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
-
 
 tclean:
 	@docker-compose -f ./test/docker-compose.yml down 2>/dev/null

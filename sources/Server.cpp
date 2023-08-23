@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 20:49:08 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 21:42:41 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,6 +298,7 @@ bool Server::cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it) {
         }
     }
     return false; 
+}
 
 
 
