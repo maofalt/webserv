@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 20:04:28 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 20:45:27 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void Server::start() {
     epoll_fd = setUpEpoll();
 	if (epoll_fd == -1) {
 	    std::cerr << "Failed to set up epoll" << std::endl;
+		cleanup();
         return;
     }
 	
@@ -113,7 +114,8 @@ bool Server::initializeSockets() {
 
 
 void Server::cleanup() {
-    close(epoll_fd);
+    if (epoll_fd != -1)
+		close(epoll_fd);
     for (	std::vector<int>::iterator it = sock_listens.begin();
 			it != sock_listens.end();
 			++it) {
@@ -242,7 +244,8 @@ int Server::setUpEpoll() {
 	// Create epoll
 	int epoll_fd = epoll_create(2);
 	if (epoll_fd == -1) {
-		return perror("epoll_create1"), -1;
+		perror("epoll_create1");
+		return -1;
 	}
 	
 	// Add each socket to epoll
@@ -256,10 +259,23 @@ int Server::setUpEpoll() {
 		
 		// Add socket to epoll
 		if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, *it, &ev) == -1) {
-			return perror(strerror(errno)), -1;
+			cleanupEpoll(epoll_fd, it);
+			perror(strerror(errno));
+			return -1;
 		}
 	}
 	return epoll_fd;
+}
+
+
+bool Server::cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it) {
+    for (std::vector<int>::iterator it = failed_it; it != sock_listens.begin(); --it) {
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, *it, NULL) == -1) {
+            // Logging the error or additional handling might be useful here.
+            perror("epoll_ctl EPOLL_CTL_DEL");
+        }
+    }
+    return false; // Return false indicating cleanup was needed.
 }
 
 

@@ -89,6 +89,7 @@ private:
     int                         setUpEpoll();
     void                        inspect_epoll_event(uint32_t events);
     int                         handle_epoll_events(int epoll_fd);
+    bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
 public:
