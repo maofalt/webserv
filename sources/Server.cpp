@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 18:23:40 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 19:44:24 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,52 +44,76 @@ void Server::start() {
     run = true;
     signal(SIGINT, signal_handler); // Register signal handler
 	
-	// Loop over ports
-	std::vector<std::string> ports = getPorts();
-	for (std::vector<std::string>::const_iterator it = ports.begin();
-		it != ports.end();
-		++it) {
-		int socket;
-		if (setUpSocket(&socket, *it) == -1) {
-			std::cerr << "Failed to set up socket at port" <<  socket << std::endl;
-			continue ;
-		}
-		sock_listens.push_back(socket);
-    	if (listen(socket, BACKLOG) == -1) {
-			perror("listen");
-			return ;
-		}
-		std::cout << "Listening on port: " << *it << std::endl;
-	}
-
-    epoll_fd = setUpEpoll();
+	// Initialize sockets and start listening
+    if (!initializeSockets())
+        return; // Check if id ont forget to clsoe everything!
 	
-    if (epoll_fd == -1) {
+	// Set up epoll
+    epoll_fd = setUpEpoll();
+	if (epoll_fd == -1) {
 	    std::cerr << "Failed to set up epoll" << std::endl;
         return;
     }
+	
     while (run) {
         if (handle_epoll_events(epoll_fd) == -1)
             break;
     }
 
-	close(epoll_fd);
-	for (std::vector<int>::iterator it = sock_listens.begin();
-		it != sock_listens.end();
-		++it) {
-			close(*it);
-	}
+	cleanup();
+}
+
+bool Server::initializeSockets() {
+    std::vector<std::string> ports = getPorts();
+    for (std::vector<std::string>::const_iterator it = ports.begin(); it != ports.end(); ++it) {
+        int socket;
+        if (setUpSocket(&socket, *it) == -1) {
+            std::cerr << "Failed to set up socket at port " << *it << std::endl;
+            continue;
+        }
+        sock_listens.push_back(socket);
+        if (listen(socket, BACKLOG) == -1) {
+            perror("listen");
+            return false; // Indicate failure
+        }
+        std::cout << "Listening on port: " << *it << std::endl;
+    }
+    return true;	
+}
+
+
+void Server::cleanup() {
+    close(epoll_fd);
+    for (	std::vector<int>::iterator it = sock_listens.begin();
+			it != sock_listens.end();
+			++it) {
+        close(*it);
+    }
 }
 
 
 /**
- * Initialize a socket for the server.
+ * @brief Initializes a socket for a specific port.
  *
- * @param ad          A pointer to the addrinfo structure containing socket details.
+ * @param ad A pointer to the addrinfo structure containing socket details.
  * @param sock_listen A pointer to an integer that will store the created socket's descriptor.
- * @param port        The port number for which the socket will be initialized.
+ * @param port The port number for which the socket will be initialized.
  *
  * @return 0 on success, -1 on error.
+ *
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during socket initialization, option configuration, or binding.
+ * @details This method initializes a socket for a specific port using the provided 'addrinfo'
+ *          structure. The socket is created with the specified address family, socket type,
+ *          and protocol. It also sets the socket option 'SO_REUSEADDR' to avoid "Address
+ *          already in use" errors. The socket is then bound to the provided address and port.
+ *          If any step fails, an error code is returned.
+ * @post If successful, the 'sock_listen' parameter will be populated with a valid socket
+ *       descriptor ready for use.
+ * @usage This method is typically called inside a loop that iterates over multiple ports to
+ *        prepare sockets for accepting connections on each port. If an error occurs during
+ *        the setup of a socket, the entire server might be closed rather than continuing
+ *        with non-functional ports.
  */
 int Server::initializeSocket(const addrinfo* ad,
 							int* sock_listen,
@@ -164,6 +188,7 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
         if (initializeSocket(ad, sock_listen, port) == 0) {
             break;
         }
+		throw std::runtime_error("Failed to initialize socket");
     }
 
     freeaddrinfo(addrs);
