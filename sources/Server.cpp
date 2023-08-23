@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 19:47:41 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/23 20:04:28 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,16 +89,22 @@ void Server::start() {
  */
 bool Server::initializeSockets() {
     std::vector<std::string> ports = getPorts();
-    for (std::vector<std::string>::const_iterator it = ports.begin(); it != ports.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = ports.begin();
+		it != ports.end();
+		++it) {
+			
         int socket;
         if (setUpSocket(&socket, *it) == -1) {
             std::cerr << "Failed to set up socket at port " << *it << std::endl;
-            continue;
+			cleanup();
+            return false;
         }
+		
         sock_listens.push_back(socket);
         if (listen(socket, BACKLOG) == -1) {
             perror("listen");
-            return false; // Indicate failure
+			cleanup();
+            return false; 
         }
         std::cout << "Listening on port: " << *it << std::endl;
     }
@@ -212,6 +218,7 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
         if (initializeSocket(ad, sock_listen, port) == 0) {
             break;
         }
+		freeaddrinfo(addrs);
 		throw std::runtime_error("Failed to initialize socket");
     }
 
