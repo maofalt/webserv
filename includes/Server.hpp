@@ -19,7 +19,7 @@
 
 #include "Config.hpp"
 #include "ClientHandler.hpp"
-#include "HttpRequestBase.hpp"
+#include "HttpRequest.hpp"
 
 #define PORT "8694"
 #define PORTAL "8000"
@@ -47,7 +47,7 @@ class Server {
 private:
     int                             epoll_fd;
     std::vector<int>                sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequestBase>  ongoingRequests;  // ongoing requests for each client_fd
+    std::map<int, HttpRequest>  ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 

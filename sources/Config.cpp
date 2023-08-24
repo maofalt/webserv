@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/20 14:41:55 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/24 23:16:41 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 	int	err = 0;
 
 	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
-	it != _splitContent.end(); it++) {
+			it != _splitContent.end(); it++) {
 		if (*it == "\n") {
 			countLines++;
 			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
-			&& *(it - 1) != "{"  && *(it - 1) != "}") {
+					&& *(it - 1) != "{"  && *(it - 1) != "}") {
 				std::cerr << _confFileName + ":" << countLines - 1 << ": error: expected ';' before '\\n'." << std::endl;
 				err++;
 			}
@@ -163,7 +163,7 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 		return std::cerr << _confFileName + ":" << line << ": error: missing '{' for server block." << std::endl, 1;
 		// err++;
 	}
-	
+
 	struct server	newServ;
 
 	while (++it != _splitContent.end() && *it != "}") {
@@ -199,7 +199,7 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 
 	int	line = 1;
 	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
-	it != _splitContent.end(); it++) {
+			it != _splitContent.end(); it++) {
 		if (*it == "\n")
 			line++;
 		else if (*it == "server") {
@@ -225,7 +225,7 @@ void	printLocStruct(std::ostream& os, struct location & loc) {
 	}
 	os << std::endl;
 	for (std::map< std::string, std::vector< std::string > >::iterator \
-	it = loc._locConfig.begin(); it != loc._locConfig.end(); it++) {
+			it = loc._locConfig.begin(); it != loc._locConfig.end(); it++) {
 		os << "		" + it->first << " : ";
 		for (size_t i=0; i<it->second.size(); i++) {
 			os << it->second[i] << (i == it->second.size() - 1 ? "" : ", ");
@@ -240,7 +240,7 @@ void	printLocStruct(std::ostream& os, struct location & loc) {
 
 void	printServStruct(std::ostream& os, struct server & serv) {
 	for (std::map< std::string, std::vector< std::string > >::iterator \
-	it = serv._servConfig.begin(); it != serv._servConfig.end(); it++) {
+			it = serv._servConfig.begin(); it != serv._servConfig.end(); it++) {
 		os << "	" + it->first + " : ";
 		for (size_t i=0; i<it->second.size(); i++) {
 			os << it->second[i] << (i == it->second.size() - 1 ? "" : ", ");
@@ -266,7 +266,7 @@ std::ostream& operator<<(std::ostream& os, const Config & conf) {
 
 	std::map< std::string, std::vector< std::string > >	config = conf.getConfData();
 	std::map< std::string, std::vector< std::string > >::iterator \
-	it = config.begin();
+		it = config.begin();
 	os << "Config Data : " << std::endl << std::endl;
 	while (it != config.end()) {
 		os << it->first << " : ";

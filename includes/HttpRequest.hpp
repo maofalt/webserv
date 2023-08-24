@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequestBase.hpp                                :+:      :+:    :+:   */
+/*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/20 14:42:14 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/24 23:10:33 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUESTBASE_HPP
-#define HTTPREQUESTBASE_HPP
+#ifndef HTTPREQUEST_HPP
+# define HTTPREQUEST_HPP
 
 #include <map>
 // #include <string>
@@ -40,12 +40,12 @@
 /*
 Purpose:            To act as a base class for all HTTP request types.
 Attributes/Methods: We already got a good starting point with the 
-                    existing HttpRequestBase class. 
+                    existing HttpRequest class. 
                     Refactor this to make it more generic 
                     (i.e., remove GET-specific behavior).
 */
 
-class HttpRequestBase {
+class HttpRequest {
     public:
 	// Method
 		std::string	_method;
@@ -62,8 +62,6 @@ class HttpRequestBase {
 	// Static
 		static std::vector<std::string>				_methods_forbidden;
 		static std::vector<std::string>				_methods_ok;
-		static std::map<std::string, std::string>	_description;
-		static std::map<std::string, std::string>	_content_type;
 
 	// Methods utils
 		void	_parseMethod(const std::string &method);
@@ -76,20 +74,21 @@ class HttpRequestBase {
 
 	public:
 	// Coplien
-		HttpRequestBase(void);
-		HttpRequestBase(HttpRequestBase const &rhs);
-		virtual ~HttpRequestBase(void);
-		HttpRequestBase	&operator=(HttpRequestBase const &rhs);
+		HttpRequest(void);
+		HttpRequest(HttpRequest const &rhs);
+		virtual ~HttpRequest(void);
+		HttpRequest	&operator=(HttpRequest const &rhs);
+	
+	// Getters
+		std::string		getUri(void) const;
 
 	// Methods
 		void	        clear(void);
 		int		        recv(int fd);
 		bool	        isComplete(void) const;
-		virtual int		respond(int fd, std::string status);
-        HttpRequestBase *createRequestObj(const std::string RequestType);
 
 	// Operators
-		friend std::ostream	&operator<<(std::ostream &out, const HttpRequestBase &rhs);
+		friend std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs);
 
 	// Exceptions
 		class Error;
@@ -97,11 +96,11 @@ class HttpRequestBase {
 
 struct RequestsTab{
     std::string type;
-    HttpRequestBase* (*createRequest)(const HttpRequestBase&);
+    HttpRequest* (*createRequest)(const HttpRequest&);
 };
 
 // Exceptions
-class HttpRequestBase::Error : public std::exception
+class HttpRequest::Error : public std::exception
 {
 	private:
 		char	_type[4];
@@ -110,5 +109,5 @@ class HttpRequestBase::Error : public std::exception
 		const char	*what(void) const throw();
 };
 
-std::ostream& operator<<(std::ostream& os, const HttpRequestBase & other);
+std::ostream& operator<<(std::ostream& os, const HttpRequest & other);
 #endif

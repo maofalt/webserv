@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequestBase.cpp                                :+:      :+:    :+:   */
+/*   HttpRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/22 21:48:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/24 23:11:46 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HttpRequestBase.hpp"
-#include "HttpRequestGET.hpp"
-#include "HttpRequestPOST.hpp"
-#include "HttpRequestDELETE.hpp"
+#include "HttpRequest.hpp"
 
-// #include "HttpRequestBase.hpp"
+// #include "HttpRequest.hpp"
 
 // Static member variables
 static std::vector<std::string>	getMethodsForbidden(void)
@@ -39,41 +36,12 @@ static std::vector<std::string>	getMethodsOk(void)
 	methodsOk.push_back("DELETE");
 	return (methodsOk);
 }
-static std::map<std::string, std::string>	getDescription(void)
-{
-	std::map<std::string, std::string>	description;
 
-	description["200"] = "OK";
-	description["400"] = "Bad request";
-	description["403"] = "Forbidden";
-	description["404"] = "Not found";
-	description["405"] = "Method not allowed";
-	description["411"] = "Length required";
-	description["413"] = "Request entity too large";
-	description["500"] = "Internal server error";
-	description["501"] = "Not implemented";
-	description["505"] = "HTTP Version not supported";
-	return (description);
-}
-static std::map<std::string, std::string>	getContentType(void)
-{
-	std::map<std::string, std::string>	content_type;
-
-	content_type["html"] = "text/html";
-	content_type["css"] = "text/css";
-	content_type["jpg"] = "image/jpeg";
-	content_type["jpeg"] = "image/jpeg";
-	content_type["png"] = "image/png";
-	return (content_type);
-}
-
-std::vector<std::string>			HttpRequestBase::_methods_forbidden = getMethodsForbidden();
-std::vector<std::string>			HttpRequestBase::_methods_ok = getMethodsOk();
-std::map<std::string, std::string>	HttpRequestBase::_description = getDescription();
-std::map<std::string, std::string>	HttpRequestBase::_content_type = getContentType();
+std::vector<std::string>			HttpRequest::_methods_forbidden = getMethodsForbidden();
+std::vector<std::string>			HttpRequest::_methods_ok = getMethodsOk();
 
 // Coplien
-HttpRequestBase::HttpRequestBase(void):
+HttpRequest::HttpRequest(void):
 	_method(""),
 	_uri(""),
 	_protocol(""),
@@ -84,7 +52,7 @@ HttpRequestBase::HttpRequestBase(void):
 	_bodyComplete(false)
 {
 }
-HttpRequestBase::HttpRequestBase(HttpRequestBase const &rhs):
+HttpRequest::HttpRequest(HttpRequest const &rhs):
 	_method(rhs._method),
 	_uri(rhs._uri),
 	_protocol(rhs._protocol),
@@ -96,11 +64,11 @@ HttpRequestBase::HttpRequestBase(HttpRequestBase const &rhs):
 {
 }
 
-HttpRequestBase::~HttpRequestBase(void)
+HttpRequest::~HttpRequest(void)
 {
 }
 
-HttpRequestBase	&HttpRequestBase::operator=(HttpRequestBase const &rhs)
+HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
 {
 	_method = rhs._method;
 	_uri = rhs._uri;
@@ -114,11 +82,11 @@ HttpRequestBase	&HttpRequestBase::operator=(HttpRequestBase const &rhs)
 }
 
 // _verifyHeader
-void	HttpRequestBase::_verifyHeader(void) const
+void	HttpRequest::_verifyHeader(void) const
 {
-	if (find(HttpRequestBase::_methods_forbidden.begin(), HttpRequestBase::_methods_forbidden.end(), _method) != HttpRequestBase::_methods_forbidden.end())
+	if (find(HttpRequest::_methods_forbidden.begin(), HttpRequest::_methods_forbidden.end(), _method) != HttpRequest::_methods_forbidden.end())
 		throw (Error("405"));
-	if (find(HttpRequestBase::_methods_ok.begin(), HttpRequestBase::_methods_ok.end(), _method) == HttpRequestBase::_methods_ok.end())
+	if (find(HttpRequest::_methods_ok.begin(), HttpRequest::_methods_ok.end(), _method) == HttpRequest::_methods_ok.end())
 		throw (Error("501"));
 }
 
@@ -143,7 +111,7 @@ static void	setBuffer(std::string &buffer,
 
 	it2 = search(it, end, crlf.begin(), crlf.end());
 	if (it2 == end)
-		throw (HttpRequestBase::Error("400"));
+		throw (HttpRequest::Error("400"));
 	buffer = std::string(it, it2);
 	it = it2 + (crlf.end() - crlf.begin());
 }
@@ -153,7 +121,7 @@ static void	setBuffer(std::string &buffer,
 	(e.g., GET, POST), the request URI, and the HTTP version
 	?? : Should we verify that the htpp version is 1.1?
 */
-void	HttpRequestBase::_parseMethod(const std::string &method)
+void	HttpRequest::_parseMethod(const std::string &method)
 {
 	size_t	first_sp;
 	size_t	second_sp;
@@ -180,7 +148,7 @@ void	HttpRequestBase::_parseMethod(const std::string &method)
 	?? : if there are semicolon (diffrent parameters) should we split them or 
 	keep them as a unique value ?
 */
-void	HttpRequestBase::_parseHeaderField(const std::string &field)
+void	HttpRequest::_parseHeaderField(const std::string &field)
 {
 	// Find the first semicolon to separate the name and value
 	std::string	name;
@@ -218,7 +186,7 @@ Then we parse the method, uri and protocol
 Then we parse the header fields
 ?? : do we need to verify anything else besides if the methods is correct ? 
 */
-void	HttpRequestBase::_parseHeader(void)
+void	HttpRequest::_parseHeader(void)
 {
 	std::string				buffer;
 	std::string::iterator	it;
@@ -247,7 +215,7 @@ rather than implementing them
 	error ? we ignore the bdy?send a timeout suing 413 error ?
 	
 */
-void	HttpRequestBase::_parseBody(void)
+void	HttpRequest::_parseBody(void)
 {
 	// When the body is chunked, the size of the chunked data is unknown
 	if (_field.count(TRANSFER_ENCODING)
@@ -282,7 +250,7 @@ void	HttpRequestBase::_parseBody(void)
 }
 
 // _rawHeaderComplete
-bool	HttpRequestBase::_rawHeaderComplete(void) const
+bool	HttpRequest::_rawHeaderComplete(void) const
 {
 	return (_raw.find(CRLF_DOUBLE) != std::string::npos);
 }
@@ -296,7 +264,7 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 	// 1. Get the size of the next field
 	try { size = std::atoi(&*it); }
 	catch (std::exception &e) {
-		throw (HttpRequestBase::Error("400")); }
+		throw (HttpRequest::Error("400")); }
 	// 2. Find the end of the field
 	it = search(it, end, crlf.begin(), crlf.end());
 	// 3. Skip the field
@@ -306,7 +274,7 @@ static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
 }
 
 
-bool	HttpRequestBase::_rawBodyComplete(void)
+bool	HttpRequest::_rawBodyComplete(void)
 {
 	// If Transfer-Encoding is chunked, search for a double CRLF
 	if (_field.count(TRANSFER_ENCODING)
@@ -337,7 +305,15 @@ bool	HttpRequestBase::_rawBodyComplete(void)
 	return (true);
 }
 
-int	HttpRequestBase::recv(int fd)
+// Getters
+std::string	HttpRequest::getUri(void) const
+{
+	return (_uri);
+}
+
+// Methods
+
+int	HttpRequest::recv(int fd)
 {
 	char	buffer[BUFFER_SIZE_REQUEST + 1];
 	int		count;
@@ -371,13 +347,13 @@ int	HttpRequestBase::recv(int fd)
 }
 
 // isComplete
-bool	HttpRequestBase::isComplete(void) const
+bool	HttpRequest::isComplete(void) const
 {
 	return (_headerComplete && _bodyComplete);
 }
 
 // clear
-void	HttpRequestBase::clear(void)
+void	HttpRequest::clear(void)
 {
 	_method.clear();
 	_uri.clear();
@@ -389,26 +365,8 @@ void	HttpRequestBase::clear(void)
 	_bodyComplete = false;
 }
 
-template <class T>
-std::string	numberToString(T nb)
-{
-	std::ostringstream	ss;
-	ss << nb;
-	return (ss.str());
-}
-
-// respond
-// Dow e ahve righ to use send ? or we need to sue other ?
-int	HttpRequestBase::respond(int fd, std::string status)
-{
-	(void)fd;
-	(void)status;
-
-	return std::cerr << "Error: responding from the base class" << std::endl, -1;
-}
-
 // operator<<
-std::ostream	&operator<<(std::ostream &out, const HttpRequestBase &rhs)
+std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs)
 {
 	out << "HTTP Request: " << std::endl;
 	out << "Method: " << rhs._method << std::endl;
@@ -427,36 +385,7 @@ std::ostream	&operator<<(std::ostream &out, const HttpRequestBase &rhs)
 }
 
 // Exception
-const char	*HttpRequestBase::Error::what(void) const throw()
+const char	*HttpRequest::Error::what(void) const throw()
 {
 	return (_type);
-}
-
-HttpRequestBase *createGETRequest(const HttpRequestBase & base) {
-	return new HttpRequestGET(base);
-}
-
-HttpRequestBase *createPOSTRequest(const HttpRequestBase & base) {
-	return new HttpRequestPOST(base);
-}
-
-HttpRequestBase *createDELETERequest(const HttpRequestBase & base) {
-	return new HttpRequestDELETE(base);
-}
-
-HttpRequestBase *HttpRequestBase::createRequestObj(const std::string RequestType) {
-	RequestsTab requestsTab[] = {
-        {"GET", &createGETRequest},
-        {"POST", &createPOSTRequest},
-        {"DELETE", &createDELETERequest},
-        {"", NULL}
-    };
-
-	for (int i=0; requestsTab[i].createRequest != NULL; i++)
-	{
-		if (requestsTab[i].type == RequestType)
-			return requestsTab[i].createRequest(*this);
-	}
-	// return ErrorClass with message and potentially error page or something, but for now NULL;
-	return NULL;
 }
