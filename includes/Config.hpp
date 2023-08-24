@@ -50,10 +50,10 @@ class Config {
 
 		void						readConf(std::ifstream & file);
 		void						splitConf();
-		bool						basicCheck();
-		bool						parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
-		bool						parseServConf(std::vector<std::string>::iterator & it, int & line);
-		bool						setupConf(std::ifstream & file, std::string fileName);
+		int						basicCheck();
+		int						parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
+		int						parseServConf(std::vector<std::string>::iterator & it, int & line);
+		int						setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< struct server >	getServList() const;

@@ -53,7 +53,7 @@ std::map< std::string, std::vector< std::string > >	Config::getConfData() const 
 	return this->_confData;
 }
 
-bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
+int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 	int	bracketOpen = 0;
 	int	countLines = 1;
 	int	err = 0;
@@ -68,8 +68,13 @@ bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 				err++;
 			}
 		}
-		else if (*it == "{")
+		else if (*it == "{") {
+			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
+				std::cerr << _confFileName + ":" << countLines << ": error: expected '\\n' after '{'." << std::endl;
+				err++;
+			}
 			bracketOpen++;
+		}
 		else if (*it == "}")
 			bracketOpen--;
 		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
@@ -118,7 +123,7 @@ void	Config::splitConf() {
 	}
 }
 
-bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ) {
+int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ) {
 	int	err = 0;
 
 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
@@ -133,8 +138,8 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 		newLoc._paths.push_back(*(it++));
 	if (it == _splitContent.end() || *it != "{") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ":" << line << ": error: missing '{' for location block." << std::endl;
-		err++;
+		return std::cerr << _confFileName + ":" << line << ": error: missing '{' for location block." << std::endl, 1;
+		// err++;
 	}
 
 	while (++it != _splitContent.end() && *it != "}") {
@@ -150,13 +155,13 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 	return err;
 }
 
-bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
+int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	int	err = 0;
 
 	if (*(++it) != "{") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ":" << line << ": error: missing '{' for server block." << std::endl;
-		err++;
+		return std::cerr << _confFileName + ":" << line << ": error: missing '{' for server block." << std::endl, 1;
+		// err++;
 	}
 	
 	struct server	newServ;
@@ -177,8 +182,9 @@ bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) 
 	return err;
 }
 
-bool	Config::setupConf(std::ifstream & file, std::string fileName) {
+int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	struct stat	fileStat;
+	int	err = 0;
 	_confFileName = fileName;
 
 	if (stat(_confFileName.c_str(), &fileStat) != 0)
@@ -198,7 +204,7 @@ bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 			line++;
 		else if (*it == "server") {
 			if (parseServConf(it, line))
-				return 1;
+				err++;
 		}
 		else {
 			std::string	key = *it;
@@ -209,7 +215,7 @@ bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 		}
 	}
 
-	return 0;
+	return err;
 }
 
 void	printLocStruct(std::ostream& os, struct location & loc) {
