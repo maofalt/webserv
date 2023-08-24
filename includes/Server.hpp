@@ -89,6 +89,9 @@ private:
     int                         setUpEpoll();
     void                        inspect_epoll_event(uint32_t events);
     int                         handle_epoll_events(int epoll_fd);
+    int                         handle_epoll_error();
+    void                        process_listen_socket(int epoll_fd, struct epoll_event& event);
+    void                        process_client_socket(int epoll_fd, struct epoll_event& event);
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
