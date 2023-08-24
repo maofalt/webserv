@@ -64,7 +64,7 @@ bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			countLines++;
 			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
 			&& *(it - 1) != "{"  && *(it - 1) != "}") {
-				std::cerr << _confFileName + ": error: expected ';' before '\\n' line " << countLines - 1 << std::endl;
+				std::cerr << _confFileName + ":" << countLines - 1 << ": error: expected ';' before '\\n'." << std::endl;
 				err++;
 			}
 		}
@@ -73,15 +73,15 @@ bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 		else if (*it == "}")
 			bracketOpen--;
 		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
-			std::cerr << _confFileName + ": error: expected '\\n' after ';' line " << countLines << std::endl;
+			std::cerr << _confFileName + ":" << countLines << ": error: expected '\\n' after ';'." << std::endl;
 			err++;
 		}
 		if (bracketOpen < 0) {
-			return std::cerr << _confFileName + ": error: extra closing bracket line " << std::endl, err;
+			return std::cerr << _confFileName + ": error: extra closing bracket." << std::endl, err;
 		}
 	}
 	if (bracketOpen > 0) {
-		return std::cerr << _confFileName + ": error: missing closing bracket" << std::endl, err + 1;
+		return std::cerr << _confFileName + ": error: missing closing bracket." << std::endl, err + 1;
 	}
 	return err;
 }
@@ -123,7 +123,7 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 
 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ": error: missing path for location block line " << line << std::endl;
+		std::cerr << _confFileName + ":" << line << ": error: missing path for location block." << std::endl;
 		err++;
 	}
 
@@ -133,7 +133,7 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 		newLoc._paths.push_back(*(it++));
 	if (it == _splitContent.end() || *it != "{") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ": error: missing '{' for location block line " << line << std::endl;
+		std::cerr << _confFileName + ":" << line << ": error: missing '{' for location block." << std::endl;
 		err++;
 	}
 
@@ -155,7 +155,7 @@ bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) 
 
 	if (*(++it) != "{") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ": error: missing '{' for server block line " << line << std::endl;
+		std::cerr << _confFileName + ":" << line << ": error: missing '{' for server block." << std::endl;
 		err++;
 	}
 	
@@ -182,9 +182,9 @@ bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 	_confFileName = fileName;
 
 	if (stat(_confFileName.c_str(), &fileStat) != 0)
-		return std::cerr << _confFileName + ": error: could not check file status" << std::endl, 1;
+		return std::cerr << _confFileName + ": error: could not check file status." << std::endl, 1;
 	if (fileStat.st_size > 2000 || fileStat.st_size == 0)
-		return std::cerr << _confFileName + ": error: file is too big or empty" << std::endl, 1;
+		return std::cerr << _confFileName + ": error: file is too big or empty." << std::endl, 1;
 
 	readConf(file);
 	splitConf();
