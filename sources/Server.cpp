@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 17:11:39 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/24 17:58:14 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,7 +301,28 @@ bool Server::cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it) {
 }
 
 
-
+/**
+ * @brief Accepts a new client connection and adds it to epoll.
+ *
+ * @param epoll_fd The epoll file descriptor for managing socket events.
+ * @param sock_listen The listening socket descriptor.
+ *
+ * @return The socket descriptor of the newly connected client on success, -1 on error.
+ *
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during accepting a new connection or adding it to epoll.
+ * @details This method accepts a new client connection on the provided 'sock_listen'
+ *          socket descriptor. Once a new client is connected, it is added to epoll for
+ *          efficient event management. The client's socket descriptor is returned on
+ *          success, and -1 is returned on error.
+ * @pre The server's listening socket should have been successfully initialized and bound
+ *      to a port.
+ * @post The newly connected client will be added to epoll for event handling.
+ * @usage This method is called within the server's main event loop to accept new client
+ *        connections and integrate them into the epoll event management system.
+ * @note If the new client connection or the addition to epoll fails, corresponding error
+ *       messages are printed, and -1 is returned to indicate failure.
+ */
 int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	
 	struct sockaddr_storage	client_addr;
@@ -332,17 +353,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	return sock_server;
 }
 
-//if we want to ahve a more robust logi for time out
-// if we know that the server is under heavy load, 
-// might opt for a longer timeout, and during idle times, a shorter one.
-/*
-Nginx : 
-Nginx often sets the epoll_wait timeout dynamically based on various factors. 
-If there are immediate tasks to handle, it might set the timeout to 0 to poll; 
-if there are delayed tasks, it will calculate the time until the nearest timer 
-and use that as the timeout. If there's nothing immediate to do, it might block 
-indefinitely.
-*/
+
 int Server::calculate_dynamic_timeout() {
 	// Logic to determine appropriate timeout
 	int timeout_value = 1000;
@@ -350,45 +361,61 @@ int Server::calculate_dynamic_timeout() {
 }
 
 int Server::handle_epoll_events(int epoll_fd) {
-	
-	struct epoll_event	events[MAX_EVENTS];
-	HttpRequestBase		request;
-	int					num_fds;
 
-	int timeout = calculate_dynamic_timeout();
+    struct epoll_event	events[MAX_EVENTS];
+    HttpRequestBase		request;
+    int					num_fds;
 
-	std::cout << "Waiting for an epoll event..." << std::endl;
-	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
-	if (num_fds == -1) {
-		if (errno == EINTR) { return perror("epoll_wait"), -1; }
-		return perror("epoll_wait"), -1;
-	}
-	
-	std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
-	
-	for (int i = 0; i < num_fds; i++) {
+    int timeout = calculate_dynamic_timeout();
+
+    std::cout << "Waiting for an epoll event..." << std::endl;
+    num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+    if (num_fds == -1) {
+        return handle_epoll_error();
+    }
+
+    std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
+
+    for (int i = 0; i < num_fds; i++) {
         inspect_epoll_event(events[i].events);
-		
-		// Check if the event's fd is a listening socket
-		if (std::find(	sock_listens.begin(),
-						sock_listens.end(),
-						events[i].data.fd) != sock_listens.end()) {
-			if (accept_new_client(epoll_fd, events[i].data.fd)== -1) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
-				perror("accept"); }
-			continue;
-		} 
-		// Else it's a client socket
-		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
-		try {
-			handleClientEvent(epoll_fd, events[i]);
-		} catch (const std::exception& e) {
-			std::cerr << "Error handling client event: " << e.what() << std::endl;
-			continue;
-		}
-			
-	}
-	return 0;
+
+        if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
+            process_listen_socket(epoll_fd, events[i]);
+        } else {
+            process_client_socket(epoll_fd, events[i]);
+        }
+    }
+    return 0;
+}
+
+// Helper function to handle epoll error
+int Server::handle_epoll_error() {
+	if (errno == EINTR)
+		perror("Safe exit");
+	else
+		perror("epoll_wait");
+	return -1;
+}
+
+// Helper function to process listening sockets
+void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
+    
+	if (accept_new_client(epoll_fd, event.data.fd) == -1) {
+        if (!(errno == EAGAIN || errno == EWOULDBLOCK)) {
+            perror("accept");
+        }
+    }
+}
+
+// Helper function to process client sockets
+void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
+    
+	std::cout << "Handling client " << event.data.fd << " event" << std::endl;
+    try {
+        handleClientEvent(epoll_fd, event);
+    } catch (const std::exception& e) {
+        std::cerr << "Error handling client event: " << e.what() << std::endl;
+    }
 }
 
 int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
