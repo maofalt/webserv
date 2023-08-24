@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/23 21:42:41 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/24 17:11:39 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,7 +380,12 @@ int Server::handle_epoll_events(int epoll_fd) {
 		} 
 		// Else it's a client socket
 		std::cout << "Handling client " << events[i].data.fd << "event" << std::endl;
-		handleClientEvent(epoll_fd, events[i]);
+		try {
+			handleClientEvent(epoll_fd, events[i]);
+		} catch (const std::exception& e) {
+			std::cerr << "Error handling client event: " << e.what() << std::endl;
+			continue;
+		}
 			
 	}
 	return 0;
