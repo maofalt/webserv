@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 18:05:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/24 18:08:58 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -464,6 +464,9 @@ void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
     try {
         handleClientEvent(epoll_fd, event);
     } catch (const std::exception& e) {
+		//erase the clent from the epoll_fd and the clientHandlers
+		epoll_ctl(epoll_fd, EPOLL_CTL_DEL, event.data.fd, NULL);
+		clientHandlers.erase(event.data.fd);
         std::cerr << "Error handling client event: " << e.what() << std::endl;
     }
 }
@@ -474,7 +477,7 @@ int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 	
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
     	std::cerr << "Unknown client fd: " << client_fd << std::endl;
-    	return 1;
+    	throw std::runtime_error("Unknown client fd");
 	}
 	
 	ClientHandler& client = clientHandlers[client_fd];
