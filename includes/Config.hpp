@@ -13,12 +13,13 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+#include <map>
 #include <vector>
 #include <fstream>
-#include <map>
 #include <iostream>
+#include <sys/stat.h>
 
-# define DISPLAY_CONF 0
+# define DISPLAY_CONF 1
 
 struct location {
 	std::vector< std::string >								_paths;
@@ -36,6 +37,7 @@ class Config {
 		std::string									_tokens;
 		std::string									_whiteSp;
 		std::string									_confFileName;
+		// size_t										_fileSize;
 		std::vector< std::string >					_rawContent;
 		std::vector< std::string >					_splitContent;
 		std::vector< struct server >				_servList;

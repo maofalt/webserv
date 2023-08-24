@@ -577,11 +577,12 @@ void Server::loadDefaultConfig() {
 
 	file.open(defaultConf.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << "Config: error: failed to open default config file." << std::endl;
+		std::cerr << defaultConf + ": error: failed to open default config file." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	_config = Config();
 	if (_config.setupConf(file, defaultConf)) {
+		std::cerr << defaultConf + ": error: could not setup default config, aborting." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	std::cout << "Config = " << defaultConf << std::endl;
@@ -596,27 +597,28 @@ void Server::loadConfig(const std::string& configPath) {
 
 	file.open(configPath.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << "Config: error: failed to open config file, using default config instead." << std::endl;
+		std::cerr << configPath + ": error: failed to open config file, using default config instead." << std::endl;
 		loadDefaultConfig();
 		return ;
 	}
 	_config = Config();
 	if (_config.setupConf(file, configPath)) {
+		std::cerr << configPath + ": error: could not setup this config, using default config instead." << std::endl;
 		loadDefaultConfig();
 		return ;
 	}
 	std::cout << "Config = " << configPath << std::endl;
 
-    return ;
+	return ;
 }
 
 void Server::close_and_cleanup(int epoll_fd, int client_fd) {
-    struct epoll_event ev;
-    if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, &ev) == -1) {
-        perror("epoll_ctl: EPOLL_CTL_DEL");
-        // Handle error
-    }
-    close(client_fd);
+	struct epoll_event ev;
+	if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, &ev) == -1) {
+		perror("epoll_ctl: EPOLL_CTL_DEL");
+		// Handle error
+	}
+	close(client_fd);
 }
 
 std::ostream& operator<<(std::ostream& os, const Server & server);

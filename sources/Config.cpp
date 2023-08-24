@@ -64,7 +64,7 @@ bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			countLines++;
 			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
 			&& *(it - 1) != "{"  && *(it - 1) != "}") {
-				std::cerr << _confFileName + ": error: expected ';' line " << countLines - 1 << std::endl;
+				std::cerr << _confFileName + ": error: expected ';' before '\\n' line " << countLines - 1 << std::endl;
 				err++;
 			}
 		}
@@ -77,13 +77,13 @@ bool	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			err++;
 		}
 		if (bracketOpen < 0) {
-			return std::cerr << _confFileName + ": error: Extra closing bracket line " << std::endl, err;
+			return std::cerr << _confFileName + ": error: extra closing bracket line " << std::endl, err;
 		}
 	}
 	if (bracketOpen > 0) {
-		return std::cerr << _confFileName + ": error: Missing closing bracket" << std::endl, err + 1;
+		return std::cerr << _confFileName + ": error: missing closing bracket" << std::endl, err + 1;
 	}
-	return (err != 0 ? err : 0);
+	return err;
 }
 
 void	Config::splitConf() {
@@ -119,9 +119,12 @@ void	Config::splitConf() {
 }
 
 bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ) {
+	int	err = 0;
+
 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
 		line += (*it == "\n");
-		return std::cerr << _confFileName + ": error: missing path for location block line " << line << std::endl, 1;
+		std::cerr << _confFileName + ": error: missing path for location block line " << line << std::endl;
+		err++;
 	}
 
 	struct location	newLoc;
@@ -130,7 +133,8 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 		newLoc._paths.push_back(*(it++));
 	if (it == _splitContent.end() || *it != "{") {
 		line += (*it == "\n");
-		return std::cerr << _confFileName + ": error: missing '{' for location block line " << line << std::endl, 1;
+		std::cerr << _confFileName + ": error: missing '{' for location block line " << line << std::endl;
+		err++;
 	}
 
 	while (++it != _splitContent.end() && *it != "}") {
@@ -143,13 +147,16 @@ bool	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, s
 		}
 	}
 	newServ._locations.push_back(newLoc);
-	return 0;
+	return err;
 }
 
 bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
+	int	err = 0;
+
 	if (*(++it) != "{") {
 		line += (*it == "\n");
-		return std::cerr << _confFileName + ": error: missing '{' for server block line " << line << std::endl, 1;
+		std::cerr << _confFileName + ": error: missing '{' for server block line " << line << std::endl;
+		err++;
 	}
 	
 	struct server	newServ;
@@ -157,8 +164,9 @@ bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) 
 	while (++it != _splitContent.end() && *it != "}") {
 		if (*it == "\n")
 			line++;
-		else if (*it == "location")
-			parseLocConf(it, line, newServ);
+		else if (*it == "location") {
+			err += parseLocConf(it, line, newServ);
+		}
 		else {
 			std::string	key = *it;
 			while (++it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}")
@@ -166,11 +174,18 @@ bool	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) 
 		}
 	}
 	_servList.push_back(newServ);
-	return 0;
+	return err;
 }
 
 bool	Config::setupConf(std::ifstream & file, std::string fileName) {
+	struct stat	fileStat;
 	_confFileName = fileName;
+
+	if (stat(_confFileName.c_str(), &fileStat) != 0)
+		return std::cerr << _confFileName + ": error: could not check file status" << std::endl, 1;
+	if (fileStat.st_size > 2000 || fileStat.st_size == 0)
+		return std::cerr << _confFileName + ": error: file is too big or empty" << std::endl, 1;
+
 	readConf(file);
 	splitConf();
 	if (basicCheck())
@@ -181,8 +196,10 @@ bool	Config::setupConf(std::ifstream & file, std::string fileName) {
 	it != _splitContent.end(); it++) {
 		if (*it == "\n")
 			line++;
-		else if (*it == "server")
-			parseServConf(it, line);
+		else if (*it == "server") {
+			if (parseServConf(it, line))
+				return 1;
+		}
 		else {
 			std::string	key = *it;
 			while (++it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}") {
@@ -233,9 +250,9 @@ void	printServStruct(std::ostream& os, struct server & serv) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Config & conf) {
-	// for (size_t i=0; i<conf.getSplitContent().size(); i++) {
-	// 	os << "[" << conf.getSplitContent()[i] << "]";
-	// }
+	for (size_t i=0; i<conf.getSplitContent().size(); i++) {
+		os << "[" << conf.getSplitContent()[i] << "]";
+	}
 
 	os << std::endl;
 	os << "==========================================================================" << std::endl;
