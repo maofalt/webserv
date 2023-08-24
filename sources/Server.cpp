@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 17:58:14 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/24 18:05:31 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,6 +360,31 @@ int Server::calculate_dynamic_timeout() {
 	return timeout_value;
 }
 
+
+/**
+ * @brief Handles epoll events for efficient socket event management.
+ *
+ * @param epoll_fd The epoll file descriptor for managing socket events.
+ *
+ * @return 0 on success, -1 on error.
+ *
+ * @exception ExceptionType A 'ExceptionType' exception may be thrown in case of errors
+ *                          during epoll event handling or processing of sockets.
+ * @details This method is responsible for efficiently handling epoll events. It waits
+ *          for epoll events using 'epoll_wait' and processes the events that occur in 
+ * 			a no-blocking manner.
+ *          For each event, it inspects and processes either the listening socket or
+ *          a client socket, as appropriate. The method returns 0 on successful event
+ *          handling and -1 on error.
+ * @pre The epoll instance should have been set up successfully, and the server's sockets
+ *      should have been initialized and added to epoll.
+ * @post Epoll events will be efficiently handled, and appropriate actions will be taken
+ *       based on the type of event (EPOLLIN, EPOLLOUT, EPOLLER).
+ * @note The 'sock_listens' collection is used to differentiate between listening sockets
+ *       and client sockets. Error handling during epoll event processing or socket
+ *       processing is handled by returning -1.
+ */
+
 int Server::handle_epoll_events(int epoll_fd) {
 
     struct epoll_event	events[MAX_EVENTS];
@@ -388,8 +413,15 @@ int Server::handle_epoll_events(int epoll_fd) {
     return 0;
 }
 
-// Helper function to handle epoll error
-int Server::handle_epoll_error() {
+/**
+ * @brief Handles errors during epoll event processingand is our way to exit the server safely.
+ *
+ * @return -1 indicating an error condition.
+ *
+ * @note This method is a simple helper function for handling epoll-related errors. It
+ *       does not involve any complex logic and is used to handle error conditions
+ *       consistently.
+ */int Server::handle_epoll_error() {
 	if (errno == EINTR)
 		perror("Safe exit");
 	else
@@ -397,7 +429,16 @@ int Server::handle_epoll_error() {
 	return -1;
 }
 
-// Helper function to process listening sockets
+/**
+ * @brief Processes events on a listening socket for new client connections.
+ *
+ * @param epoll_fd The epoll file descriptor for managing socket events.
+ * @param event The epoll event structure for the listening socket.
+ *
+ * @usage This method is generally called from the 'handle_epoll_events' routine when an
+ *        epoll event occurs on a listening socket. It enables the server to efficiently
+ *        handle new incoming client connections.
+ */
 void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
     
 	if (accept_new_client(epoll_fd, event.data.fd) == -1) {
@@ -407,7 +448,16 @@ void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
     }
 }
 
-// Helper function to process client sockets
+/**
+ * @brief Processes events on a client socket.
+ *
+ * @param epoll_fd The epoll file descriptor for managing socket events.
+ * @param event The epoll event structure for the client socket.
+ *
+ * @details This method handles events occurring on a client socket. It logs the client's
+ *          socket event and attempts to handle the client's event using the 'handleClientEvent'
+ *          method. If an exception is thrown during event handling, the error message is logged.
+ */
 void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
     
 	std::cout << "Handling client " << event.data.fd << " event" << std::endl;
