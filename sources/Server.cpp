@@ -470,6 +470,17 @@ void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
 	}
 }
 
+/**
+ * @brief Handles events on a client socket.
+ *
+ * @param epoll_fd The epoll file descriptor for managing socket events.
+ * @param event The epoll event structure for the client socket.
+ *
+ * @details This method processes events occurring on a client socket based on the epoll
+ *          event flags provided in 'event'. It validates the client, inspects the epoll
+ *          event, and then directs the appropriate handling procedure based on the event.
+ * @return Returns 0 on successful event handling.
+ */
 int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 	int client_fd = event.data.fd;
 
@@ -492,6 +503,16 @@ int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 	return 0;
 }
 
+/**
+ * @brief Validates a client socket descriptor.
+ *
+ * @param client_fd The file descriptor of the client socket to be validated.
+ *
+ * @details This method verifies the validity of a client socket descriptor by checking
+ *          whether it exists in the 'clientHandlers' collection. If the client socket
+ *          descriptor is not found, an error message is logged, and a 'std::runtime_error'
+ *          exception is thrown, indicating the presence of an unknown client socket descriptor.
+ */
 void Server::validateClient(int client_fd) {
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
 		std::cerr << "Unknown client fd: " << client_fd << std::endl;
@@ -499,6 +520,19 @@ void Server::validateClient(int client_fd) {
 	}
 }
 
+
+/**
+ * @brief Handles read events on a client socket.
+ *
+ * @param epoll_fd The file descriptor of the epoll instance.
+ * @param client A reference to the ClientHandler associated with the client socket.
+ *
+ * @details This method is responsible for handling read events on a client socket. It reads data
+ *          from the client using the associated 'ClientHandler' and checks if the client's request
+ *          is complete. If the request is complete, the method delegates the handling of the complete
+ *          request to the 'handleCompleteRequest' method. If there's an error while reading data from
+ *          the client, a 'std::runtime_error' exception is thrown.
+ */
 void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
 	try {
 		std::cout << "Reading data" << std::endl;
@@ -513,6 +547,17 @@ void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
 	}
 }
 
+/**
+ * @brief Handles a completed client request.
+ *
+ * @param epoll_fd The file descriptor of the epoll instance.
+ * @param client A reference to the ClientHandler associated with the client socket.
+ *
+ * @details This method is responsible for handling a completed client request. It is called when
+ *          the client's request is fully received and parsed. The method changes the epoll mode of
+ *          the client socket to EPOLLOUT to prepare for sending a response back to the client. If
+ *          changing the epoll mode fails, a 'std::runtime_error' exception is thrown.
+ */
 void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
 	std::cout << "Request complete" << std::endl;
 	if (changeClientEpollMode(epoll_fd, client.getClientFd() , EPOLLOUT) != 0) {
@@ -521,6 +566,21 @@ void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
 	std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
 }
 
+
+/**
+ * @brief Handles writing a response to the client.
+ *
+ * @param epoll_fd The file descriptor of the epoll instance.
+ * @param client A reference to the ClientHandler associated with the client socket.
+ * @param client_fd The file descriptor of the client socket.
+ *
+ * @details This method is responsible for handling the writing of a response to the client.
+ *          It is called when the server is ready to send a response back to the client.
+ *          The method invokes the 'writeResponse' method of the 'ClientHandler' to write
+ *          the response data to the client socket. After writing the response, it closes
+ *          the client socket and performs cleanup operations associated with the client.
+ *          If an error occurs during writing or cleanup, a 'std::runtime_error' exception is thrown.
+ */
 void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd) {
 	try {
 		std::cout << "Writing response" << std::endl;
@@ -533,12 +593,37 @@ void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd
 	}
 }
 
+/**
+ * @brief Handles an EPOLL error event on a client socket.
+ *
+ * @param client_fd The file descriptor of the client socket.
+ *
+ * @details This method is responsible for handling EPOLL error events that occur on a client socket.
+ *          When an EPOLL error, EPOLL hang-up, or similar event is detected on a client socket,
+ *          this method is invoked to handle the error. It logs an error message and throws a
+ *          'std::runtime_error' exception to indicate that an EPOLL error has occurred on the client socket.
+ */
 void Server::handleEpollError(int client_fd) {
 	std::cerr << "Error on client fd: " << client_fd << std::endl;
 	throw std::runtime_error("EPOLL error occurred on client fd");
 }
 
-
+/**
+ * @brief Changes the epoll mode of a client socket.
+ *
+ * @param epoll_fd The file descriptor of the epoll instance.
+ * @param client_fd The file descriptor of the client socket.
+ * @param mode The new epoll mode to set for the client socket.
+ *             This should be a combination of epoll event flags.
+ *
+ * @return Returns 0 on success, or -1 on failure.
+ *
+ * @details This method is responsible for changing the epoll mode of a client socket.
+ *          The new epoll mode is specified using the 'mode' parameter, which should be
+ *          a combination of epoll event flags such as EPOLLIN, EPOLLOUT, etc. The method
+ *          uses the 'epoll_ctl' function to modify the epoll event associated with the
+ *          client socket to the desired mode.
+ */
 int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 
 	struct epoll_event ev;
@@ -560,6 +645,14 @@ void Server::inspect_epoll_event(uint32_t events) {
 
 }
 
+/**
+ * @brief Signal handler for handling specific signals.
+ *
+ * @param sig The signal number that triggered the handler.
+ *
+ * @note Proper signal handling is important for gracefully shutting down a server when
+ *       specific signals are received.
+ */
 void	Server::signal_handler(int sig)
 {
 	if (sig == SIGINT)
@@ -577,6 +670,14 @@ std::vector<std::string> Server::getPorts() {
 	return ports;
 }
 
+/**
+ * @brief Stops the server's operation gracefully.
+ *
+ * @details This method is responsible for stopping the server's operation in a graceful
+ *          manner. It sets the 'run' flag to false, indicating that the server should
+ *          stop processing new requests. Additionally, it closes all the listening sockets
+ *          and the epoll file descriptor, if they were previously opened.
+ */
 void Server::stop() {
 	run = false;
 
@@ -591,6 +692,13 @@ void Server::stop() {
 	}
 }
 
+/**
+ * @brief Loads the default configuration settings for the server.
+ *
+ * @details This method is responsible for loading the default configuration settings
+ *          for the server from a configuration file. It reads the default configuration
+ *          file and sets up the `_config` object with the loaded settings. 
+ */
 void Server::loadDefaultConfig() {
 	std::ifstream	file;
 
@@ -608,6 +716,21 @@ void Server::loadDefaultConfig() {
 
 }
 
+/**
+ * @brief Loads the server configuration settings from the given path.
+ *
+ * @details This method is responsible for loading the server configuration settings
+ *          from the specified configuration file path. It reads the configuration file
+ *          and sets up the `_config` object with the loaded settings. If the specified
+ *          configuration file cannot be opened or an error occurs during setup, the
+ *          method falls back to loading the default configuration settings.
+ * @param configPath The path to the configuration file to load.
+ * @usage Call this method to load server configuration settings from the specified path
+ * 		  at start.
+ * @note This method offers the flexibility to load configuration settings from a
+ *       user-specified path, and if that fails, it will revert to loading the default
+ *       configuration settings.
+ */
 void Server::loadConfig(const std::string& configPath) {
 	// Load server configuration from the given path.
 	// create a specific object with a new class
@@ -631,6 +754,16 @@ void Server::loadConfig(const std::string& configPath) {
 	return ;
 }
 
+/**
+ * @brief Closes the client socket and performs cleanup for the given client.
+ *
+ * @details This method is responsible for performing necessary cleanup operations
+ *          for a client socket that is being closed. It removes the client socket
+ *          from the epoll set and then closes the socket. If an error occurs during
+ *          the epoll control operation, an error message is printed.
+ * @param epoll_fd The file descriptor of the epoll instance.
+ * @param client_fd The file descriptor of the client socket to close.
+ */
 void Server::close_and_cleanup(int epoll_fd, int client_fd) {
 	struct epoll_event ev;
 	if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, &ev) == -1) {
