@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 18:05:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/24 18:38:07 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -464,59 +464,81 @@ void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
     try {
         handleClientEvent(epoll_fd, event);
     } catch (const std::exception& e) {
+		//erase the clent from the epoll_fd and the clientHandlers
+		close_and_cleanup(epoll_fd, event.data.fd);
         std::cerr << "Error handling client event: " << e.what() << std::endl;
     }
 }
 
-int		Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
+int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
+    int client_fd = event.data.fd;
 
-	int client_fd = event.data.fd;
-	
-	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
-    	std::cerr << "Unknown client fd: " << client_fd << std::endl;
-    	return 1;
-	}
-	
-	ClientHandler& client = clientHandlers[client_fd];
-	std::cout << "Client " << client_fd << "exists!!" << std::endl;
+    validateClient(client_fd);
 
-	 inspect_epoll_event(event.events);
+    ClientHandler& client = clientHandlers[client_fd];
+    std::cout << "Client " << client_fd << "exists!!" << std::endl;
 
-	// Depending on the epoll event, decide the action on the client
-	if (event.events & EPOLLIN) {
-		try {
-    		std::cout << "Reading data" << std::endl;
-			client.readData();
-			std::cout << "Data read" << std::endl;
-		} catch (const std::exception& e) {
-			close_and_cleanup(epoll_fd, client_fd);
-			clientHandlers.erase(client_fd); 
-			throw;
-		}
-    	if (client.isRequestComplete()) {
-			std::cout << "Request complete" << std::endl;
-    		if (changeClientEpollMode(epoll_fd, client_fd, EPOLLOUT) != 0) {
-				client.closeConnection(epoll_fd);
-				clientHandlers.erase(client_fd);  // remove ClientHandler for this client
-			}
-			std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
-    	}
+    inspect_epoll_event(event.events);
+
+    // Depending on the epoll event, decide the action on the client
+    if (event.events & EPOLLIN) {
+        handleReadEvent(epoll_fd, client);
+    } else if (event.events & EPOLLOUT) {
+        handleWriteEvent(epoll_fd, client, client_fd);
+    } else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+        handleEpollError(client_fd);
     }
-    else if (event.events & EPOLLOUT) {
-		std::cout << "Writing response" << std::endl;
-        client.writeResponse();
-		std::cout << "Response written" << std::endl;
-		close_and_cleanup(epoll_fd, client_fd);
-		clientHandlers.erase(client_fd); 
-    }
-    else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
-        std::cerr << "Error on client fd: " << client_fd << std::endl;
-        client.closeConnection(epoll_fd);
-        clientHandlers.erase(client_fd);  // remove ClientHandler for this client
-    }
-	return 0;
+
+    return 0;
 }
 
+void Server::validateClient(int client_fd) {
+    if (clientHandlers.find(client_fd) == clientHandlers.end()) {
+        std::cerr << "Unknown client fd: " << client_fd << std::endl;
+        throw std::runtime_error("Unknown client fd encountered");
+    }
+}
+
+void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
+    try {
+        std::cout << "Reading data" << std::endl;
+        client.readData();
+        std::cout << "Data read" << std::endl;
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Error reading data from client");
+    }
+
+    if (client.isRequestComplete()) {
+        handleCompleteRequest(epoll_fd, client);
+    }
+}
+
+void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
+    std::cout << "Request complete" << std::endl;
+    if (changeClientEpollMode(epoll_fd, client.getClientFd() , EPOLLOUT) != 0) {
+        throw std::runtime_error("Failed to change client epoll mode to EPOLLOUT");
+    }
+    std::cout << "Changed epoll mode to EPOLLOUT" << std::endl;
+}
+
+void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd) {
+    try {
+        std::cout << "Writing response" << std::endl;
+        client.writeResponse();
+        std::cout << "Response written" << std::endl;
+        close_and_cleanup(epoll_fd, client_fd);
+        clientHandlers.erase(client_fd);
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Error writing response to client");
+    }
+}
+
+void Server::handleEpollError(int client_fd) {
+    std::cerr << "Error on client fd: " << client_fd << std::endl;
+    throw std::runtime_error("EPOLL error occurred on client fd");
+}
+
+		
 int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 	
 	struct epoll_event ev;

@@ -95,6 +95,16 @@ private:
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
+    //ClientHandler methods
+    void                        validateClient(int client_fd);
+    void                        handleReadEvent(int epoll_fd, ClientHandler& client);
+    void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
+    void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
+    void                        handleEpollError(int client_fd);
+
+
+
+
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);
 };
