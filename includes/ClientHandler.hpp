@@ -37,6 +37,7 @@ public:
 
     // Getters
       HttpRequestBase getRequest() const;
+      int getClientFd() const;
     // Setters
 
 

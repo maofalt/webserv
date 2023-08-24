@@ -31,6 +31,10 @@ void    ClientHandler::readData() {
 	_request.recv(_client_fd);
 }
 
+int     ClientHandler::getClientFd() const {
+    return _client_fd;
+}
+
 // Write the response back to the client.
 void    ClientHandler::writeResponse() {
     HttpRequestBase *NewReqObj = _request.createRequestObj(_request._method);
