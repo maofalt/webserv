@@ -1,6 +1,6 @@
 NAME = webserv
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
 
 #===============================================================================#
@@ -67,13 +67,13 @@ $(OBJS_PATH):
 
 
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME)
-	@$(CC) $(CFLAGS) $(HDR_INCLUDE) -o $@ -c $<
+	@$(CC) $(CXXFLAGS) $(HDR_INCLUDE) -o $@ -c $<
 	@echo "\t[ $(GREEN)✓$(RESET) ] $@ object"
 
 
 $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(SRCS_ALL)"
-	@$(CC) $(CFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
+	@$(CC) $(CXXFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
 	@echo "\t[ $(GREEN)✓$(RESET) ] $(NAME) executable"
 	@echo "\t\t       $(ROSE)  "
 	@echo "\t\t       $(ROSE).████:   ████████.        "
