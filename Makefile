@@ -53,12 +53,16 @@ ROSE = \033[35m
 DEBUG_LEVEL ?= 0
 
 ifeq ($(DEBUG_LEVEL),1)
-CXXFLAGS += -DDEBUG=1
+CXXFLAGS += -DDEBUG=1 -g3
 endif
 
 ifeq ($(DEBUG_LEVEL),2)
-CXXFLAGS += -DDEBUG=2
+CXXFLAGS += -DDEBUG=2 -g3
 endif
+
+valgrind: DEBUG_LEVEL = 2
+valgrind: all 
+	valgrind --leak-check=full --trace-children=yes --track-origins=yes ./webserv
 
 #===============================================================================#
 #=============================[ RULES ]========================================#
