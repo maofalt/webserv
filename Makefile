@@ -53,12 +53,13 @@ ROSE = \033[35m
 DEBUG_LEVEL ?= 0
 
 ifeq ($(DEBUG_LEVEL),1)
-CXXFLAGS += -DDEBUG=1 -g3
+CXXFLAGS += -DDEBUG_LEVEL=1 -g3
 endif
 
 ifeq ($(DEBUG_LEVEL),2)
-CXXFLAGS += -DDEBUG=2 -g3
+CXXFLAGS += -DDEBUG_LEVEL=2 -g3
 endif
+
 
 valgrind: DEBUG_LEVEL = 2
 valgrind: all 

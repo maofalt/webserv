@@ -74,21 +74,33 @@ public:
  * This ensures smooth compilation and avoids potential issues with undefined symbols or incomplete types.
  *
  * "OVERLOADING":
- * While true macro overloading doesn't exist in C++, the use of different macro names (DEBUG_LOG and DEBUG_LOG_DETAILED) mimics function overloading behavior,
- * allowing developers to choose the appropriate logging level based on their needs.
+ * While true macro overloading doesn't exist in C++, the use of different macro names (DEBUG_LOG and DEBUG_LOG_DETAILED) mimics function overloading behavior.
  */
 
-#ifdef DEBUG
+#ifdef DEBUG_LEVEL
+
 #define DEBUG_LOG(msg) Logger::getInstance()->log(Logger::DEBUG, msg, __FILE__, __LINE__)
-#if DEBUG >= 2
+
+#if DEBUG_LEVEL >= 2
 #define DEBUG_LOG_DETAILED(msg) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, __FILE__, __LINE__)
 #else
 #define DEBUG_LOG_DETAILED(msg)
 #endif
+
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, __FILE__, __LINE__)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, __FILE__, __LINE__)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, __FILE__, __LINE__)
+
 #else
-#define DEBUG_LOG(msg) 
+
+#define DEBUG_LOG(msg)
 #define DEBUG_LOG_DETAILED(msg)
+#define INFO_LOG(msg)
+#define WARN_LOG(msg)
+#define ERROR_LOG(msg)
+
 #endif
+
 
 /*
 ********** USAGE **********
