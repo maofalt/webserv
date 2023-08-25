@@ -24,6 +24,7 @@ private:
 public:
     enum LogLevel {
         DEBUG,
+        DEBUG_DETAILED,
         INFO,
         WARN,
         ERROR
@@ -75,5 +76,11 @@ public:
 #define DEBUG_LOG(msg) 
 #define DEBUG_LOG_DETAILED(msg)
 #endif
+
+/*
+********** USAGE **********
+** DEBUG_LOG("This is a basic debug message.");
+** DEBUG_LOG_DETAILED("This is a detailed debug message.");
+*/
 
 #endif
