@@ -19,6 +19,7 @@
 # include <sys/epoll.h>
 # include "HttpRequest.hpp"
 # include "HttpResponse.hpp"
+# include "Logger.hpp"
 
 /*
    ClientHandler Class:

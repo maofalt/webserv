@@ -20,6 +20,8 @@
 #include "Config.hpp"
 #include "ClientHandler.hpp"
 #include "HttpRequest.hpp"
+# include "Logger.hpp"
+
 
 #define PORT "8694"
 #define PORTAL "8000"

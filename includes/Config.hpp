@@ -18,6 +18,8 @@
 #include <fstream>
 #include <iostream>
 #include <sys/stat.h>
+# include "Logger.hpp"
+
 
 # define DISPLAY_CONF 1
 

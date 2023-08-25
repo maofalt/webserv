@@ -14,6 +14,7 @@
 # define HTTPRESPOND_HPP
 
 # include "HttpRequest.hpp"
+# include "Logger.hpp"
 
 class HttpResponse
 {

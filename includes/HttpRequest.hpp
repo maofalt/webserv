@@ -25,6 +25,8 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/socket.h>
+# include "Logger.hpp"
+
 
 
 # define CRLF "\r\n"

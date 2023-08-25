@@ -12,11 +12,15 @@
 
 #include "Config.hpp"
 #include "Server.hpp"
+# include "Logger.hpp"
+
 
 int main(int ac, char **av) {
 
     Server server;
 
+    Logger* logger = Logger::getInstance();
+    
     if (ac > 1)
         server.loadConfig(av[1]);  // If you have a configuration file.
     else
