@@ -32,15 +32,33 @@ Logger::Logger(const std::string& fname, long maxLogSize)
 
 Logger* Logger::getInstance(const std::string& fname, long maxLogSize) {
     if (!instance) {
-        instance = new Logger(fname, maxLogSize);
+        try {
+            instance = new Logger(fname, maxLogSize);
+        } catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return NULL;
+        }
     }
     return instance;
 }
 
 void Logger::captureStdout() {
+
     oldCoutStreamBuf = std::cout.rdbuf();
-    teeBuffer = new TeeBuf(std::cout.rdbuf(), logFile.rdbuf());
-    teeStream = new std::ostream(teeBuffer);
+    try {
+        teeBuffer = new TeeBuf(std::cout.rdbuf(), logFile.rdbuf());
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        teeStream = new std::ostream(teeBuffer);
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+    
     std::cout.rdbuf(teeStream->rdbuf());
 }
 
@@ -49,20 +67,51 @@ void Logger::captureStdout() {
 void Logger::releaseStdout() {
     std::cout.rdbuf(oldCoutStreamBuf);
 
-    delete teeStream;
-    delete teeBuffer;
+    if (teeStream)
+        delete teeStream;
+    teeStream = NULL;
+    if (teeBuffer)
+        delete teeBuffer;
+    teeBuffer = NULL;
 }
 
 // Redirecting standard error (cerr) to our log file
 void Logger::captureStderr() {
-    oldCerrStreamBuf = std::cerr.rdbuf(); // Save old buf
-    std::cerr.rdbuf(logFile.rdbuf()); // Redirect cerr to our log file
+    oldCerrStreamBuf = std::cerr.rdbuf();
+
+    try {
+        teeBufferErr = new TeeBuf(std::cerr.rdbuf(), logFile.rdbuf());
+    } catch (const std::exception& e) {
+        std::cerr << "Error creating cerr TeeBuf: " << e.what() << std::endl;
+        return;
+    }
+
+    try {
+        teeStreamErr = new std::ostream(teeBufferErr);
+    } catch (const std::exception& e) {
+        std::cerr << "Error creating cerr TeeStream: " << e.what() << std::endl;
+        return;
+    }
+
+    std::cerr.rdbuf(teeStreamErr->rdbuf());
 }
+
 
 // Restoring standard error to its original destination
 void Logger::releaseStderr() {
     std::cerr.rdbuf(oldCerrStreamBuf);
+
+    if (teeStreamErr) {
+        delete teeStreamErr;
+        teeStreamErr = NULL;
+    }
+
+    if (teeBufferErr) {
+        delete teeBufferErr;
+        teeBufferErr = NULL;
+    }
 }
+
 
 void Logger::cleanup() {
     if (instance) {
@@ -82,10 +131,15 @@ Logger::~Logger() {
     if (teeBuffer) 
         delete teeBuffer;
 
-    std::cout.rdbuf(oldCoutStreamBuf);
-    // Clean up the instance to prevent memory leak
-    if (instance) {
-        delete instance;
-        instance = NULL;
+    if (teeStreamErr) {
+        delete teeStreamErr;
     }
+
+    if (teeBufferErr) {
+        delete teeBufferErr;
+    }
+
+    std::cout.rdbuf(oldCoutStreamBuf);
+    std::cerr.rdbuf(oldCerrStreamBuf);
+    // Clean up the instance to prevent memory leak
 }

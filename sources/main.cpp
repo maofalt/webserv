@@ -39,8 +39,10 @@ int main(int ac, char **av) {
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         std::cerr << "error errror." << std::endl;
+        Logger::cleanup();
         return 1;
     }
 
+    Logger::cleanup();
     return 0;
 }

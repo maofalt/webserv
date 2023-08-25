@@ -13,7 +13,9 @@ class Logger {
 private:
     static Logger*  instance;
     TeeBuf*         teeBuffer;
+    TeeBuf*         teeBufferErr;
     std::ostream*   teeStream;
+    std::ostream*   teeStreamErr;
     std::ofstream   logFile;
     std::streambuf* oldCoutStreamBuf;
     std::streambuf* oldCerrStreamBuf;
