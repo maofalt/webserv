@@ -34,12 +34,14 @@ public:
         ERROR
     };
 
-    static Logger* getInstance(const std::string& filename = "logfile.txt", long maxLogSize = 10 * 1024 * 1024);
-    void log(LogLevel level, const std::string& message, const std::string& file, int line);
-    void captureStdout();
-    void releaseStdout();
-    void captureStderr();
-    void releaseStderr();
+    static Logger*  getInstance(const std::string& filename = "logfile.txt", long maxLogSize = 10 * 1024 * 1024);
+    static void     cleanup();
+
+    void            log(LogLevel level, const std::string& message, const std::string& file, int line);
+    void            captureStdout();
+    void            releaseStdout();
+    void            captureStderr();
+    void            releaseStderr();
     ~Logger();
 };
 

@@ -61,11 +61,19 @@ void Logger::releaseStderr() {
     std::cerr.rdbuf(oldCerrStreamBuf);
 }
 
+void Logger::cleanup() {
+    if (instance) {
+        delete instance;
+        instance = NULL; // or nullptr in modern C++
+    }
+}
+
 Logger::~Logger() {
     if (logFile.is_open()) {
         logFile.close();
     }
 
+    std::cout.rdbuf(oldCoutStreamBuf);
     // Clean up the instance to prevent memory leak
     if (instance) {
         delete instance;
