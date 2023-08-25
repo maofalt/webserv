@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:17:32 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:26:39 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void Server::start() {
 	}
 
 	cleanup();
-	Logger::cleanup();
+//	Logger::cleanup();
 }
 
 /**

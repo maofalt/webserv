@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   Logger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:17:32 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:25:06 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,9 @@ void Logger::captureStdout() {
 
 // Restoring standard output to its original destination
 void Logger::releaseStdout() {
-    std::cout.rdbuf(oldCoutStreamBuf);
+    if (oldCoutStreamBuf)
+        std::cout.rdbuf(oldCoutStreamBuf);
+    oldCoutStreamBuf = NULL;
 
     if (teeStream)
         delete teeStream;
@@ -132,7 +134,9 @@ void Logger::captureStderr() {
 
 // Restoring standard error to its original destination
 void Logger::releaseStderr() {
-    std::cerr.rdbuf(oldCerrStreamBuf);
+    if (oldCerrStreamBuf)
+        std::cerr.rdbuf(oldCerrStreamBuf);
+    oldCerrStreamBuf = NULL;
 
     if (teeStreamErr) {
         delete teeStreamErr;
@@ -247,7 +251,11 @@ Logger::~Logger() {
         delete teeBufferErr;
     }
 
-    std::cout.rdbuf(oldCoutStreamBuf);
-    std::cerr.rdbuf(oldCerrStreamBuf);
+    if (oldCoutStreamBuf)
+        std::cout.rdbuf(oldCoutStreamBuf);
+    oldCoutStreamBuf = NULL;
+    if (oldCerrStreamBuf)
+        std::cerr.rdbuf(oldCerrStreamBuf);
+    oldCerrStreamBuf = NULL;
     // Clean up the instance to prevent memory leak
 }
