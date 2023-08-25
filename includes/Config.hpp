@@ -34,6 +34,7 @@ struct server {
 
 class Config {
 	private:
+		int											_nbrLines;
 		std::string									_tokens;
 		std::string									_whiteSp;
 		std::string									_confFileName;
@@ -48,12 +49,14 @@ class Config {
 		Config();
 		~Config();
 
-		void						readConf(std::ifstream & file);
-		void						splitConf();
-		int						basicCheck();
-		int						parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
-		int						parseServConf(std::vector<std::string>::iterator & it, int & line);
-		int						setupConf(std::ifstream & file, std::string fileName);
+		void	printErr(std::string errMsg, int line);
+		void	readConf(std::ifstream & file);
+		void	splitConf();
+		int		basicCheck();
+		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
+		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
+		int		fillStruct(int line, int err, std::vector<std::string>::iterator & it);
+		int		setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< struct server >	getServList() const;
