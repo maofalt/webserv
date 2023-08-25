@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 18:07:09 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/25 18:26:14 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,13 +203,13 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     formattedMsg << message;
 
 
-    #if DEBUG == 2
+    #if DEBUG_LEVEL == 2
         if (level == DEBUG_DETAILED) {
             std::cout << formattedMsg.str() << std::endl;
         }
     #endif
     
-    #if DEBUG >= 1
+    #if DEBUG_LEVEL >= 1
         if (level == DEBUG) {
             std::cout << formattedMsg.str() << std::endl;
         }
