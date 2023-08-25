@@ -11,13 +11,15 @@
 
 class Logger {
 private:
-    static Logger* instance;
-    std::ofstream logFile;
+    static Logger*  instance;
+    TeeBuf*         teeBuffer;
+    std::ostream*   teeStream;
+    std::ofstream   logFile;
     std::streambuf* oldCoutStreamBuf;
     std::streambuf* oldCerrStreamBuf;
-    std::string filename;
-    long maxSize;
-    int logRotationCount;
+    std::string     filename;
+    long            maxSize;
+    int             logRotationCount;
 
     Logger(const std::string& filename, long maxLogSize = 10 * 1024 * 1024); // default max size: 10MB
     Logger(const Logger&);            // private copy constructor

@@ -48,6 +48,9 @@ void Logger::captureStdout() {
 // Restoring standard output to its original destination
 void Logger::releaseStdout() {
     std::cout.rdbuf(oldCoutStreamBuf);
+
+    delete teeStream;
+    delete teeBuffer;
 }
 
 // Redirecting standard error (cerr) to our log file
@@ -72,6 +75,12 @@ Logger::~Logger() {
     if (logFile.is_open()) {
         logFile.close();
     }
+
+    if (teeStream)
+        delete teeStream;
+
+    if (teeBuffer) 
+        delete teeBuffer;
 
     std::cout.rdbuf(oldCoutStreamBuf);
     // Clean up the instance to prevent memory leak
