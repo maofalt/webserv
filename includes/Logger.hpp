@@ -3,10 +3,12 @@
 
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <string>
 #include <ctime>
 #include <cassert>
+#include <sys/stat.h>
 #include "TeeBuf.hpp"
 
 class Logger {
@@ -39,6 +41,7 @@ public:
     };
 
     static Logger*  getInstance(const std::string& filename = "logfile.txt", long maxLogSize = 10 * 1024 * 1024);
+    static Logger* getInstance(long maxLogSize);
     static void     cleanup();
 
     void            log(LogLevel level, const std::string& message, const std::string& file, int line);

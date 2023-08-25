@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <streambuf>
+#include <cstdio>
 
 /**
  * @class TeeBuf

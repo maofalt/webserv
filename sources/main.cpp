@@ -18,9 +18,12 @@
 int main(int ac, char **av) {
 
     Server server;
+    Logger* logger;
 
     try {
-        Logger* logger = Logger::getInstance();
+        logger = Logger::getInstance(10 * 1024 * 1024);
+        logger->captureStdout();
+        logger->captureStderr();
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return 1;
@@ -43,6 +46,8 @@ int main(int ac, char **av) {
         return 1;
     }
 
+    logger->releaseStdout();
+    logger->releaseStderr();
     Logger::cleanup();
     return 0;
 }
