@@ -61,10 +61,6 @@ CXXFLAGS += -DDEBUG_LEVEL=2 -g3
 endif
 
 
-valgrind: DEBUG_LEVEL = 2
-valgrind: all 
-	valgrind --leak-check=full --trace-children=yes --track-origins=yes ./webserv
-
 #===============================================================================#
 #=============================[ RULES ]========================================#
 #===============================================================================#
@@ -73,6 +69,9 @@ valgrind: all
 RM = rm -rf
 all: project $(NAME) $(HDR_NAME)
 
+valgrind: DEBUG_LEVEL = 2
+valgrind: all 
+	valgrind --leak-check=full --trace-children=yes --track-origins=yes ./webserv
 
 project:
 	@echo "$(BLUE)====================================$(RESET)"
