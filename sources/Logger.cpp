@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 17:38:40 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/25 18:07:09 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,33 +181,47 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     // 3. Format and write the message to the log file or std::cout based on log level
     std::ostringstream formattedMsg;
 
-    formattedMsg << "[" << timestamp << "] " << "[FILE: " << file << "] " << "[LINE: " << line << "] ";
-
+    formattedMsg << "[" << timestamp << "] ";
+    
     switch (level) {
         case DEBUG:
-            formattedMsg << "[DEBUG] ";
+            formattedMsg << "\033[1m\033[97m[DEBUG]\033[0m "; // Bold white
             break;
         case DEBUG_DETAILED:
-            formattedMsg << "[DEBUG_DETAILED] ";
+            formattedMsg << "\033[1m\033[97m[DEBUG_DETAILED] [FUNC: " << __FUNCTION__ << "] [FILE: " << file << "] [LINE: " << line << "]\033[0m "; // Bold white with file, function, and line
             break;
         case INFO:
-            formattedMsg << "[INFO] ";
+            formattedMsg << "\033[94m[INFO]\033[0m "; // Blue
             break;
         case WARN:
-            formattedMsg << "[WARN] ";
+            formattedMsg << "\033[93m[WARN]\033[0m "; // Yellow
             break;
         case ERROR:
-            formattedMsg << "[ERROR] ";
+            formattedMsg << "\033[1m\033[91m[ERROR] [FUNC: " << __FUNCTION__ << "] [FILE: " << file << "] [LINE: " << line << "]\033[0m "; // Bold red with file, function, and line
             break;
     }
     formattedMsg << message;
 
-    // Depending on the log level, print to different destinations
-    if (level == DEBUG || level == DEBUG_DETAILED) {
+
+    #if DEBUG == 2
+        if (level == DEBUG_DETAILED) {
+            std::cout << formattedMsg.str() << std::endl;
+        }
+    #endif
+    
+    #if DEBUG >= 1
+        if (level == DEBUG) {
+            std::cout << formattedMsg.str() << std::endl;
+        }
+    #endif
+    
+    if (level == INFO || level == WARN) {
         std::cout << formattedMsg.str() << std::endl;
+    } 
+    
+    if (level == ERROR) {
+        std::cerr << formattedMsg.str() << std::endl;
     }
-    //std::cout << formattedMsg.str() << std::endl;
-    logFile << formattedMsg.str() << std::endl;
 }
 
 

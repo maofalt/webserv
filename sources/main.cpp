@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 17:54:58 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/25 18:10:47 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ int main(int ac, char **av) {
     
     //Logger::getInstance()->log(Logger::INFO, "Starting server...", __FILE__, __LINE__);
     INFO_LOG("Starting server...");
+    DEBUG_LOG("Testing DEBUG log");
+    DEBUG_LOG_DETAILED("Testing DEBUG_DETAILED log");
+    WARN_LOG("Testing WARN log");
+    ERROR_LOG("Testing ERROR log");
     if (ac > 1)
         server.loadConfig(av[1]);  // If you have a configuration file.
     else
