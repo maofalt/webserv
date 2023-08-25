@@ -19,7 +19,12 @@ int main(int ac, char **av) {
 
     Server server;
 
-    Logger* logger = Logger::getInstance();
+    try {
+        Logger* logger = Logger::getInstance();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
     
     if (ac > 1)
         server.loadConfig(av[1]);  // If you have a configuration file.

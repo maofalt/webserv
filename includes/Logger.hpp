@@ -6,6 +6,8 @@
 #include <fstream>
 #include <string>
 #include <ctime>
+#include <cassert>
+#include "TeeBuf.hpp"
 
 class Logger {
 private:
@@ -18,6 +20,8 @@ private:
     int logRotationCount;
 
     Logger(const std::string& filename, long maxLogSize = 10 * 1024 * 1024); // default max size: 10MB
+    Logger(const Logger&);            // private copy constructor
+    Logger& operator=(const Logger&); // private assignment operator
     void rotateLogs();
     std::string currentTimestamp();
 
