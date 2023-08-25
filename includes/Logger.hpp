@@ -37,7 +37,8 @@ public:
         DEBUG_DETAILED,
         INFO,
         WARN,
-        ERROR
+        ERROR,
+        TRACE
     };
 
     static Logger*  getInstance(const std::string& filename = "logfile.txt", long maxLogSize = 10 * 1024 * 1024);
@@ -83,21 +84,26 @@ public:
 
 #if DEBUG_LEVEL >= 2
 #define DEBUG_LOG_DETAILED(msg) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, __FILE__, __LINE__)
+#define TRACE_LOG(msg) Logger::getInstance()->log(Logger::TRACE, msg, __FILE__, __LINE__)
 #else
 #define DEBUG_LOG_DETAILED(msg)
+#define TRACE_LOG(msg)
 #endif
+
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg)
 
 #else
 
 #define DEBUG_LOG(msg)
 #define DEBUG_LOG_DETAILED(msg)
+#define TRACE_LOG(msg)
+#define INFO_LOG(msg)
+#define WARN_LOG(msg)
+#define ERROR_LOG(msg)
 
 #endif
-
-// These macros are defined regardless of DEBUG or DEBUG_LEVEL
-#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, __FILE__, __LINE__)
-#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, __FILE__, __LINE__)
-#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, __FILE__, __LINE__)
 
 
 

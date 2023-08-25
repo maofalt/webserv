@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 19:11:24 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/25 19:20:21 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,6 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
             formattedMsg << "\033[1m\033[97m[DEBUG]\033[0m "; // Bold white
             break;
         case DEBUG_DETAILED:
-            //formattedMsg << "\033[1m\033[97m[DEBUG_DETAILED] [FUNC: " << __FUNCTION__ << "] [FILE: " << file << "] [LINE: " << line << "]\033[0m "; // Bold white with file, function, and line
             formattedMsg << "\033[1m\033[97m[DEBUG]"<< file << ":" << line <<":" << __FUNCTION__  << "\033[0m "; // Bold white with file, function, and line
             break;
         case INFO:
@@ -200,12 +199,17 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
         case ERROR:
             formattedMsg << "\033[1m\033[91m[ERROR] " << file << ":" << line <<":" << __FUNCTION__  <<  "]\033[0m "; // Bold red with file, function, and line
             break;
+        case TRACE:
+            formattedMsg << "[TRACE] ";
     }
     formattedMsg << message;
 
 
     #if DEBUG_LEVEL == 2
         if (level == DEBUG_DETAILED) {
+            std::cout << formattedMsg.str() << std::endl;
+        }
+        if (level == TRACE) {
             std::cout << formattedMsg.str() << std::endl;
         }
     #endif
