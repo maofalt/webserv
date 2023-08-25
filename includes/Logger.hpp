@@ -99,9 +99,9 @@ public:
 #define DEBUG_LOG(msg)
 #define DEBUG_LOG_DETAILED(msg)
 #define TRACE_LOG(msg)
-#define INFO_LOG(msg)
-#define WARN_LOG(msg)
-#define ERROR_LOG(msg)
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, __FILE__, __LINE__)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, __FILE__, __LINE__)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, __FILE__, __LINE__)
 
 #endif
 
