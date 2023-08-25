@@ -90,9 +90,9 @@ public:
 #define TRACE_LOG(msg)
 #endif
 
-#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg)
-#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg)
-#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg)
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, __FILE__, __LINE__)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, __FILE__, __LINE__)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, __FILE__, __LINE__)
 
 #else
 

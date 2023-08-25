@@ -61,13 +61,14 @@ CXXFLAGS += -DDEBUG_LEVEL=2 -g3
 endif
 
 
+
 #===============================================================================#
 #=============================[ RULES ]========================================#
 #===============================================================================#
 
 
 RM = rm -rf
-all: project $(NAME) $(HDR_NAME)
+all: .last_build_flags project $(NAME) $(HDR_NAME)
 
 valgrind: DEBUG_LEVEL = 2
 valgrind: all 
@@ -83,7 +84,7 @@ $(OBJS_PATH):
 	@echo "\t[ $(GREEN)✓$(RESET) ] $(OBJS_PATH) directory done \n"
 
 
-$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME)
+$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME) .last_build_flags
 	@$(CC) $(CXXFLAGS) $(HDR_INCLUDE) -o $@ -c $<
 	@echo "\t[ $(GREEN)✓$(RESET) ] $@ object"
 
@@ -125,6 +126,10 @@ $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(GREEN)/|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ $(RESET)"
 
 
+# Need this to reocpile properly the project because of macros
+.last_build_flags:
+	@echo "$(CXXFLAGS)" | cmp -s - $@ || echo "$(CXXFLAGS)" > $@
+
 clean:
 	@echo "\t[ $(RED)$(BOLD)=== CLEANING === $(RESET)]"
 	@echo "$(RED)====================================$(RESET)"
@@ -154,4 +159,4 @@ tclean:
 	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
 
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re .last_build_flags valgrind project
