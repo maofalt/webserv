@@ -40,6 +40,10 @@ int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 				printErr("expected '\\n' after '}'.", countLines);
 				_nbrErr++;
 			}
+			else if (it != _splitContent.begin() && *(it - 1) != "\n") {
+				printErr("expected '\\n' before '}'.", countLines);
+				_nbrErr++;
+			}
 			bracketOpen--;
 		}
 		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
@@ -47,7 +51,7 @@ int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			_nbrErr++;
 		}
 		if (bracketOpen < 0) {
-			return printErr("extra closing bracket line ", countLines), ++_nbrErr;
+			return printErr("extra closing bracket", countLines), ++_nbrErr;
 		}
 	}
 	if (bracketOpen > 0) {
@@ -66,7 +70,7 @@ int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, S
 	}
 	std::vector<std::string>::iterator it2 = it;
 	if (it != _splitContent.end() && *it == ";") {
-		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
+		while (it2 != _splitContent.begin() && *it2 != "\n") { it2--;}
 		if (*it2 == ";" || *(it2 + 1) == ";") {
 			_nbrErr++;
 			printErr("cannot associate variable with value (missing or bad format).", line);
@@ -81,8 +85,7 @@ int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, S
 		}
 	}
 	else if (it != _splitContent.end() && *it == "{") {
-		printErr("opening brackets in location block.", line);
-		return ++_nbrErr;
+		return printErr("opening brackets in location block.", line), ++_nbrErr;
 	}
 	if (it == _splitContent.end() || (it != _splitContent.end() && *it == "}"))
 		return _nbrErr;
@@ -114,7 +117,7 @@ int	Config::parseServConf2(std::vector<std::string>::iterator & it, int & line, 
 	while (it != _splitContent.end() && *it != ";" && *it != "{" && *it != "}") { it++; }
 	std::vector<std::string>::iterator it2 = it;
 	if (it != _splitContent.end() && *it == ";") {
-		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
+		while (it2 != _splitContent.begin() && *it2 != "\n") { it2--; }
 		if (*it2 == ";" || *(it2 + 1) == ";") {
 			_nbrErr++;
 			printErr("cannot associate variable with value (missing or bad format).", line);
@@ -130,7 +133,7 @@ int	Config::parseServConf2(std::vector<std::string>::iterator & it, int & line, 
 	else if (it != _splitContent.end() && *it == "{") {
 		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
 		if (*(++it2) != "location") {
-			printErr("missing or unknown block instruction in server block (expected 'location').", line);
+			return printErr("missing or unknown block instruction in server block (expected 'location').", line), ++_nbrErr;
 		}
 		if (parseLocConf(it2, line, newServ))
 			return _nbrErr;
@@ -176,7 +179,7 @@ int	Config::fillStruct(int line, std::vector<std::string>::iterator & it) {
 		if (*(--it) != "server")
 			return printErr("missing or unknown block instruction (expected 'server').", line), ++_nbrErr;
 		if (parseServConf(it, line))
-			return ++_nbrErr;
+			return _nbrErr;
 	}
 	if (it == _splitContent.end())
 		return _nbrErr;
