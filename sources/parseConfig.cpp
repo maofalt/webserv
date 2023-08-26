@@ -71,7 +71,7 @@ int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, S
 	std::vector<std::string>::iterator it2 = it;
 	if (it != _splitContent.end() && *it == ";") {
 		while (it2 != _splitContent.begin() && *it2 != "\n") { it2--;}
-		if (*it2 == ";" || *(it2 + 1) == ";") {
+		if (*(it2 + 1) == ";" || *(it2 + 2) == ";") {
 			_nbrErr++;
 			printErr("cannot associate variable with value (missing or bad format).", line);
 		}
@@ -118,7 +118,7 @@ int	Config::parseServConf2(std::vector<std::string>::iterator & it, int & line, 
 	std::vector<std::string>::iterator it2 = it;
 	if (it != _splitContent.end() && *it == ";") {
 		while (it2 != _splitContent.begin() && *it2 != "\n") { it2--; }
-		if (*it2 == ";" || *(it2 + 1) == ";") {
+		if (*(it2 + 1) == ";" || *(it2 + 2) == ";") {
 			_nbrErr++;
 			printErr("cannot associate variable with value (missing or bad format).", line);
 		}
@@ -162,10 +162,10 @@ int	Config::fillStruct(int line, std::vector<std::string>::iterator & it) {
 	while (it != _splitContent.end() && *it != ";" && *it != "{") { it++; }
 	if (it != _splitContent.end() && *it == ";") {
 		std::vector<std::string>::iterator it2 = it;
-		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
-		if (*it2 == ";" || *(it2 + 1) == ";") {
+		while (it2 != _splitContent.begin() && *it2 != "\n") { it2--; }
+		if (*(it2 + 1 - (it2 == _splitContent.begin())) == ";" || *(it2 + 2 - (it2 == _splitContent.begin())) == ";") {
 			_nbrErr++;
-			printErr("cannot associate variable with value (missing or bad format).", line);
+			printErr("fill cannot associate variable with value (missing or bad format).", line);
 		}
 		else {
 			it2 += (*it2 == "\n");
