@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/24 23:11:46 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:13:29 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ HttpRequest::HttpRequest(void):
 	_protocol(""),
 	_field(),
 	_body(""),
+	_status("200"),
 	_raw(""),
 	_headerComplete(false),
 	_bodyComplete(false)
@@ -58,6 +59,7 @@ HttpRequest::HttpRequest(HttpRequest const &rhs):
 	_protocol(rhs._protocol),
 	_field(rhs._field),
 	_body(rhs._body),
+	_status(rhs._status),
 	_raw(rhs._raw),
 	_headerComplete(rhs._headerComplete),
 	_bodyComplete(rhs._bodyComplete)
@@ -75,6 +77,7 @@ HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
 	_protocol = rhs._protocol;
 	_field = rhs._field;
 	_body = rhs._body;
+	_status = rhs._status;
 	_raw = rhs._raw;
 	_headerComplete = rhs._headerComplete;
 	_bodyComplete = rhs._bodyComplete;
@@ -306,7 +309,21 @@ bool	HttpRequest::_rawBodyComplete(void)
 }
 
 // Getters
-std::string	HttpRequest::getUri(void) const
+const std::string	HttpRequest::getHost(void) const
+{
+	if (_field.count("Host"))
+		return (_field.at("Host"));
+	return ("");
+}
+const std::string	&HttpRequest::getMethod(void) const
+{
+	return (_method);
+}
+const std::string	&HttpRequest::getStatus(void) const
+{
+	return (_status);
+}
+const std::string	&HttpRequest::getUri(void) const
 {
 	return (_uri);
 }

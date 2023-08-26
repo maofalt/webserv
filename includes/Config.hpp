@@ -6,13 +6,15 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/20 14:42:05 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:25:19 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
+#include <stdint.h>
+#include <cstdlib>
 #include <map>
 #include <vector>
 #include <fstream>
@@ -26,11 +28,14 @@ struct location {
 	std::map< std::string, std::vector< std::string > >	_locConfig;
 };
 
-struct server {
-	std::map< std::string, std::vector< std::string > >	_servConfig;
-	std::vector< struct location >						_locations;
-};
+class ServerConfig {
+	public:
+		std::map< std::string, std::vector< std::string > >	_servConfig;
+		std::vector< struct location >						_locations;
 
+		bool	isListeningTo(uint16_t port) const;
+		bool	isNamed(const std::string &name) const;
+};
 
 class Config {
 	private:
@@ -41,7 +46,7 @@ class Config {
 		// size_t										_fileSize;
 		std::vector< std::string >					_rawContent;
 		std::vector< std::string >					_splitContent;
-		std::vector< struct server >				_servList;
+		std::vector< ServerConfig >						_servList;
 		std::map< std::string, std::vector< std::string > >	_confData;
 
 	public:
@@ -53,16 +58,17 @@ class Config {
 		void	readConf(std::ifstream & file);
 		void	splitConf();
 		int		basicCheck();
-		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
-		int		parseLocConf2(std::vector<std::string>::iterator & it, int & line, struct server & newServ, struct location &newLoc);
+		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ);
+		int		parseLocConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ, struct location &newLoc);
 		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
-		int		parseServConf2(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
+		int		parseServConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ);
 		int		fillStruct(int line, int err, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
-		std::vector< struct server >	getServList() const;
+		std::vector< ServerConfig >	getServList() const;
 		std::map< std::string, std::vector< std::string > >	getConfData() const;
+		const ServerConfig		*findServer(std::string server_name, uint16_t port) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Config & conf);

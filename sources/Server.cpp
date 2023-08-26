@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:17:32 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:12:00 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -349,7 +349,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	}
 
 	//add to clientHandlers
-	clientHandlers[sock_server] = ClientHandler(sock_server, HttpRequest());
+	clientHandlers[sock_server] = ClientHandler(ntohs(((struct sockaddr_in *)&client_addr)->sin_port), sock_server);
 	return sock_server;
 }
 
