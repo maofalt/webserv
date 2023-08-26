@@ -37,6 +37,7 @@ struct location {
 class Config {
 	private:
 		int											_nbrLines;
+		int											_nbrErr;
 		std::string									_tokens;
 		std::string									_whiteSp;
 		std::string									_confFileName;
@@ -51,7 +52,7 @@ class Config {
 		Config();
 		~Config();
 
-		int		printNbErr(int err);
+		int		printNbErr();
 		void	printErr(std::string errMsg, int line);
 		void	readConf(std::ifstream & file);
 		void	splitConf();
@@ -60,7 +61,7 @@ class Config {
 		int		parseLocConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ, struct location &newLoc);
 		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
 		int		parseServConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ);
-		int		fillStruct(int line, int err, std::vector<std::string>::iterator & it);
+		int		fillStruct(int line, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
