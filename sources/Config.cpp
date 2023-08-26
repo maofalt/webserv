@@ -53,44 +53,16 @@ std::map< std::string, std::vector< std::string > >	Config::getConfData() const 
 	return this->_confData;
 }
 
-// DEBUT RGARRIGO
-const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) const
-{
-	const ServerConfig	*defaultServer;
-
-	defaultServer = 0;
-	for (std::vector< ServerConfig >::const_iterator it = _servList.begin(); it != _servList.end(); ++it)
-	{
-		if (!it->isListeningTo(port))
-			continue ;
-		if (!defaultServer)
-			defaultServer = &(*it);
-		if (it->isNamed(server_name))
-			return (&(*it));
-	}
-	return (defaultServer);
-}
-bool	ServerConfig::isListeningTo(uint16_t port) const
-{
-	if (_servConfig.count("listen"))
-		return (port == atoi(_servConfig.at("listen")[0].c_str()));
-	return (false);
-}
-bool	ServerConfig::isNamed(const std::string &name) const
-{
-	if (_servConfig.count("server_name"))
-		for (std::vector< std::string >::const_iterator it = _servConfig.at("server_name").begin(); it != _servConfig.at("server_name").end(); ++it)
-			if (name == *it)
-				return (true);
-	return (false);
-}
-// FIN RGARRIGO
-
 void	Config::printErr(std::string errMsg, int line) {
 	if (line != -1)
-		std::cerr << _confFileName + ":" << line << errMsg << std::endl;
+		std::cerr << BOLD << _confFileName + ":" << line << ": " << RED << "error: " << RESET << errMsg << std::endl;
 	else
-		std::cerr << _confFileName + ":" << errMsg << std::endl;
+		std::cerr << BOLD << _confFileName + ": " << RED << "error: " << RESET << errMsg << std::endl;
+}
+
+int	Config::printNbErr(int err) {
+	std::cerr << BOLD << _confFileName + ": ";
+	return std::cerr << (err ? RED : GREEN) << err << RESET << " error(s)." << std::endl, err;
 }
 
 int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
@@ -104,34 +76,34 @@ int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			countLines++;
 			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
 					&& *(it - 1) != "{"  && *(it - 1) != "}") {
-				printErr(": error: expected ';' before '\\n'.", countLines - 1);
+				printErr("expected ';' before '\\n'.", countLines - 1);
 				err++;
 			}
 		}
 		else if (*it == "{") {
 			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-				printErr(": error: expected '\\n' after '{'.", countLines);
+				printErr("expected '\\n' after '{'.", countLines);
 				err++;
 			}
 			bracketOpen++;
 		}
 		else if (*it == "}") {
 			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-				printErr(": error: expected '\\n' after '}'.", countLines);
+				printErr("expected '\\n' after '}'.", countLines);
 				err++;
 			}
 			bracketOpen--;
 		}
 		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
-			printErr(": error: expected '\\n' after ';'.", countLines);
+			printErr("expected '\\n' after ';'.", countLines);
 			err++;
 		}
 		if (bracketOpen < 0) {
-			return printErr(": error: extra closing bracket line ", countLines), err + 1;
+			return printErr("extra closing bracket line ", countLines), ++err;
 		}
 	}
 	if (bracketOpen > 0) {
-		return printErr(": error: missing closing bracket.", -1), err + 1;
+		return printErr("missing closing bracket.", -1), ++err;
 	}
 	_nbrLines = countLines;
 	return err;
@@ -169,43 +141,9 @@ void	Config::splitConf() {
 	}
 }
 
-// int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ) {
-// 	int	err = 0;
-
-// 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
-// 		line += (*it == "\n");
-// 		printErr(": error: missing path for location block.", line);
-// 		err++;
-// 	}
-
-// 	struct location	newLoc;
-
-// 	while (it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}")
-// 		newLoc._paths.push_back(*(it++));
-// 	if (it == _splitContent.end() || *it != "{") {
-// 		line += (*it == "\n");
-// 		printErr(": error: missing '{' for location block.", line);
-// 		err++;
-// 	}
-
-// 	while (++it != _splitContent.end() && *it != "}") {
-// 		if (*it == "\n")
-// 			line++;
-// 		else {
-// 			std::string	key = *it;
-// 			while (++it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}")
-// 				newLoc._locConfig[key].push_back(*it);
-// 		}
-// 	}
-// 	newServ._locations.push_back(newLoc);
-// 	return err;
-// }
-
 int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ, struct location & newLoc) {
 	int	err = 0;
 
-	while (it != _splitContent.end() && *it != "{")
-		newLoc._paths.push_back(*(it++));
 	while (++it != _splitContent.end() && *it == "\n") {
 		line++;
 	}
@@ -215,7 +153,7 @@ int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, S
 		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
 		if (*it2 == ";" || *(it2 + 1) == ";") {
 			err++;
-			std::cerr << _confFileName + ":" << line << ": error: locConf cannot associate variable with value (missing or bad format)." << std::endl;
+			printErr("locConf cannot associate variable with value (missing or bad format).", line);
 		}
 		else {
 			it2 += (*it2 == "\n");
@@ -226,7 +164,8 @@ int	Config::parseLocConf2(std::vector<std::string>::iterator & it, int & line, S
 		}
 	}
 	else if (it != _splitContent.end() && *it == "{") {
-		return std::cerr << _confFileName + ":" << line << ": error: opening bracket in location block." << std::endl, ++err;
+		printErr("locConf opening brackets in location block.", line);
+		return ++err;
 	}
 	if (it == _splitContent.end() || (it != _splitContent.end() && *it == "}"))
 		return err;
@@ -238,11 +177,14 @@ int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, Se
 
 	if (++it == _splitContent.end() || *it == "{") {
 		line += (*it == "\n");
-		printErr(": error: missing path for location block.", line);
+		printErr("missing path for location block.", line);
 		err++;
 	}
 
 	struct location	newLoc;
+	while (it != _splitContent.end() && *it != "{")
+		newLoc._paths.push_back(*(it++));
+
 	err += parseLocConf2(it, line, newServ, newLoc);
 	return newServ._locations.push_back(newLoc), err;
 }
@@ -262,7 +204,7 @@ int	Config::parseServConf2(std::vector<std::string>::iterator & it, int & line, 
 		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
 		if (*it2 == ";" || *(it2 + 1) == ";") {
 			err++;
-			std::cerr << _confFileName + ":" << line << ": error: servConf cannot associate variable with value (missing or bad format)." << std::endl;
+			printErr("servConf cannot associate variable with value (missing or bad format).", line);
 		}
 		else {
 			it2 += (*it2 == "\n");
@@ -275,7 +217,7 @@ int	Config::parseServConf2(std::vector<std::string>::iterator & it, int & line, 
 	else if (it != _splitContent.end() && *it == "{") {
 		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
 		if (*(++it2) != "location") {
-			return std::cerr << _confFileName + ":" << line << ": error: servConf missing or unknown block instruction in server block (expected 'location')." << std::endl, ++err;
+			printErr("servConf missing or unknown block instruction in server block (expected 'location').", line);
 		}
 		if (parseLocConf(it2, line, newServ))
 			return ++err;
@@ -291,7 +233,6 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 
 	it += 2;
 	while (it != _splitContent.end() && *it == "\n") {
-		std::cout << "serv it : " + *it + ", " + *(it - 1) + ", " << line << std::endl;
 		line++;
 		it++;
 	}
@@ -310,7 +251,7 @@ int	Config::fillStruct(int line, int err, std::vector<std::string>::iterator & i
 		while (--it2 != _splitContent.begin() && *it2 != "\n") {}
 		if (*it2 == ";" || *(it2 + 1) == ";") { //countWords < 2 - (it2 == _splitContent.begin())) {
 			err++;
-			std::cerr << _confFileName + ":" << line << ": error: filling cannot associate variable with value (missing or bad format)." << std::endl;
+			printErr("filling cannot associate variable with value (missing or bad format).", line);
 		}
 		else {
 			it2 += (*it2 == "\n");
@@ -322,7 +263,7 @@ int	Config::fillStruct(int line, int err, std::vector<std::string>::iterator & i
 	}
 	else if (it != _splitContent.end() && *it == "{") {
 		if (*(--it) != "server")
-			return std::cerr << _confFileName + ":" << line << ": error: filling missing or unknown block instruction (expected 'server')." << std::endl, 1;
+			return printErr("filling missing or unknown block instruction (expected 'server').", line), ++err;
 		if (parseServConf(it, line))
 			return err++;
 	}
@@ -336,17 +277,19 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	_confFileName = fileName;
 
 	if (stat(_confFileName.c_str(), &fileStat) != 0)
-		return std::cerr << _confFileName + ": error: could not check file status." << std::endl, 1;
+		return printErr("could not check file status.", -1), 1;
 	if (fileStat.st_size > 2000 || fileStat.st_size == 0)
-		return std::cerr << _confFileName + ": error: file is too big or empty." << std::endl, 1;
+		return printErr("file is too big or empty.", -1), 1;
 
+	int	err;
 	readConf(file);
 	splitConf();
-	if (basicCheck())
-		return 1;
+	err = basicCheck();
+	if (err)
+		return printNbErr(err);
 
 	std::vector<std::string>::iterator it = _splitContent.begin();
-	return fillStruct(1, 0, it);
+	return printNbErr(fillStruct(1, 0, it));
 }
 
 void	printLocStruct(std::ostream& os, struct location & loc) {
