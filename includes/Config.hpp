@@ -22,6 +22,11 @@
 #include <sys/stat.h>
 #include "ServerConf.hpp"
 
+# define RED "\033[38;5;1m"
+# define GREEN "\033[38;5;10m"
+# define BOLD "\033[1m"
+# define RESET "\033[0m"
+
 # define DISPLAY_CONF 1
 
 struct location {
