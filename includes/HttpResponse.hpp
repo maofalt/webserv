@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 17:10:47 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 19:02:01 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,10 @@ class HttpResponse
 		std::string							_method;
 		std::string							_host;
 		std::string							_uri;
+		bool								_uriIsDirectory;
 		std::map<std::string, std::string>	_parameters;
 		const ServerConfig					*_server;
+		const t_location					*_location;
 
 	// Temp
 		t_responseType						_type;
@@ -65,14 +67,15 @@ class HttpResponse
 		static std::map<t_responseType, t_writeType>	_writeType;
 
 	// Utils
+		int	_determineLocation(void);
 		int	_launchCgi(void);
 		int	_limitClientBodySize(void);
-		int	_stripUri(void);
 		int	_limitHttpMethod(void);
 		int	_refineUri(void);
 		int	_setRequest(const HttpRequest *request);
 		int	_setServer(const Config &config);
 		int	_setType(void) const;
+		int	_stripUri(void);
 		int	_writeRedirection(void);
 		int	_writeDirectory(void);
 		int	_writeCgi(void);
