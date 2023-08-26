@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/24 23:16:41 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:20:43 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,46 @@ std::vector<std::string>	Config::getSplitContent() const {
 	return this->_splitContent;
 }
 
-std::vector< struct server >	Config::getServList() const {
+std::vector< ServerConfig >	Config::getServList() const {
 	return this->_servList;
 }
 
 std::map< std::string, std::vector< std::string > >	Config::getConfData() const {
 	return this->_confData;
 }
+
+// DEBUT RGARRIGO
+const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) const
+{
+	const ServerConfig	*defaultServer;
+
+	defaultServer = 0;
+	for (std::vector< ServerConfig >::const_iterator it = _servList.begin(); it != _servList.end(); ++it)
+	{
+		if (!it->isListeningTo(port))
+			continue ;
+		if (!defaultServer)
+			defaultServer = &(*it);
+		if (it->isNamed(server_name))
+			return (&(*it));
+	}
+	return (defaultServer);
+}
+bool	ServerConfig::isListeningTo(uint16_t port) const
+{
+	if (_servConfig.count("listen"))
+		return (port == atoi(_servConfig.at("listen")[0].c_str()));
+	return (false);
+}
+bool	ServerConfig::isNamed(const std::string &name) const
+{
+	if (_servConfig.count("server_name"))
+		for (std::vector< std::string >::const_iterator it = _servConfig.at("server_name").begin(); it != _servConfig.at("server_name").end(); ++it)
+			if (name == *it)
+				return (true);
+	return (false);
+}
+// FIN RGARRIGO
 
 int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 	int	bracketOpen = 0;
@@ -123,7 +156,7 @@ void	Config::splitConf() {
 	}
 }
 
-int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ) {
+int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ) {
 	int	err = 0;
 
 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
@@ -164,7 +197,7 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 		// err++;
 	}
 
-	struct server	newServ;
+	ServerConfig	newServ;
 
 	while (++it != _splitContent.end() && *it != "}") {
 		if (*it == "\n")
@@ -238,7 +271,7 @@ void	printLocStruct(std::ostream& os, struct location & loc) {
 
 /*=========================================== DISPLAY FUNCTS ================================================*/
 
-void	printServStruct(std::ostream& os, struct server & serv) {
+void	printServStruct(std::ostream& os, ServerConfig & serv) {
 	for (std::map< std::string, std::vector< std::string > >::iterator \
 			it = serv._servConfig.begin(); it != serv._servConfig.end(); it++) {
 		os << "	" + it->first + " : ";
@@ -281,7 +314,7 @@ std::ostream& operator<<(std::ostream& os, const Config & conf) {
 	os << "==========================================================================" << std::endl;
 	os << std::endl;
 
-	std::vector< struct server >	servers = conf.getServList();
+	std::vector< ServerConfig >	servers = conf.getServList();
 	for (size_t i=0; i<servers.size(); i++) {
 		os << "Server " << i + 1 << " :" << std::endl;
 		printServStruct(os, servers[i]);
