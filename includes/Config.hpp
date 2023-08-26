@@ -13,28 +13,20 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include <stdint.h>
-#include <cstdlib>
 #include <map>
 #include <vector>
+#include <cstdlib>
 #include <fstream>
+#include <stdint.h>
 #include <iostream>
 #include <sys/stat.h>
+#include "ServerConf.hpp"
 
 # define DISPLAY_CONF 1
 
 struct location {
 	std::vector< std::string >								_paths;
 	std::map< std::string, std::vector< std::string > >	_locConfig;
-};
-
-class ServerConfig {
-	public:
-		std::map< std::string, std::vector< std::string > >	_servConfig;
-		std::vector< struct location >						_locations;
-
-		bool	isListeningTo(uint16_t port) const;
-		bool	isNamed(const std::string &name) const;
 };
 
 class Config {
@@ -54,6 +46,7 @@ class Config {
 		Config();
 		~Config();
 
+		int		printNbErr(int err);
 		void	printErr(std::string errMsg, int line);
 		void	readConf(std::ifstream & file);
 		void	splitConf();
