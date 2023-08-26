@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 14:19:47 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:25:19 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class ServerConfig {
 
 class Config {
 	private:
+		int											_nbrLines;
 		std::string									_tokens;
 		std::string									_whiteSp;
 		std::string									_confFileName;
@@ -53,12 +54,14 @@ class Config {
 		Config();
 		~Config();
 
-		void						readConf(std::ifstream & file);
-		void						splitConf();
-		int						basicCheck();
-		int						parseLocConf(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ);
-		int						parseServConf(std::vector<std::string>::iterator & it, int & line);
-		int						setupConf(std::ifstream & file, std::string fileName);
+		void	printErr(std::string errMsg, int line);
+		void	readConf(std::ifstream & file);
+		void	splitConf();
+		int		basicCheck();
+		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
+		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
+		int		fillStruct(int line, int err, std::vector<std::string>::iterator & it);
+		int		setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< ServerConfig >	getServList() const;

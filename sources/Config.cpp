@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 14:20:43 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:26:14 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,13 @@ bool	ServerConfig::isNamed(const std::string &name) const
 }
 // FIN RGARRIGO
 
+void	Config::printErr(std::string errMsg, int line) {
+	if (line != -1)
+		std::cerr << _confFileName + ":" << line << errMsg << std::endl;
+	else
+		std::cerr << _confFileName + ":" << errMsg << std::endl;
+}
+
 int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 	int	bracketOpen = 0;
 	int	countLines = 1;
@@ -97,30 +104,36 @@ int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
 			countLines++;
 			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
 					&& *(it - 1) != "{"  && *(it - 1) != "}") {
-				std::cerr << _confFileName + ":" << countLines - 1 << ": error: expected ';' before '\\n'." << std::endl;
+				printErr(": error: expected ';' before '\\n'.", countLines - 1);
 				err++;
 			}
 		}
 		else if (*it == "{") {
 			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-				std::cerr << _confFileName + ":" << countLines << ": error: expected '\\n' after '{'." << std::endl;
+				printErr(": error: expected '\\n' after '{'.", countLines);
 				err++;
 			}
 			bracketOpen++;
 		}
-		else if (*it == "}")
+		else if (*it == "}") {
+			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
+				printErr(": error: expected '\\n' after '}'.", countLines);
+				err++;
+			}
 			bracketOpen--;
+		}
 		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
-			std::cerr << _confFileName + ":" << countLines << ": error: expected '\\n' after ';'." << std::endl;
+			printErr(": error: expected '\\n' after ';'.", countLines);
 			err++;
 		}
 		if (bracketOpen < 0) {
-			return std::cerr << _confFileName + ": error: extra closing bracket." << std::endl, err;
+			return printErr(": error: extra closing bracket line ", countLines), err + 1;
 		}
 	}
 	if (bracketOpen > 0) {
-		return std::cerr << _confFileName + ": error: missing closing bracket." << std::endl, err + 1;
+		return printErr(": error: missing closing bracket.", -1), err + 1;
 	}
+	_nbrLines = countLines;
 	return err;
 }
 
@@ -161,7 +174,7 @@ int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, Se
 
 	if (++it == _splitContent.end() || *it == ";" || *it == "\n" || *it == "{" || *it == "}") {
 		line += (*it == "\n");
-		std::cerr << _confFileName + ":" << line << ": error: missing path for location block." << std::endl;
+		printErr(": error: missing path for location block.", line);
 		err++;
 	}
 
@@ -171,8 +184,8 @@ int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, Se
 		newLoc._paths.push_back(*(it++));
 	if (it == _splitContent.end() || *it != "{") {
 		line += (*it == "\n");
-		return std::cerr << _confFileName + ":" << line << ": error: missing '{' for location block." << std::endl, 1;
-		// err++;
+		printErr(": error: missing '{' for location block.", line);
+		err++;
 	}
 
 	while (++it != _splitContent.end() && *it != "}") {
@@ -191,14 +204,9 @@ int	Config::parseLocConf(std::vector<std::string>::iterator & it, int & line, Se
 int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	int	err = 0;
 
-	if (*(++it) != "{") {
-		line += (*it == "\n");
-		return std::cerr << _confFileName + ":" << line << ": error: missing '{' for server block." << std::endl, 1;
-		// err++;
-	}
-
 	ServerConfig	newServ;
-
+	while (*(++it) != "\n") {}
+	line++;
 	while (++it != _splitContent.end() && *it != "}") {
 		if (*it == "\n")
 			line++;
@@ -215,9 +223,44 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	return err;
 }
 
+int	Config::fillStruct(int line, int err, std::vector<std::string>::iterator & it) {
+	if (*it == "\n")
+		line++;
+	while (++it != _splitContent.end() && *it != ";" && *it != "{") {}
+	if (it != _splitContent.end() && *it == ";") {
+		std::vector<std::string>::iterator it2 = it;
+		int countWords = 0;
+		while (--it2 != _splitContent.begin() && *it2 != "\n") {
+			// std::cout << "in while : " + *it2 << std::endl;
+			countWords++;
+		}
+		if (countWords < 2 - (it2 == _splitContent.begin())) {
+			err++;
+			std::cerr << _confFileName + ":" << line << ": error: cannot associate variable with value (missing or bad format)." << std::endl;
+		}
+		else {
+			it2 += (*it2 == "\n");
+			std::string	key = *it2;
+			while (++it2 != _splitContent.end() && *it2 != ";") {
+				_confData[key].push_back(*it2);
+			}
+		}
+	}
+	else if (it != _splitContent.end() && *it == "{") {
+		if (*(--it) != "server")
+			return std::cerr << _confFileName + ":" << line << ": error: missing or unknown block instruction." << std::endl, 1;
+		if (parseServConf(it, line))
+			err++;
+	}
+	if (it == _splitContent.end())
+		return err;
+	else
+		err += fillStruct(line, err, ++it);
+	return err;
+}
+
 int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	struct stat	fileStat;
-	int	err = 0;
 	_confFileName = fileName;
 
 	if (stat(_confFileName.c_str(), &fileStat) != 0)
@@ -230,25 +273,8 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	if (basicCheck())
 		return 1;
 
-	int	line = 1;
-	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
-			it != _splitContent.end(); it++) {
-		if (*it == "\n")
-			line++;
-		else if (*it == "server") {
-			if (parseServConf(it, line))
-				err++;
-		}
-		else {
-			std::string	key = *it;
-			while (++it != _splitContent.end() && *it != ";" && *it != "\n" && *it != "{" && *it != "}") {
-				_confData[key].push_back(*it);
-			}
-			line += (*it == "\n");
-		}
-	}
-
-	return err;
+	std::vector<std::string>::iterator it = _splitContent.begin();
+	return fillStruct(1, 0, it);
 }
 
 void	printLocStruct(std::ostream& os, struct location & loc) {
