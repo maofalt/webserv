@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 14:13:29 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 16:49:51 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,18 +314,6 @@ const std::string	HttpRequest::getHost(void) const
 	if (_field.count("Host"))
 		return (_field.at("Host"));
 	return ("");
-}
-const std::string	&HttpRequest::getMethod(void) const
-{
-	return (_method);
-}
-const std::string	&HttpRequest::getStatus(void) const
-{
-	return (_status);
-}
-const std::string	&HttpRequest::getUri(void) const
-{
-	return (_uri);
 }
 
 // Methods

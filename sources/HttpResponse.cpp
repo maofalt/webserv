@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 14:21:23 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 17:37:38 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,39 @@ static std::map<std::string, std::string>	getDescription(void)
 }
 static std::map<std::string, std::string>	getContentType(void)
 {
-	std::map<std::string, std::string>	content_type;
+	std::map<std::string, std::string>	contentType;
 
-	content_type["html"] = "text/html";
-	content_type["css"] = "text/css";
-	content_type["jpg"] = "image/jpeg";
-	content_type["jpeg"] = "image/jpeg";
-	content_type["png"] = "image/png";
-	return (content_type);
+	contentType["html"] = "text/html";
+	contentType["css"] = "text/css";
+	contentType["jpg"] = "image/jpeg";
+	contentType["jpeg"] = "image/jpeg";
+	contentType["png"] = "image/png";
+	return (contentType);
+}
+static std::map<t_responseType, t_writeType>	getWriteType(void)
+{
+	std::map<t_responseType, t_writeType>	writeType;
+
+	writeType[GET] = _writeGet;
+	writeType[DELETE] = _writeDelete;
+	writeType[DIRECTORY] = _writeDirectory;
+	writeType[REDIRECTION] = _writeRedirection;
+	return (writeType);
 }
 std::map<std::string, std::string>	HttpResponse::_description = getDescription();
-std::map<std::string, std::string>	HttpResponse::_content_type = getContentType();
+std::map<std::string, std::string>	HttpResponse::_contentType = getContentType();
+std::map<std::string, std::string>	HttpResponse::_writeType = getWriteType();
 
 // Constructors
 HttpResponse::HttpResponse(void):
 	_protocol(DEFAULT_PROTOCOL),
-	_i_raw(0)
+	_iRaw(0)
 {
 }
 HttpResponse::HttpResponse(uint16_t port):
 	_port(port),
 	_protocol(DEFAULT_PROTOCOL),
-	_i_raw(0)
+	_iRaw(0)
 {
 }
 HttpResponse::HttpResponse(HttpResponse const &rhs):
@@ -68,7 +79,7 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_fields(rhs._fields),
 	_content(rhs._content),
 	_raw(rhs._raw),
-	_i_raw(rhs._i_raw)
+	_iRaw(rhs._iRaw)
 {
 }
 HttpResponse::HttpResponse(HttpRequest const *request):
@@ -97,7 +108,7 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_fields = rhs._fields;
 	_content = rhs._content;
 	_raw = rhs._raw;
-	_i_raw = rhs._i_raw;
+	_iRaw = rhs._iRaw;
 
 	return (*this);
 }
@@ -111,118 +122,99 @@ std::string	numberToString(T nb)
 	return (ss.str());
 }
 
-// Methods
-int	HttpResponse::send(int fd)
-{
-	int	ret_value;
-
-	if (_i_raw + SEND_BUFFER_SIZE <= _raw.size())
-		return (::send(fd, _raw.c_str() + _i_raw, _raw.size() - _i_raw, 0));
-	ret_value = ::send(fd, _raw.c_str() + _i_raw, SEND_BUFFER_SIZE, 0);
-	_i_raw += SEND_BUFFER_SIZE;
-	return (ret_value);
-}
-
-void	HttpResponse::setRequest(HttpRequest const *request)
+void	HttpResponse::_setRequest(HttpRequest const *request)
 {
 	_request = request;
-	_method = request->getMethod();
-	_uri = request->getUri();
-	_status = request->getStatus();
+	_method = request->_method;
+	_uri = request->_uri;
+	_status = request->_status;
 }
 
-void	HttpResponse::setServer(const Config &config)
+void	HttpResponse::_setServer(const Config &config)
 {
 	_server = config.findServer(_request->getHost(), _port);
 }
 
-int	HttpResponse::respond(int fd, std::string status)
+// Methods
+int	HttpResponse::readCgi(bool timeout)
 {
-	std::string			response;
-	std::stringstream	buffer;
-	std::string			extension;
+	char	buffer[READ_BUFFER_SIZE] = {};
+	int		bytesRead;
 
-	std::cout << "\033[31mRequest:\033[0m" << std::endl;
-	std::cout << *_request << std::endl;
+	if (timeout)
+		return (close(_fdCgi), _writeError("504"));
+	bytesRead = read(_fdCgi, buffer, READ_BUFFER_SIZE);
+	if (bytesRead == -1)
+		return (close(_fdCgi), _writeError("500"));
+	_content.append(buffer, bytesRead);
+	if (bytesRead == 0)
+		return (_writeCgi());
+	return (bytesRead);
+}
 
-	if (_uri == "/")
-		_uri = "/index.html";
+int	HttpResponse::send(int fd)
+{
+	int	ret_value;
 
-	// we try to open the requested page and if it fails we send a 404 error
-	_uri = "./site" + _uri;
-	std::ifstream	file(_uri.c_str());
-	if (!file.is_open())
-	{
-		std::cerr << "File not opened" << std::endl;
-		_uri = "./site/errors/404.html";
-		status = "404";
-		std::ifstream	file2(_uri.c_str());
-		if (!file2.is_open())
-			return (1);
-		std::cout << "404 opened" << std::endl;
-		buffer << file2.rdbuf();
-	}
-	buffer << file.rdbuf();
-	file.close();
-	_content = buffer.str();
+	if (_iRaw + SEND_BUFFER_SIZE <= _raw.size())
+		return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
+	ret_value = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
+	_iRaw += SEND_BUFFER_SIZE;
+	return (ret_value);
+}
 
-	// we build the response
-	// 1- Status line HTTP-Version Status-Code Reason-Phrase CRLF
-	
-	response += _protocol;
-	response += " ";
-	response += status;
-	response += " ";
-	response += _description[status];
-	response += "\r\n";
-
-// 2- Date: Date and time of the message CRLF
-	char	time_buffer[1000];
-	time_t	now = time(0);
-	struct tm	tm = *gmtime(&now);
-	strftime(time_buffer, 1000, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-	response += "Date: ";
-	response += time_buffer;
-	response += "\r\n";
-
-// 3- Server: Information about the server CRLF
-	response += "Server: ";
-	response += "Webserv";
-	response += "\r\n";
-
-// 4- Content-Type: Type of the message body CRLF
-	extension = _uri.substr(_uri.find_last_of(".") + 1);
-	response += "Content-Type: ";
-	response += _content_type[extension];
-	response += "\r\n";
-
-// 5- Content-Length: Size of the message body in bytes CRLF
-	response += "Content-Length: ";
-	response += numberToString(_content.size());
-	response += "\r\n";
-
-	response += "Connection: ";
-	response += "keep-alive";
-	response += "\r\n";
-
-	response += "Accept-Ranges: ";
-	response += "bytes";
-	response += "\r\n";
-
-	response += "\r\n";
-
-	response += _content;
-
-	std::cout << "\033[32mResponse:\033[0m" << std::endl;
-	if (extension == "html" || extension == "css")
-	{
-		std::cout << response.substr(0, 4096) << std::endl;
-		if (response.size() > 4096)
-			std::cout << "[...]" << std::endl;
-	}
-	else
-		std::cout << "File \"" << _uri << "\" not printable" << std::endl;
-
-	::send(fd, response.c_str(), response.size(), 0);
+int	HttpResponse::_limitClientBodySize(void)
+{
+	if (_request->body.size() > _server->maxSize)
+		return (_writeError("413"));
 	return (0);
+}
+
+int	HttpResponse::_stripUri(void)
+{
+	std::stringstream	ss(_uri);
+	std::string			stripedUri;
+	std::string			name;
+	std::string			value;
+
+	std::getline(ss, stripedUri, ':');
+	std::getline(ss, stripedUri, '?');
+	while (std::getline(ss, name, '='))
+	{
+		if (!std::getline(ss, value, '&'))
+			break ;
+		_parameters[name] = value;
+	}
+	_uri = stripedUri;
+	if (_uri.size() >= 2 && _uri[0] == '/' && _uri[1] == '/')
+	{
+		std::stringstream	ss(_uri);
+
+		ss.ignore(2);
+		std::getline(ss, _host, '/');
+		std::getline(ss, stripedUri, '\0');
+		_uri = std::string("/");
+		_uri += stripUri;
+	}
+	return (0);
+}
+
+int	HttpResponse::_limitHttpMethod(void)
+{
+	
+}
+
+int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
+{
+	_setRequest(request);
+	_setServer(config);
+	if (_limitClientBodySize()
+		|| _stripUri()
+		|| _limitHttpMethod()
+		|| _refineUri()
+		|| _setType())
+		return (-1);
+	if (_type == CGI)
+		return (_launchCgi());
+	return (_writeType[_type]);
 }

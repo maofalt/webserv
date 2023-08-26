@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 13:25:16 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 16:49:32 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,6 @@ class HttpRequest {
 	
 	// Getters
 		const std::string	getHost(void) const;
-		const std::string	&getMethod(void) const;
-		const std::string	&getStatus(void) const;
-		const std::string	&getUri(void) const;
 
 	// Methods
 		void	        clear(void);
@@ -95,23 +92,8 @@ class HttpRequest {
 	// Operators
 		friend std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs);
 
-	// Exceptions
-		class Error;
-};
-
-struct RequestsTab{
-    std::string type;
-    HttpRequest* (*createRequest)(const HttpRequest&);
-};
-
-// Exceptions
-class HttpRequest::Error : public std::exception
-{
-	private:
-		char	_type[4];
-	public:
-		Error(const char type[4]) {memcpy(_type, type, 4);}
-		const char	*what(void) const throw();
+	// Friends
+		friend class HttpResponse;
 };
 
 std::ostream& operator<<(std::ostream& os, const HttpRequest & other);
