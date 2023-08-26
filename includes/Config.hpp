@@ -54,7 +54,9 @@ class Config {
 		void	splitConf();
 		int		basicCheck();
 		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
+		int		parseLocConf2(std::vector<std::string>::iterator & it, int & line, struct server & newServ, struct location &newLoc);
 		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
+		int		parseServConf2(std::vector<std::string>::iterator & it, int & line, struct server & newServ);
 		int		fillStruct(int line, int err, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);
 		std::vector<std::string>	getRawContent() const;
