@@ -29,11 +29,6 @@
 
 # define DISPLAY_CONF 1
 
-struct location {
-	std::vector< std::string >								_paths;
-	std::map< std::string, std::vector< std::string > >	_locConfig;
-};
-
 class Config {
 	private:
 		int											_nbrLines;

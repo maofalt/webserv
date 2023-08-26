@@ -17,6 +17,11 @@
 #include <vector>
 #include <iostream>
 
+struct location {
+	std::vector< std::string >								_paths;
+	std::map< std::string, std::vector< std::string > >	_locConfig;
+};
+
 class ServerConfig {
 	public:
 		std::map< std::string, std::vector< std::string > >	_servConfig;
