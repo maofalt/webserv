@@ -3803,3 +3803,76 @@ Epoll returned with 0 events.
 Waiting for an epoll event...
 Epoll returned with 0 events.
 Waiting for an epoll event...
+[2023-08-27 19:26:53] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:26:53] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:26:53] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:26:53] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:26:53] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:26:53] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+1
+2
+3
+4
+5
+[1mconfig/nginx_example.conf:7: [38;5;1merror: [0mmissing or unknown block instruction (expected 'server').
+[1mconfig/nginx_example.conf: [38;5;1m1[0m error(s).
+[1mconfig/nginx_example.conf[0m: could not setup this config, using default config instead.
+1
+2
+[1m./config/default.conf: [38;5;10m0[0m error(s).
+Config = ./config/default.conf
+[2023-08-27 19:26:53] [0m[1m[97m[CONFIG][0m[text][text][asdg][;][
+][bla][bla][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+bla : bla, bla
+text : text, text, asdg
+
+==========================================================================
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...

@@ -2,3 +2,5 @@ objs
 *.o
 webserv
 .vscode
+log
+.last_build_flags
