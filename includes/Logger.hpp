@@ -11,6 +11,7 @@
 #include <cassert>
 #include <sys/stat.h>
 #include "TeeBuf.hpp"
+#include "Colors.hpp"
 
 class Logger {
 private:

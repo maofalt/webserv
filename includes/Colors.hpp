@@ -16,6 +16,7 @@
 
 #define ANSI_BOLD_GREEN     "\033[1m\033[32m"
 #define ANSI_BOLD_WHITE     "\033[1m\033[97m"
+#define ANSI_BOLD_RED       "\033[1m\033[31m" 
 
 
 #endif
