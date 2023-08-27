@@ -1,0 +1,431 @@
+[2023-08-25 18:25:41] [94m[INFO][0m Starting server...
+[2023-08-25 18:25:41] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:25:41] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:26:32] [94m[INFO][0m Starting server...
+[2023-08-25 18:26:32] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:26:32] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:26:32] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:26:49] [94m[INFO][0m Starting server...
+[2023-08-25 18:26:49] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:26:49] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:26:49] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:27:01] [94m[INFO][0m Starting server...
+[2023-08-25 18:27:01] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:27:01] [1m[97m[DEBUG_DETAILED] [FUNC: log] [FILE: sources/main.cpp] [LINE: 35][0m Testing DEBUG_DETAILED log
+[2023-08-25 18:27:01] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:27:01] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:39:33] [94m[INFO][0m Starting server...
+[2023-08-25 18:39:33] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:39:33] [1m[97m[DEBUG_DETAILED] [FUNC: log] [FILE: sources/main.cpp] [: 35][0m Testing DEBUG_DETAILED log
+[2023-08-25 18:39:34] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:39:34] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:40:14] [94m[INFO][0m Starting server...
+[2023-08-25 18:40:14] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:40:14] [1m[97m[DEBUG_DETAILED] [FUNC: log] [FILE: sources/main.cpp:35][0m Testing DEBUG_DETAILED log
+[2023-08-25 18:40:14] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:40:14] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 18:59:14] [94m[INFO][0m Starting server...
+[2023-08-25 18:59:14] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 18:59:14] [1m[97msources/main.cpp:35:log[0m Testing DEBUG_DETAILED log
+[2023-08-25 18:59:14] [93m[WARN][0m Testing WARN log
+[2023-08-25 18:59:14] [1m[91m[ERROR] [FUNC: log] [FILE: sources/main.cpp] [LINE: 37][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+[2023-08-25 19:12:16] [94m[INFO][0m Starting server...
+[2023-08-25 19:12:16] [93m[WARN][0m Testing WARN log
+[2023-08-25 19:12:16] [1m[91m[ERROR] sources/main.cpp:37:log][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+[2023-08-25 19:13:06] [94m[INFO][0m Starting server...
+[2023-08-25 19:13:06] [93m[WARN][0m Testing WARN log
+[2023-08-25 19:13:06] [1m[91m[ERROR] sources/main.cpp:37:log][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 19:50:42] [94m[INFO][0m Starting server...
+[2023-08-25 19:50:42] [1m[97m[DEBUG][0m Testing DEBUG log
+[2023-08-25 19:50:42] [93m[WARN][0m Testing WARN log
+[2023-08-25 19:50:42] [1m[91m[ERROR] sources/main.cpp:37:log][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 20:23:14] [94m[INFO][0m Starting server...
+[2023-08-25 20:23:14] [93m[WARN][0m Testing WARN log
+[2023-08-25 20:23:14] [1m[91m[ERROR] sources/main.cpp:37:log][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-25 20:25:40] [94m[INFO][0m Starting server...
+[2023-08-25 20:25:40] [93m[WARN][0m Testing WARN log
+[2023-08-25 20:25:40] [1m[91m[ERROR] sources/main.cpp:37:log][0m Testing ERROR log
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...

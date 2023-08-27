@@ -1,6 +1,6 @@
 NAME = webserv
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g3
 
 
 #===============================================================================#
@@ -37,7 +37,6 @@ OBJS = $(addprefix $(OBJS_PATH), $(OBJS_NAME))
 #=============================[ COLORS ]========================================#
 #===============================================================================#
 
-
 RESET = \033[0m
 BOLD = \033[1m
 RED = \033[31m
@@ -48,13 +47,32 @@ ROSE = \033[35m
 
 
 #===============================================================================#
+#=============================[ DEBUG ]========================================#
+#===============================================================================#
+
+DEBUG_LEVEL ?= 0
+
+ifeq ($(DEBUG_LEVEL),1)
+CXXFLAGS += -DDEBUG_LEVEL=1 -g3
+endif
+
+ifeq ($(DEBUG_LEVEL),2)
+CXXFLAGS += -DDEBUG_LEVEL=2 -g3
+endif
+
+
+
+#===============================================================================#
 #=============================[ RULES ]========================================#
 #===============================================================================#
 
 
 RM = rm -rf
-all: project $(NAME) $(HDR_NAME)
+all: .last_build_flags project $(NAME) $(HDR_NAME)
 
+valgrind: DEBUG_LEVEL = 2
+valgrind: all 
+	valgrind --leak-check=full --trace-children=yes --track-origins=yes ./webserv
 
 project:
 	@echo "$(BLUE)====================================$(RESET)"
@@ -66,14 +84,14 @@ $(OBJS_PATH):
 	@echo "\t[ $(GREEN)✓$(RESET) ] $(OBJS_PATH) directory done \n"
 
 
-$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME)
-	@$(CC) $(CFLAGS) $(HDR_INCLUDE) -o $@ -c $<
+$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME) .last_build_flags
+	@$(CC) $(CXXFLAGS) $(HDR_INCLUDE) -o $@ -c $<
 	@echo "\t[ $(GREEN)✓$(RESET) ] $@ object"
 
 
 $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(SRCS_ALL)"
-	@$(CC) $(CFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
+	@$(CC) $(CXXFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
 	@echo "\t[ $(GREEN)✓$(RESET) ] $(NAME) executable"
 	@echo "\t\t       $(ROSE)  "
 	@echo "\t\t       $(ROSE).████:   ████████.        "
@@ -108,6 +126,10 @@ $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(GREEN)/|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ $(RESET)"
 
 
+# Need this to reocpile properly the project because of macros
+.last_build_flags:
+	@echo "$(CXXFLAGS)" | cmp -s - $@ || echo "$(CXXFLAGS)" > $@
+
 clean:
 	@echo "\t[ $(RED)$(BOLD)=== CLEANING === $(RESET)]"
 	@echo "$(RED)====================================$(RESET)"
@@ -137,4 +159,4 @@ tclean:
 	@if [ -n "$${PID}" ] ; then kill $${PID}; fi
 
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re .last_build_flags valgrind project
