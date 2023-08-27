@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 14:12:00 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:26:39 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void Server::start() {
 	}
 
 	cleanup();
+//	Logger::cleanup();
 }
 
 /**
@@ -655,8 +656,9 @@ void Server::inspect_epoll_event(uint32_t events) {
  */
 void	Server::signal_handler(int sig)
 {
-	if (sig == SIGINT)
+	if (sig == SIGINT) {
 		Server::run = false;
+	}
 }
 
 //This method will probably dissapear or change completely, just here to bootstrap 
@@ -690,6 +692,9 @@ void Server::stop() {
 	if (epoll_fd != -1) {
 		close(epoll_fd);
 	}
+
+	// Cleanup Logger
+    Logger::cleanup();
 }
 
 /**
