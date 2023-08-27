@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/27 17:32:04 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/27 17:35:03 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ switch (level) {
         break;
     case DEBUG_DETAILED:
         formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, "", FILE_FUNC_WIDTH);
+        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
         break;
     case INFO:
         formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
@@ -216,7 +216,7 @@ switch (level) {
         break;
     case ERROR:
         formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
-        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, "", FILE_FUNC_WIDTH);
+        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
         break;
     case TRACE:
         formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
@@ -224,7 +224,7 @@ switch (level) {
         break;
 }
 
-    formattedMsg << formatSection(message, "", MESSAGE_WIDTH);
+    formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
 
 
 
