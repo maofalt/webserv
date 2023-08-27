@@ -1432,3 +1432,1418 @@ Epoll returned with 0 events.
 Waiting for an epoll event...
 Epoll returned with 0 events.
 Waiting for an epoll event...
+[2023-08-27 17:35:46] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:35:46] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:35:46] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:35:55] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:35:55] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                           [0m
+[2023-08-27 17:35:55] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                  [0m
+[2023-08-27 17:35:55] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:35:55] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:39:52] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:39:52] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:39:52] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:44:27] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:44:27] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                           [0m
+[2023-08-27 17:44:27] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                  [0m
+[2023-08-27 17:44:27] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:44:27] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+[2023-08-27 17:44:27] [0m[TRACE] [0m
+[32mLorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla feugiat [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:56:20] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:56:20] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                           [0m
+[97mTesting DEBUG_DETAILED log                                  [0m
+[2023-08-27 17:56:20] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:56:20] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+[32mLorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla[0m
+[32mfeugiat                                                     [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:57:00] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:57:00] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:57:00] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+[2023-08-27 17:57:08] [0m[34m[INFO]  [0m[32mStarting server...                                          [0m
+[2023-08-27 17:57:08] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                           [0m
+[97mTesting DEBUG_DETAILED log                                  [0m
+[2023-08-27 17:57:08] [0m[33m[WARN]  [0m[32mTesting WARN log                                            [0m
+[2023-08-27 17:57:08] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                           [0m
+[32mIn the distant future, the year 4045, humanity had reached technological[0m
+[32mheights that we, in the early 21st century, could only dream[0m
+[32mof. Interstellar travel was not just possible, but commonplace.[0m
+[32mPeople lived on multiple planets, and our society had evolved[0m
+[32min ways that would be utterly foreign to us.
+However, despite[0m
+[32mall the technological marvels and advancements, the human heart[0m
+[32mremained unchanged. People still loved, hated, laughed, cried,[0m
+[32mand hoped. The essence of what it meant to be human had endured[0m
+[32mthrough the ages. Some argued that it was our unchanging nature[0m
+[32mthat had allowed us to survive and thrive, while others believed[0m
+[32mthat it was a testament to our fundamental limitations.
+One day,[0m
+[32ma historian named Lila made a discovery. Buried deep within an[0m
+[32mold server from the 21st century, she found records of conversations,[0m
+[32mdreams, hopes, and fears of people from that era. These weren't[0m
+[32mfamous personalities or influential figures, but everyday individuals[0m
+[32mdiscussing their daily lives, their aspirations, and their challenges.[0m
+[32mThe content was raw, unfiltered, and profoundly human.
+Lila spent[0m
+[32mmonths studying these records, trying to piece together the world[0m
+[32mas it was then. She felt an overwhelming sense of connection[0m
+[32mto these long-lost souls. The details of their lives might have[0m
+[32mbeen different, but the emotions, the struggles, the joys, and[0m
+[32mthe pains were all too familiar. It was a humbling reminder that[0m
+[32mno matter how much the world changes, the human experience remains[0m
+[32mfundamentally the same.
+Inspired by her findings, Lila decided[0m
+[32mto create a museum. Not just any museum, but one dedicated to[0m
+[32mpreserving the memories and stories of ordinary people from the[0m
+[32mpast. Visitors could walk through the exhibits and listen to[0m
+[32msnippets of conversations, read old messages, and immerse themselves[0m
+[32min the lives of those who lived centuries before. It was a tribute[0m
+[32mto the timeless nature of the human spirit, a bridge between[0m
+[32mthe past and the present, reminding everyone that while circumstances[0m
+[32mchange, our core essence does not.                          [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 17:57:45] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 17:57:45] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[97mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 17:57:45] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 17:57:45] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[32mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[32m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[32mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[32mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[32mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[32mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[32mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[32mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[32mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[32mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[32mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[32mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[32mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[32mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[32mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[32ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[32mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[32mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[32mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[32mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:01:45] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:01:45] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[97mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:01:45] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:01:45] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:06:35] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:06:35] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[97mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:06:35] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:06:35] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:07:59] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:07:59] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:07:59] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[97mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:07:59] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:07:59] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:07:59] [0m[TRACE] [0m
+[32mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early 21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People lived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However, despite all the technological marvels and advancements, the human heart remained unchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through the ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while others believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila made a discovery. Buried deep within an old server from the 21st century, she found records of conversations, dreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures, but everyday individuals discussing their daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece together the world as it was then. She felt an overwhelming sense of connection to these long-lost souls. The details of their lives might have been different, but the emotions, the struggles, the joys, and the pains were all too familiar. It was a humbling reminder that no matter how much the world changes, the human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people from the past. Visitors could walk through the exhibits and listen to snippets of conversations, read old messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute to the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone that while circumstances change, our core essence does not.[0m
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:09:17] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:09:17] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:09:17] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:09:17] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:09:17] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:09:17] [0m[TRACE] [0m
+[32mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early 21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People lived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However, despite all the technological marvels and advancements, the human heart remained unchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through the ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while others believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila made a discovery. Buried deep within an old server from the 21st century, she found records of conversations, dreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures, but everyday individuals discussing their daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece together the world as it was then. She felt an overwhelming sense of connection to these long-lost souls. The details of their lives might have been different, but the emotions, the struggles, the joys, and the pains were all too familiar. It was a humbling reminder that no matter how much the world changes, the human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people from the past. Visitors could walk through the exhibits and listen to snippets of conversations, read old messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute to the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone that while circumstances change, our core essence does not.[0m
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:13:15] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:13:15] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:13:15] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:13:15] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:13:15] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:13:15] [0m[TRACE] [0m
+
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:17:49] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:17:49] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:17:49] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:17:49] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:17:49] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:17:49] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════╗
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+╚════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:20:36] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:20:36] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:20:36] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:20:36] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:20:36] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:20:36] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the early[0m
+[97m21st century, could only dream of. Interstellar travel was not just possible, but commonplace. People[0m
+[97mlived on multiple planets, and our society had evolved in ways that would be utterly foreign to us.
+However,[0m
+[97mdespite all the technological marvels and advancements, the human heart remained unchanged. People still[0m
+[97mloved, hated, laughed, cried, and hoped. The essence of what it meant to be human had endured through[0m
+[97mthe ages. Some argued that it was our unchanging nature that had allowed us to survive and thrive, while[0m
+[97mothers believed that it was a testament to our fundamental limitations.
+One day, a historian named Lila[0m
+[97mmade a discovery. Buried deep within an old server from the 21st century, she found records of conversations,[0m
+[97mdreams, hopes, and fears of people from that era. These weren't famous personalities or influential figures,[0m
+[97mbut everyday individuals discussing their daily lives, their aspirations, and their challenges. The content[0m
+[97mwas raw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece[0m
+[97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost souls.[0m
+[97mThe details of their lives might have been different, but the emotions, the struggles, the joys, and[0m
+[97mthe pains were all too familiar. It was a humbling reminder that no matter how much the world changes,[0m
+[97mthe human experience remains fundamentally the same.
+Inspired by her findings, Lila decided to create[0m
+[97ma museum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary people[0m
+[97mfrom the past. Visitors could walk through the exhibits and listen to snippets of conversations, read[0m
+[97mold messages, and immerse themselves in the lives of those who lived centuries before. It was a tribute[0m
+[97mto the timeless nature of the human spirit, a bridge between the past and the present, reminding everyone[0m
+[97mthat while circumstances change, our core essence does not.                                         [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:26:10] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:26:10] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:26:10] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:26:10] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:26:10] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:26:10] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+[97mearly 21st century, could only dream of. Interstellar travel was not just possible, but commonplace.[0m
+[97mPeople lived on multiple planets, and our society had evolved in ways that would be utterly foreign [0m
+[97mto us.
+However, despite all the technological marvels and advancements, the human heart remained    [0m
+[97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+[97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+[97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+[97mlimitations.
+One day, a historian named Lila made a discovery. Buried deep within an old server from[0m
+[97mthe 21st century, she found records of conversations, dreams, hopes, and fears of people from that  [0m
+[97mera. These weren't famous personalities or influential figures, but everyday individuals discussing [0m
+[97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+[97mprofoundly human.
+Lila spent months studying these records, trying to piece together the world as it[0m
+[97mwas then. She felt an overwhelming sense of connection to these long-lost souls. The details of     [0m
+[97mtheir lives might have been different, but the emotions, the struggles, the joys, and the pains were[0m
+[97mall too familiar. It was a humbling reminder that no matter how much the world changes, the human   [0m
+[97mexperience remains fundamentally the same.
+Inspired by her findings, Lila decided to create a       [0m
+[97mmuseum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary   [0m
+[97mpeople from the past. Visitors could walk through the exhibits and listen to snippets of            [0m
+[97mconversations, read old messages, and immerse themselves in the lives of those who lived centuries  [0m
+[97mbefore. It was a tribute to the timeless nature of the human spirit, a bridge between the past and  [0m
+[97mthe present, reminding everyone that while circumstances change, our core essence does not.         [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:27:36] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:27:36] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:27:36] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:27:36] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:27:36] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:27:36] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ 
+[97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ 
+[97mearly 21st century, could only dream of. Interstellar travel was not just possible, but commonplace.[0m
+ 
+[97mPeople lived on multiple planets, and our society had evolved in ways that would be utterly foreign [0m
+ 
+[97mto us.
+However, despite all the technological marvels and advancements, the human heart remained    [0m
+ 
+[97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ 
+[97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ 
+[97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ 
+[97mlimitations.
+One day, a historian named Lila made a discovery. Buried deep within an old server from[0m
+ 
+[97mthe 21st century, she found records of conversations, dreams, hopes, and fears of people from that  [0m
+ 
+[97mera. These weren't famous personalities or influential figures, but everyday individuals discussing [0m
+ 
+[97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ 
+[97mprofoundly human.
+Lila spent months studying these records, trying to piece together the world as it[0m
+ 
+[97mwas then. She felt an overwhelming sense of connection to these long-lost souls. The details of     [0m
+ 
+[97mtheir lives might have been different, but the emotions, the struggles, the joys, and the pains were[0m
+ 
+[97mall too familiar. It was a humbling reminder that no matter how much the world changes, the human   [0m
+ 
+[97mexperience remains fundamentally the same.
+Inspired by her findings, Lila decided to create a       [0m
+ 
+[97mmuseum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary   [0m
+ 
+[97mpeople from the past. Visitors could walk through the exhibits and listen to snippets of            [0m
+ 
+[97mconversations, read old messages, and immerse themselves in the lives of those who lived centuries  [0m
+ 
+[97mbefore. It was a tribute to the timeless nature of the human spirit, a bridge between the past and  [0m
+ 
+[97mthe present, reminding everyone that while circumstances change, our core essence does not.         [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:28:01] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:28:01] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:28:01] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:28:01] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:28:01] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:28:01] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but commonplace.[0m
+ [97mPeople lived on multiple planets, and our society had evolved in ways that would be utterly foreign [0m
+ [97mto us.
+However, despite all the technological marvels and advancements, the human heart remained    [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.
+One day, a historian named Lila made a discovery. Buried deep within an old server from[0m
+ [97mthe 21st century, she found records of conversations, dreams, hopes, and fears of people from that  [0m
+ [97mera. These weren't famous personalities or influential figures, but everyday individuals discussing [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.
+Lila spent months studying these records, trying to piece together the world as it[0m
+ [97mwas then. She felt an overwhelming sense of connection to these long-lost souls. The details of     [0m
+ [97mtheir lives might have been different, but the emotions, the struggles, the joys, and the pains were[0m
+ [97mall too familiar. It was a humbling reminder that no matter how much the world changes, the human   [0m
+ [97mexperience remains fundamentally the same.
+Inspired by her findings, Lila decided to create a       [0m
+ [97mmuseum. Not just any museum, but one dedicated to preserving the memories and stories of ordinary   [0m
+ [97mpeople from the past. Visitors could walk through the exhibits and listen to snippets of            [0m
+ [97mconversations, read old messages, and immerse themselves in the lives of those who lived centuries  [0m
+ [97mbefore. It was a tribute to the timeless nature of the human spirit, a bridge between the past and  [0m
+ [97mthe present, reminding everyone that while circumstances change, our core essence does not.         [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:30:55] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:30:55] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:30:55] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:30:55] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:30:55] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:30:55] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.
+However, despite all the technological marvels and advancements, the human   [0m
+ [97mheart remained unchanged. People still loved, hated, laughed, cried, and hoped. The essence of what [0m
+ [97mit meant to be human had endured through the ages. Some argued that it was our unchanging nature    [0m
+ [97mthat had allowed us to survive and thrive, while others believed that it was a testament to our     [0m
+ [97mfundamental limitations.
+One day, a historian named Lila made a discovery. Buried deep within an    [0m
+ [97mold server from the 21st century, she found records of conversations, dreams, hopes, and fears of   [0m
+ [97mpeople from that era. These weren't famous personalities or influential figures, but everyday       [0m
+ [97mindividuals discussing their daily lives, their aspirations, and their challenges. The content was  [0m
+ [97mraw, unfiltered, and profoundly human.
+Lila spent months studying these records, trying to piece    [0m
+ [97mtogether the world as it was then. She felt an overwhelming sense of connection to these long-lost  [0m
+ [97msouls. The details of their lives might have been different, but the emotions, the struggles, the   [0m
+ [97mjoys, and the pains were all too familiar. It was a humbling reminder that no matter how much the   [0m
+ [97mworld changes, the human experience remains fundamentally the same.
+Inspired by her findings, Lila  [0m
+ [97mdecided to create a museum. Not just any museum, but one dedicated to preserving the memories and   [0m
+ [97mstories of ordinary people from the past. Visitors could walk through the exhibits and listen to    [0m
+ [97msnippets of conversations, read old messages, and immerse themselves in the lives of those who      [0m
+ [97mlived centuries before. It was a tribute to the timeless nature of the human spirit, a bridge       [0m
+ [97mbetween the past and the present, reminding everyone that while circumstances change, our core      [0m
+ [97messence does not.                                                                                   [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 18:34:16] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 18:34:16] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 18:34:16] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 18:34:16] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 18:34:16] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 18:34:16] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+Config = ./config/default.conf
+[text][text][;][
+][
+]
+==========================================================================
+
+Config Data : 
+
+text : text
+
+==========================================================================
+
+
+==========================================================================
+
+
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...

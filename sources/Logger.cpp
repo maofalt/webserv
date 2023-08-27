@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/27 17:35:03 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/27 18:34:08 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 const int TIMESTAMP_WIDTH = 22;
 const int LEVEL_WIDTH = 8;
 const int FILE_FUNC_WIDTH = 25;
-const int MESSAGE_WIDTH = 60;
+const int MESSAGE_WIDTH = 100;
+
 
 std::string formatSection(const std::string& content, const std::string& color, int width) {
     std::ostringstream ss;
@@ -28,6 +29,43 @@ std::string intToString(int value) {
     oss << value;
     return oss.str();
 }
+
+std::vector<std::string> splitIntoLines(const std::string& str, size_t width) {
+    std::vector<std::string> result;
+    std::istringstream stream(str);
+    std::string line;
+
+    width -= 1;  // For the added whitespace
+
+    while (std::getline(stream, line)) {
+        size_t current = 0, lastSpace = 0;
+
+        for (size_t i = 0; i < line.size(); ++i) {
+            if (line[i] == ' ') {
+                lastSpace = i;
+            }
+
+            if (i - current >= width) {
+                if (lastSpace == current) {
+                    result.push_back(line.substr(current, width));
+                    current = i;
+                } else {
+                    result.push_back(line.substr(current, lastSpace - current));
+                    current = lastSpace + 1;
+                }
+            }
+        }
+
+        if (current < line.size()) {
+            result.push_back(line.substr(current));
+        }
+    }
+
+    return result;
+}
+
+
+
 
 // Singleton instance initialization
 Logger* Logger::instance = NULL;
@@ -200,42 +238,51 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     //formattedMsg << "[" << timestamp << "] ";
     formattedMsg << formatSection("[" + timestamp + "]", "", TIMESTAMP_WIDTH);
     
-switch (level) {
-    case DEBUG:
-        formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-        break;
-    case DEBUG_DETAILED:
-        formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
-        break;
-    case INFO:
-        formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
-        break;
-    case WARN:
-        formattedMsg << formatSection("[WARN]", ANSI_YELLOW, LEVEL_WIDTH);
-        break;
-    case ERROR:
-        formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
-        formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
-        break;
-    case TRACE:
-        formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
-        formattedMsg << "\n"; // New line for TRACE message content
-        break;
-}
+    switch (level) {
+        case DEBUG:
+            formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+            break;
+        case DEBUG_DETAILED:
+            formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
+            break;
+        case INFO:
+            formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
+            break;
+        case WARN:
+            formattedMsg << formatSection("[WARN]", ANSI_YELLOW, LEVEL_WIDTH);
+            break;
+        case ERROR:
+            formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
+            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
+            break;
+        case TRACE:
+            formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
+            formattedMsg << "\n"; // New line for TRACE message content
+            break;
+    }
 
-    formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
-
-
+    //formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
 
     #if DEBUG_LEVEL == 2
-        if (level == DEBUG_DETAILED) {
+    if (level == TRACE) {
+        std::vector<std::string> lines = splitIntoLines(message, MESSAGE_WIDTH);
+        std::cout << formattedMsg.str() << std::endl;
+        std::cout << SEPARATOR_START << std::endl;
+        for (size_t i = 0; i < lines.size(); ++i) {
+            formattedMsg.str(""); // Clear the contents of the stream
+            formattedMsg << " " << formatSection(lines[i], ANSI_WHITE, MESSAGE_WIDTH);  // Add a space before the message
             std::cout << formattedMsg.str() << std::endl;
         }
-        if (level == TRACE) {
-            std::cout << formattedMsg.str() << std::endl;
-        }
+        std::cout << SEPARATOR_END << std::endl;
+        std::cout << std::endl;
+    } else if (level == DEBUG_DETAILED) {
+        formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
+        std::cout << formattedMsg.str() << std::endl;
+    }
     #endif
+    
+    formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
     
     #if DEBUG_LEVEL >= 1
         if (level == DEBUG) {

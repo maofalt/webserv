@@ -9,9 +9,13 @@
 #include <string>
 #include <ctime>
 #include <cassert>
+#include <vector>
 #include <sys/stat.h>
 #include "TeeBuf.hpp"
 #include "Colors.hpp"
+
+#define SEPARATOR_START "╔════════════════════════════════════════════════════════════════════════════════════════════════════╗"
+#define SEPARATOR_END   "╚════════════════════════════════════════════════════════════════════════════════════════════════════╝"
 
 class Logger {
 private:
