@@ -71,8 +71,9 @@ int main(int ac, char **av) {
     else
         server.loadDefaultConfig();
 
-    if (DISPLAY_CONF)
-        std::cout << server.getConfig() << std::endl;
+    // if (DISPLAY_CONF)
+    //     std::cout << server.getConfig() << std::endl;
+    DEBUG_CONFIG("Config log test: \n");
 
     try {
         server.start();  // Starts listening on all ports and enters event loop.    

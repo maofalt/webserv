@@ -246,6 +246,9 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
             formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
             formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
             break;
+        case DEBUG_CONFIG:
+            formattedMsg << formatSection("[CONFIG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+            break;
         case INFO:
             formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
             break;
@@ -278,6 +281,9 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
         std::cout << std::endl;
     } else if (level == DEBUG_DETAILED) {
         formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
+        std::cout << formattedMsg.str() << std::endl;
+    } else if (level == DEBUG_CONFIG) {
+        formattedMsg << formatSection(message, "", MESSAGE_WIDTH);
         std::cout << formattedMsg.str() << std::endl;
     }
     #endif

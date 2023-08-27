@@ -21,12 +21,8 @@
 #include <iostream>
 #include <sys/stat.h>
 #include "Logger.hpp"
+#include "Colors.hpp"
 #include "ServerConf.hpp"
-
-# define RED "\033[38;5;1m"
-# define GREEN "\033[38;5;10m"
-# define BOLD "\033[1m"
-# define RESET "\033[0m"
 
 # define DISPLAY_CONF 1
 
