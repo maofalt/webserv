@@ -25,8 +25,10 @@ void	Config::readConf(std::ifstream & file) {
 	while (file)
 	{
 		std::getline(file, line);
-		removeComments(line);
-		_rawContent.push_back(line + "\n");
+		if (file) {
+			removeComments(line);
+			_rawContent.push_back(line + "\n");
+		}
 	}
 	file.close();
 }

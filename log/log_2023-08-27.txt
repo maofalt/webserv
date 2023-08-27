@@ -3803,3 +3803,1797 @@ Epoll returned with 0 events.
 Waiting for an epoll event...
 Epoll returned with 0 events.
 Waiting for an epoll event...
+[2023-08-27 19:19:20] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:19:20] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:19:20] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:19:20] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:19:20] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:19:20] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+1
+2
+3
+4
+5
+12
+13
+14
+15
+17
+18
+19
+20
+21
+22
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:19:20] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:23:02] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:23:02] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:23:02] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:23:02] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:23:02] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:23:02] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+test
+1
+2
+3
+4
+5
+12
+13
+14
+15
+17
+18
+19
+20
+21
+22
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:23:02] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:23:26] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:23:26] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:23:26] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:23:26] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:23:26] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:23:26] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+test
+1
+2
+3
+4
+5
+12
+13
+14
+15
+17
+18
+19
+20
+21
+22
+test
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:23:26] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+[2023-08-27 19:23:40] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:23:40] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:23:40] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:23:40] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:23:40] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:23:40] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+test
+test
+1
+2
+3
+4
+5
+12
+13
+14
+15
+17
+18
+19
+20
+21
+22
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:23:40] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:23:55] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:23:55] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:23:55] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:23:55] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:23:55] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:23:55] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+test
+1
+2
+3
+4
+5
+12
+13
+14
+15
+17
+18
+19
+20
+21
+22
+test
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:23:55] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+[2023-08-27 19:24:46] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:24:46] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:24:46] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:24:46] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:24:46] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:24:46] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+lines : 79
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:24:46] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:27:33] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:27:33] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:27:33] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:27:33] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:27:33] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:27:33] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+lines : 79
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:27:33] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:28:33] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:28:33] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:28:33] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:28:33] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:28:33] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:28:33] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+lines : 78
+[1m./config/nginx_example_copy.conf: [38;5;10m0[0m error(s).
+Config = ./config/nginx_example_copy.conf
+[2023-08-27 19:28:33] [0m[1m[97m[CONFIG][0m[user][www][www][;][
+][worker_processes][5][;][
+][error_log][logs/error.log][;][
+][pid][logs/nginx.pid][;][
+][worker_rlimit_nofile][8192][;][
+][
+][server][{][
+][worker_connections][4096][;][
+][}][
+][
+][
+][include][conf/mime.types][;][
+][include][/etc/nginx/proxy.conf][;][
+][include][/etc/nginx/fastcgi.conf][;][
+][index][index.html][index.htm][index.php][;][
+][
+][default_type][application/octet-stream][;][
+][log_format][main]['$remote_addr][-][$remote_user][[$time_local]][$status][']['"$request"][$body_bytes_sent]["$http_referer"][']['"$http_user_agent"]["$http_x_forwarded_for"'][;][
+][access_log][logs/access.log][main][;][
+][sendfile][on][;][
+][tcp_nopush][on][;][
+][server_names_hash_bucket_size][128][;][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain1.com][www.domain1.com][;][
+][access_log][logs/domain1.access.log][main][;][
+][root][html][;][
+][
+][location][~][\.php$][{][
+][fastcgi_pass][127.0.0.1:1025][;][
+][}][
+][}][
+][
+][server][{][
+][listen][80][;][
+][server_name][domain2.com][www.domain2.com][;][
+][access_log][logs/domain2.access.log][main][;][
+][
+][location][asdg][{][
+][asdg][asdga][;][
+][}][
+][
+][
+][location][~][^/(images|javascript|js|css|flash|media|static)/][{][
+][root][/var/www/virtual/big.server.com/htdocs][;][
+][expires][30d][;][
+][location][asda][;][
+][}][
+][
+][
+][
+][
+][
+][
+][location][/][{][
+][proxy_pass][http://127.0.0.1:8080][;][
+][}][
+][}][
+][
+][
+][
+][
+][
+][
+][
+][
+][server][{][
+][listen][80][;][
+][server_name][big.server.com][;][
+][access_log][logs/big.server.access.log][main][;][
+][
+][location][/][{][
+][proxy_pass][http://big_server_com][;][
+][}][
+][}][
+][
+]
+==========================================================================
+
+Config Data : 
+
+access_log : access_log, logs/access.log, main
+default_type : default_type, application/octet-stream
+error_log : error_log, logs/error.log
+include : include, conf/mime.types, include, /etc/nginx/proxy.conf, include, /etc/nginx/fastcgi.conf
+index : index, index.html, index.htm, index.php
+log_format : log_format, main, '$remote_addr, -, $remote_user, [$time_local], $status, ', '"$request", $body_bytes_sent, "$http_referer", ', '"$http_user_agent", "$http_x_forwarded_for"'
+pid : pid, logs/nginx.pid
+sendfile : sendfile, on
+server_names_hash_bucket_size : server_names_hash_bucket_size, 128
+tcp_nopush : tcp_nopush, on
+user : user, www, www
+worker_processes : worker_processes, 5
+worker_rlimit_nofile : worker_rlimit_nofile, 8192
+
+==========================================================================
+
+Server 1 :
+	worker_connections : worker_connections, 4096
+
+	Location(s) :
+
+Server 2 :
+	access_log : access_log, logs/domain1.access.log, main
+	listen : listen, 80
+	root : root, html
+	server_name : server_name, domain1.com, www.domain1.com
+
+	Location(s) :
+		location 1 :
+		path(s) : ~, \.php$
+		fastcgi_pass : fastcgi_pass, 127.0.0.1:1025
+
+
+Server 3 :
+	access_log : access_log, logs/domain2.access.log, main
+	listen : listen, 80
+	server_name : server_name, domain2.com, www.domain2.com
+
+	Location(s) :
+		location 1 :
+		path(s) : asdg
+		asdg : asdg, asdga
+
+		location 2 :
+		path(s) : ~, ^/(images|javascript|js|css|flash|media|static)/
+		expires : expires, 30d
+		location : location, asda
+		root : root, /var/www/virtual/big.server.com/htdocs
+
+		location 3 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://127.0.0.1:8080
+
+
+Server 4 :
+	access_log : access_log, logs/big.server.access.log, main
+	listen : listen, 80
+	server_name : server_name, big.server.com
+
+	Location(s) :
+		location 1 :
+		path(s) : /
+		proxy_pass : proxy_pass, http://big_server_com
+
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:29:39] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:29:39] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:29:39] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:29:39] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:29:39] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:29:39] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+lines : 2
+[1m./config/error/no_return_to_l.conf: [38;5;10m0[0m error(s).
+Config = ./config/error/no_return_to_l.conf
+[2023-08-27 19:29:39] [0m[1m[97m[CONFIG][0m[asdgasddsa][asdgasd][;][
+]
+==========================================================================
+
+Config Data : 
+
+asdgasddsa : asdgasddsa, asdgasd
+
+==========================================================================
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+[2023-08-27 19:30:11] [0m[34m[INFO]  [0m[32mStarting server...                                                                                  [0m
+[2023-08-27 19:30:11] [0m[1m[97m[DEBUG] [0m[32mTesting DEBUG log                                                                                   [0m
+[2023-08-27 19:30:11] [0m[1m[97m[DEBUG] [0m[1m[31msources/main.cpp:35:log  [0m[32mTesting DEBUG_DETAILED log                                                                          [0m
+[2023-08-27 19:30:11] [0m[33m[WARN]  [0m[32mTesting WARN log                                                                                    [0m
+[2023-08-27 19:30:11] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:37:log  [0m[32mTesting ERROR log                                                                                   [0m
+[2023-08-27 19:30:11] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [97mIn the distant future, the year 4045, humanity had reached technological heights that we, in the    [0m
+ [97mearly 21st century, could only dream of. Interstellar travel was not just possible, but             [0m
+ [97mcommonplace. People lived on multiple planets, and our society had evolved in ways that would be    [0m
+ [97mutterly foreign to us.                                                                              [0m
+ [97mHowever, despite all the technological marvels and advancements, the human heart remained           [0m
+ [97munchanged. People still loved, hated, laughed, cried, and hoped. The essence of what it meant to be [0m
+ [97mhuman had endured through the ages. Some argued that it was our unchanging nature that had allowed  [0m
+ [97mus to survive and thrive, while others believed that it was a testament to our fundamental          [0m
+ [97mlimitations.                                                                                        [0m
+ [97mOne day, a historian named Lila made a discovery. Buried deep within an old server from the 21st    [0m
+ [97mcentury, she found records of conversations, dreams, hopes, and fears of people from that era.      [0m
+ [97mThese weren't famous personalities or influential figures, but everyday individuals discussing      [0m
+ [97mtheir daily lives, their aspirations, and their challenges. The content was raw, unfiltered, and    [0m
+ [97mprofoundly human.                                                                                   [0m
+ [97mLila spent months studying these records, trying to piece together the world as it was then. She    [0m
+ [97mfelt an overwhelming sense of connection to these long-lost souls. The details of their lives might [0m
+ [97mhave been different, but the emotions, the struggles, the joys, and the pains were all too          [0m
+ [97mfamiliar. It was a humbling reminder that no matter how much the world changes, the human           [0m
+ [97mexperience remains fundamentally the same.                                                          [0m
+ [97mInspired by her findings, Lila decided to create a museum. Not just any museum, but one dedicated   [0m
+ [97mto preserving the memories and stories of ordinary people from the past. Visitors could walk        [0m
+ [97mthrough the exhibits and listen to snippets of conversations, read old messages, and immerse        [0m
+ [97mthemselves in the lives of those who lived centuries before. It was a tribute to the timeless       [0m
+ [97mnature of the human spirit, a bridge between the past and the present, reminding everyone that      [0m
+ [97mwhile circumstances change, our core essence does not.                                              [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+[1m./config/error/no_return_to_l2.conf:5: [38;5;1merror: [0mexpected '\n' before '}'.
+lines : 6
+[1m./config/error/no_return_to_l2.conf: [38;5;1m1[0m error(s).
+[1m./config/error/no_return_to_l2.conf[0m: could not setup this config, using default config instead.
+lines : 3
+[1m./config/default.conf: [38;5;10m0[0m error(s).
+Config = ./config/default.conf
+[2023-08-27 19:30:11] [0m[1m[97m[CONFIG][0m[text][text][asdg][;][
+][bla][bla][;][
+]
+==========================================================================
+
+Config Data : 
+
+bla : bla, bla
+text : text, text, asdg
+
+==========================================================================
+
+
+==========================================================================
+
+[0m
+Socket created for port: 8000
+Bind successful for port: 8000
+Listening on port: 8000
+Socket created for port: 8694
+Bind successful for port: 8694
+Listening on port: 8694
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...
+Epoll returned with 0 events.
+Waiting for an epoll event...

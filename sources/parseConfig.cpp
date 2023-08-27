@@ -71,7 +71,7 @@ int	Config::fillStruct(int line, std::vector<std::string>::iterator & it) {
 	}
 	if (it != _splitContent.end() && *it == ";") {
 		pushToStructMap(it, _confData, line);
-		std::cout << line << std::endl;
+		// std::cout << line << std::endl;
 	}
 	else if (it != _splitContent.end() && *it == "{") {
 		if (*(--it) != "server")
@@ -98,11 +98,15 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	readConf(file);
 	splitConf();
 
+
 	_nbrErr = basicCheck();
+	std::cout << "lines : " << _nbrLines << std::endl;
 	if (_nbrErr)
 		return printNbErr();
 
 	std::vector<std::string>::iterator it = _splitContent.begin();
+	// std::cout << "test" << std::endl;
 	fillStruct(1, it);
+	// std::cout << "test" << std::endl;
 	return printNbErr(), _nbrErr;
 }
