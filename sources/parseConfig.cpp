@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parseConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:31 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 18:13:33 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/27 19:36:28 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 
 
 	_nbrErr = basicCheck();
-	std::cout << "lines : " << _nbrLines << std::endl;
 	if (_nbrErr)
 		return printNbErr();
 
