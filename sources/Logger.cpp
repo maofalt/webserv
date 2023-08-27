@@ -6,12 +6,28 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 20:20:50 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/27 17:26:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Logger.hpp"
 
+const int TIMESTAMP_WIDTH = 22;
+const int LEVEL_WIDTH = 8;
+const int FILE_FUNC_WIDTH = 25;
+const int MESSAGE_WIDTH = 60;
+
+std::string formatSection(const std::string& content, const std::string& color, int width) {
+    std::ostringstream ss;
+    ss << color << std::left << std::setw(width) << content << "\033[0m"; // reset the color at the end
+    return ss.str();
+}
+
+std::string intToString(int value) {
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
 
 // Singleton instance initialization
 Logger* Logger::instance = NULL;
@@ -181,28 +197,35 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     // 3. Format and write the message to the log file or std::cout based on log level
     std::ostringstream formattedMsg;
 
-    formattedMsg << "[" << timestamp << "] ";
+    //formattedMsg << "[" << timestamp << "] ";
+    formattedMsg << formatSection("[" + timestamp + "]", "", TIMESTAMP_WIDTH);
     
     switch (level) {
         case DEBUG:
-            formattedMsg << "\033[1m\033[97m[DEBUG]\033[0m "; // Bold white
+            formattedMsg << formatSection("[DEBUG]", "\033[1m\033[97m", LEVEL_WIDTH);
             break;
         case DEBUG_DETAILED:
-            formattedMsg << "\033[1m\033[97m[DEBUG]"<< file << ":" << line <<":" << __FUNCTION__  << "\033[0m "; // Bold white with file, function, and line
+            formattedMsg << formatSection("[DEBUG]", "\033[1m\033[97m", LEVEL_WIDTH);
+            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, "", FILE_FUNC_WIDTH);
             break;
         case INFO:
-            formattedMsg << "\033[94m[INFO]\033[0m "; // Blue
+            formattedMsg << formatSection("[INFO]", "\033[94m", LEVEL_WIDTH);
             break;
         case WARN:
-            formattedMsg << "\033[93m[WARN]\033[0m "; // Yellow
+            formattedMsg << formatSection("[WARN]", "\033[93m", LEVEL_WIDTH);
             break;
         case ERROR:
-            formattedMsg << "\033[1m\033[91m[ERROR] " << file << ":" << line <<":" << __FUNCTION__  <<  "]\033[0m "; // Bold red with file, function, and line
+            formattedMsg << formatSection("[ERROR]", "\033[1m\033[91m", LEVEL_WIDTH);
+            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, "", FILE_FUNC_WIDTH);
             break;
         case TRACE:
-            formattedMsg << "[TRACE] ";
+            formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
+            formattedMsg << "\n"; // New line for TRACE message content
+            break;
     }
-    formattedMsg << message;
+
+    formattedMsg << formatSection(message, "", MESSAGE_WIDTH);
+
 
 
     #if DEBUG_LEVEL == 2
