@@ -704,7 +704,7 @@ void Server::loadDefaultConfig() {
 
 	file.open(defaultConf.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << BOLD << defaultConf << RED << ": error: " << RESET;
+		std::cerr << BOLD << defaultConf + ": "<< RED << "error: " << RESET;
 		std::cerr << "failed to open default config file." << std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -741,8 +741,8 @@ void Server::loadConfig(const std::string& configPath) {
 
 	file.open(configPath.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << BOLD << configPath << RED << ": error: " << RESET;
-		std::cerr << configPath + "failed to open config file, using default config instead." << std::endl;
+		std::cerr << BOLD << configPath + ": "<< RED << "error: " << RESET;
+		std::cerr << "failed to open config file, using default config instead." << std::endl;
 		loadDefaultConfig();
 		return ;
 	}

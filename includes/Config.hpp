@@ -52,6 +52,8 @@ class Config {
 		void	readConf(std::ifstream & file);
 		void	splitConf();
 		int		basicCheck();
+		void	pushToStructMap(std::vector<std::string>::iterator & it,
+				std::map< std::string, std::vector<std::string> > & sMap, int & line);
 		int		parseLocConf(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ);
 		int		parseLocConf2(std::vector<std::string>::iterator & it, int & line, ServerConfig & newServ, struct location &newLoc);
 		int		parseServConf(std::vector<std::string>::iterator & it, int & line);
