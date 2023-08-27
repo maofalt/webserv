@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:13:11 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:21:23 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,29 @@ std::map<std::string, std::string>	HttpResponse::_content_type = getContentType(
 
 // Constructors
 HttpResponse::HttpResponse(void):
-	_protocol("HTTP/1.1")
+	_protocol(DEFAULT_PROTOCOL),
+	_i_raw(0)
+{
+}
+HttpResponse::HttpResponse(uint16_t port):
+	_port(port),
+	_protocol(DEFAULT_PROTOCOL),
+	_i_raw(0)
 {
 }
 HttpResponse::HttpResponse(HttpResponse const &rhs):
+	_port(rhs._port),
 	_request(rhs._request),
+	_method(rhs._method),
+	_uri(rhs._uri),
+	_parameters(rhs._parameters),
+	_server(rhs._server),
 	_protocol(rhs._protocol),
 	_status(rhs._status),
 	_fields(rhs._fields),
-	_content(rhs._content)
+	_content(rhs._content),
+	_raw(rhs._raw),
+	_i_raw(rhs._i_raw)
 {
 }
 HttpResponse::HttpResponse(HttpRequest const *request):
@@ -67,6 +81,27 @@ HttpResponse::~HttpResponse(void)
 {
 }
 
+// Operators
+HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
+{
+	_port = rhs._port;
+	_request = rhs._request;
+	_method = rhs._method;
+	_uri = rhs._uri;
+	_parameters = rhs._parameters;
+	_server = rhs._server;
+	_type = rhs._type;
+	_fdCgi = rhs._fdCgi;
+	_protocol = rhs._protocol;
+	_status = rhs._status;
+	_fields = rhs._fields;
+	_content = rhs._content;
+	_raw = rhs._raw;
+	_i_raw = rhs._i_raw;
+
+	return (*this);
+}
+
 // Utils
 template <class T>
 std::string	numberToString(T nb)
@@ -77,10 +112,28 @@ std::string	numberToString(T nb)
 }
 
 // Methods
+int	HttpResponse::send(int fd)
+{
+	int	ret_value;
+
+	if (_i_raw + SEND_BUFFER_SIZE <= _raw.size())
+		return (::send(fd, _raw.c_str() + _i_raw, _raw.size() - _i_raw, 0));
+	ret_value = ::send(fd, _raw.c_str() + _i_raw, SEND_BUFFER_SIZE, 0);
+	_i_raw += SEND_BUFFER_SIZE;
+	return (ret_value);
+}
+
 void	HttpResponse::setRequest(HttpRequest const *request)
 {
 	_request = request;
+	_method = request->getMethod();
 	_uri = request->getUri();
+	_status = request->getStatus();
+}
+
+void	HttpResponse::setServer(const Config &config)
+{
+	_server = config.findServer(_request->getHost(), _port);
 }
 
 int	HttpResponse::respond(int fd, std::string status)
@@ -170,6 +223,6 @@ int	HttpResponse::respond(int fd, std::string status)
 	else
 		std::cout << "File \"" << _uri << "\" not printable" << std::endl;
 
-	send(fd, response.c_str(), response.size(), 0);
+	::send(fd, response.c_str(), response.size(), 0);
 	return (0);
 }

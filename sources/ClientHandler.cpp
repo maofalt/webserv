@@ -6,27 +6,31 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:16:28 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 14:23:03 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClientHandler.hpp"
 
-ClientHandler::ClientHandler() : _client_fd(-1), _request() 
-{} 
-
 ClientHandler::~ClientHandler() 
-{}
+{
+}
 
 //constructor by copy
+ClientHandler::ClientHandler(void)
+{
+}
 ClientHandler::ClientHandler(const ClientHandler& other) : 
 	_client_fd(other._client_fd),
-	_request(other._request)
-{}
+	_request(other._request),
+	_response(other._response)
+{
+}
 
-ClientHandler::ClientHandler(int fd, HttpRequest request) :
+ClientHandler::ClientHandler(uint16_t port, int fd) :
 	_client_fd(fd),
-	_request(request)
+	_request(),
+	_response(port)
 {
 }
 
@@ -35,6 +39,7 @@ ClientHandler& ClientHandler::operator=(const ClientHandler& other) {
 	if (this != &other) {
 		_client_fd = other._client_fd;
 		_request = other._request;
+		_response = other._response;
 	}
 	return *this;
 }

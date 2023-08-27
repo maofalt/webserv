@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/24 23:10:33 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 13:25:16 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ class HttpRequest {
 		std::map<std::string, std::string>	_field;
 	// Body
 		std::string	_body;
+	// Status
+		std::string	_status;
 	// Utils
 		std::string	_raw;
 		bool		_headerComplete;
@@ -82,7 +84,10 @@ class HttpRequest {
 		HttpRequest	&operator=(HttpRequest const &rhs);
 	
 	// Getters
-		std::string		getUri(void) const;
+		const std::string	getHost(void) const;
+		const std::string	&getMethod(void) const;
+		const std::string	&getStatus(void) const;
+		const std::string	&getUri(void) const;
 
 	// Methods
 		void	        clear(void);

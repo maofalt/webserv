@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/24 23:16:08 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 13:15:34 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class ClientHandler {
 
 	public:
 		ClientHandler();
-		ClientHandler(int fd, HttpRequest request);
+		ClientHandler(uint16_t port, int fd);
 		ClientHandler(const ClientHandler& other);
 		ClientHandler& operator=(const ClientHandler& other);
 	// Destructor

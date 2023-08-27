@@ -350,7 +350,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	}
 
 	//add to clientHandlers
-	clientHandlers[sock_server] = ClientHandler(sock_server, HttpRequest());
+	clientHandlers[sock_server] = ClientHandler(ntohs(((struct sockaddr_in *)&client_addr)->sin_port), sock_server);
 	return sock_server;
 }
 
@@ -709,12 +709,14 @@ void Server::loadDefaultConfig() {
 
 	file.open(defaultConf.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << defaultConf + ": error: failed to open default config file." << std::endl;
+		std::cerr << BOLD << defaultConf + ": "<< RED << "error: " << RESET;
+		std::cerr << "failed to open default config file." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	_config = Config();
 	if (_config.setupConf(file, defaultConf)) {
-		std::cerr << defaultConf + ": error: could not setup default config, aborting." << std::endl;
+		std::cerr << BOLD << defaultConf << RESET;
+		std::cerr << ": could not setup default config, aborting." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	std::cout << "Config = " << defaultConf << std::endl;
@@ -744,13 +746,15 @@ void Server::loadConfig(const std::string& configPath) {
 
 	file.open(configPath.c_str(), std::fstream::in);
 	if (!file) {
-		std::cerr << configPath + ": error: failed to open config file, using default config instead." << std::endl;
+		std::cerr << BOLD << configPath + ": "<< RED << "error: " << RESET;
+		std::cerr << "failed to open config file, using default config instead." << std::endl;
 		loadDefaultConfig();
 		return ;
 	}
 	_config = Config();
 	if (_config.setupConf(file, configPath)) {
-		std::cerr << configPath + ": error: could not setup this config, using default config instead." << std::endl;
+		std::cerr << BOLD << configPath << RESET;
+		std::cerr << ": could not setup this config, using default config instead." << std::endl;
 		loadDefaultConfig();
 		return ;
 	}
