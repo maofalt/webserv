@@ -34,7 +34,7 @@ void	Config::readConf(std::ifstream & file) {
 void	Config::splitConf() {
 	size_t	size = _rawContent.size();
 	size_t	start;
-	size_t	end = 1;
+	size_t	end = 2;
 
 	for (size_t i=0; i<size; i++) {
 		while (!_rawContent[i].empty()) {

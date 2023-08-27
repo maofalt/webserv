@@ -17,8 +17,10 @@ void	Config::pushToStructMap(
 	else {
 		it2 += (*it2 == "\n");
 		std::string	key = *it2;
-		while (++it2 != _splitContent.end() && *it2 != ";")
+		while (it2 != _splitContent.end() && *it2 != ";") {
 			sMap[key].push_back(*it2);
+			it2++;
+		}
 		it = it2;
 	}
 }
