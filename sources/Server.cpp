@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 18:37:38 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 19:50:27 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,7 +351,8 @@ void Server::loadConfig(const std::string& configPath) {
 		loadDefaultConfig();
 		return ;
 	}
-	std::cout << "Config = " << configPath << std::endl;
+	INFO_LOG("Config = " + configPath);
+	//std::cout << "Config = " << configPath << std::endl;
 
 	return ;
 }
