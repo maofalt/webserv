@@ -19,6 +19,10 @@ int TeeBuf::overflow(int c) {
             buffered_str += static_cast<char>(c);
         }
         if (c == '\n' || c == EOF) {
+            //delte last character from string if it is a newline
+            if (c == '\n' && !buffered_str.empty()) {
+                buffered_str.erase(buffered_str.size() - 1);
+            }
             (reinterpret_cast<Logger*>(obj)->*log_func)(buffered_str); // Call the member function
             buffered_str.clear();
         }
