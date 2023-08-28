@@ -14,50 +14,6 @@
 
 // !! CONFIG SETUP LEAKS WHEN DEFAULT FILES HAS ERROR TOO !! + WHEN NO '\n' AT END OF FILE : LAST LINE DUPLICATES !!
 
-void	Config::checkRetToL(std::vector<std::string>::iterator & it,
-		int & countLines) {
-
-	countLines++;
-	if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
-			&& *(it - 1) != "{"  && *(it - 1) != "}") {
-		printErr("expected ';' before '\\n'.", countLines - 1);
-		_nbrErr++;
-	}
-}
-
-void	Config::checkOpenBrack(std::vector<std::string>::iterator & it,
-		int & countLines, int & bracketOpen) {
-
-	if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-		printErr("expected '\\n' after '{'.", countLines);
-		_nbrErr++;
-	}
-	bracketOpen++;
-}
-
-void	Config::checkCloseBrack(std::vector<std::string>::iterator & it,
-		int & countLines, int & bracketOpen) {
-
-	if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-		printErr("expected '\\n' after '}'.", countLines);
-		_nbrErr++;
-	}
-	else if (it != _splitContent.begin() && *(it - 1) != "\n") {
-		printErr("expected '\\n' before '}'.", countLines);
-		_nbrErr++;
-	}
-	bracketOpen--;
-}
-
-void	Config::checkSemiCol(std::vector<std::string>::iterator & it,
-		int & countLines) {
-
-	if ((it + 1) != _splitContent.end() && *(it + 1) != "\n") {
-		printErr("expected '\\n' after ';'.", countLines);
-		_nbrErr++;
-	}
-}
-
 int	Config::basicCheck() {
 	int	bracketOpen = 0;
 	int	countLines = 1;
@@ -93,7 +49,6 @@ int	Config::fillStruct(int line, std::vector<std::string>::iterator & it) {
 	}
 	if (it != _splitContent.end() && *it == ";") {
 		pushToStructMap(it, _confData, line);
-		// std::cout << line << std::endl;
 	}
 	else if (it != _splitContent.end() && *it == "{") {
 		if (*(--it) != "server")
