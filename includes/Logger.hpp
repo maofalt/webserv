@@ -45,6 +45,7 @@ public:
         INFO,
         WARN,
         ERROR,
+        ERROR_INTERCEPTED,
         TRACE
     };
 

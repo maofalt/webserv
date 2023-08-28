@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 18:27:21 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 19:31:47 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,9 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
             formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
             formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
             break;
+        case ERROR_INTERCEPTED:
+            formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
+            break;
         case TRACE:
             formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
             formattedMsg << "\n"; // New line for TRACE message content
@@ -296,13 +299,9 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
         }
     #endif
     
-    if (level == INFO || level == WARN) {
+    if (level == INFO || level == WARN || level == ERROR || level == ERROR_INTERCEPTED) {
         std::cout << formattedMsg.str() << std::endl;
     } 
-    
-    if (level == ERROR) {
-        std::cout << formattedMsg.str() << std::endl;
-    }
 }
 
 void    Logger::log(LogLevel level, std::ostringstream &oss, const std::string& color, const std::string& file, int line) {
@@ -324,7 +323,7 @@ std::string Logger::currentTimestamp() {
 }
 
 void     Logger::logForCerr(const std::string& message) {
-    log(ERROR, message, "",  "Intercepted Cerr" , -1);
+    log(ERROR_INTERCEPTED, message, "",  "Intercepted Cerr" , -1);
 }
 
 void Logger::cleanup() {
