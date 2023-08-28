@@ -1,7 +1,8 @@
 #include "TeeBuf.hpp"
 
-TeeBuf::TeeBuf(std::streambuf* sb1, std::streambuf* sb2) 
-    : sb1(sb1), sb2(sb2) {}
+
+TeeBuf::TeeBuf(std::streambuf* sb1, std::streambuf* sb2, void* o, void (Logger::*func)(const std::string&), bool shouldLog)
+    : sb1(sb1), sb2(sb2), obj(o), log_func(func), logThroughLogger(shouldLog) {}
 
 /**
 * @brief Handles overflow condition for characters.
@@ -13,14 +14,22 @@ TeeBuf::TeeBuf(std::streambuf* sb1, std::streambuf* sb2)
 * @return On success, returns the written character. On failure, returns EOF.
 */
 int TeeBuf::overflow(int c) {
-    if (c == EOF) {
-        return !EOF;
+    if (logThroughLogger) {
+        if (c != EOF) {
+            buffered_str += static_cast<char>(c);
+        }
+        if (c == '\n' || c == EOF) {
+            (reinterpret_cast<Logger*>(obj)->*log_func)(buffered_str); // Call the member function
+            buffered_str.clear();
+        }
+        // Return after logging, without writing the raw message to cerr.
+        return c;
     }
-    else {
-        int const r1 = sb1->sputc(c);
-        int const r2 = sb2->sputc(c);
-        return r1 == EOF || r2 == EOF ? EOF : c;
-    }
+    
+    // If not logging through logger, write to both buffers.
+    int const r1 = sb1->sputc(c);
+    int const r2 = sb2->sputc(c);
+    return r1 == EOF || r2 == EOF ? EOF : c;
 }
 
 /**
@@ -33,6 +42,7 @@ int TeeBuf::overflow(int c) {
  * @return On success, returns 0. On failure, returns -1.
  */
 int TeeBuf::sync() {
+
     int const r1 = sb1->pubsync();
     int const r2 = sb2->pubsync();
     return r1 == 0 && r2 == 0 ? 0 : -1;

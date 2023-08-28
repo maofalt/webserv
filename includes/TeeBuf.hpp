@@ -5,6 +5,9 @@
 #include <streambuf>
 #include <cstdio>
 
+/*Forward decleration of Logger */
+class Logger;
+
 /**
  * @class TeeBuf
  * @brief A custom stream buffer that directs output to two streambuf objects.
@@ -19,13 +22,17 @@ class TeeBuf : public std::streambuf {
 private:
     std::streambuf* sb1;
     std::streambuf* sb2;
+    void*           obj;
+    void            (Logger::*log_func)(const std::string&);
+    std::string     buffered_str;
+    bool            logThroughLogger;
 
 protected:
     virtual int overflow(int c);
     virtual int sync();
 
 public:
-    TeeBuf(std::streambuf* sb1, std::streambuf* sb2);
+    TeeBuf(std::streambuf* sb1, std::streambuf* sb2, void* obj, void (Logger::*func)(const std::string&), bool shouldLog = false);
 };
 
 #endif // TEEBUF_HPP

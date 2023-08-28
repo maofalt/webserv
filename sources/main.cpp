@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/27 19:32:22 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/27 20:30:36 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,9 @@ int main(int ac, char **av) {
         server.loadDefaultConfig();
     INFO_LOG("Configuration loaded.");
 
-    if (DISPLAY_CONF) {
-        std::ostringstream oss;
-        oss << server.getConfig();
-        std::string capturedOutput = oss.str();
-        DEBUG_CONFIG(capturedOutput);
-    }
+    std::ostringstream oss;
+    oss << server.getConfig();
+    DEBUG_CONFIG(oss);
 
     try {
         server.start();  // Starts listening on all ports and enters event loop.    

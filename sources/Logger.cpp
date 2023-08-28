@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/27 18:34:08 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 18:27:21 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void Logger::captureStdout() {
 
     oldCoutStreamBuf = std::cout.rdbuf();
     try {
-        teeBuffer = new TeeBuf(std::cout.rdbuf(), logFile.rdbuf());
+        teeBuffer = new TeeBuf(std::cout.rdbuf(), logFile.rdbuf(), this, &Logger::logForCerr, false);
     } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return;
@@ -169,7 +169,7 @@ void Logger::captureStderr() {
     oldCerrStreamBuf = std::cerr.rdbuf();
 
     try {
-        teeBufferErr = new TeeBuf(std::cerr.rdbuf(), logFile.rdbuf());
+        teeBufferErr = new TeeBuf(std::cerr.rdbuf(), logFile.rdbuf(), this, &Logger::logForCerr, true);
     } catch (const std::exception& e) {
         std::cerr << "Error creating cerr TeeBuf: " << e.what() << std::endl;
         return;
@@ -223,7 +223,7 @@ void Logger::rotateLogs() {
 
 
 // Implement the log function
-void Logger::log(LogLevel level, const std::string& message, const std::string& file, int line) {
+void Logger::log(LogLevel level, const std::string& message, const std::string& color, const std::string& file, int line) {
     // 1. Check log file size
     if (logFile.tellp() > maxSize) {
         rotateLogs();
@@ -274,21 +274,21 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
         std::cout << SEPARATOR_START << std::endl;
         for (size_t i = 0; i < lines.size(); ++i) {
             formattedMsg.str(""); // Clear the contents of the stream
-            formattedMsg << " " << formatSection(lines[i], ANSI_WHITE, MESSAGE_WIDTH);  // Add a space before the message
+            formattedMsg << " " << formatSection(lines[i], color, MESSAGE_WIDTH);  // Add a space before the message
             std::cout << formattedMsg.str() << std::endl;
         }
         std::cout << SEPARATOR_END << std::endl;
         std::cout << std::endl;
     } else if (level == DEBUG_DETAILED) {
-        formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
+        formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
         std::cout << formattedMsg.str() << std::endl;
     } else if (level == DEBUG_CONFIG) {
-        formattedMsg << formatSection(message, "", MESSAGE_WIDTH);
+        formattedMsg << formatSection(message, color, MESSAGE_WIDTH);
         std::cout << formattedMsg.str() << std::endl;
     }
     #endif
     
-    formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
+    formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
     
     #if DEBUG_LEVEL >= 1
         if (level == DEBUG) {
@@ -301,11 +301,14 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     } 
     
     if (level == ERROR) {
-        std::cerr << formattedMsg.str() << std::endl;
+        std::cout << formattedMsg.str() << std::endl;
     }
 }
 
-
+void    Logger::log(LogLevel level, std::ostringstream &oss, const std::string& color, const std::string& file, int line) {
+    std::string message = oss.str();
+    log(level, message, color, file, line);
+}
 
 // Implement currentTimestamp to get the current date and time as a string
 std::string Logger::currentTimestamp() {
@@ -320,6 +323,9 @@ std::string Logger::currentTimestamp() {
     return std::string(buffer);
 }
 
+void     Logger::logForCerr(const std::string& message) {
+    log(ERROR, message, "",  "Intercepted Cerr" , -1);
+}
 
 void Logger::cleanup() {
     if (instance) {

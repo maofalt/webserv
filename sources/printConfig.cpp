@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:42 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 18:13:44 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/27 20:31:18 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	Config::printErr(std::string errMsg, int line) {
 
 int	Config::printNbErr() {
 	std::cerr << BOLD << _confFileName + ": ";
+	
 	return std::cerr << (_nbrErr ? RED : GREEN) << _nbrErr << RESET << " error(s)." << std::endl, _nbrErr;
 }
 

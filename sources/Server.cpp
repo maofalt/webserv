@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/25 15:26:39 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 18:29:13 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -719,8 +719,7 @@ void Server::loadDefaultConfig() {
 		std::cerr << ": could not setup default config, aborting." << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::cout << "Config = " << defaultConf << std::endl;
-
+	INFO_LOG("Config = " + defaultConf);
 }
 
 /**
