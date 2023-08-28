@@ -14,42 +14,20 @@
 
 // !! CONFIG SETUP LEAKS WHEN DEFAULT FILES HAS ERROR TOO !! + WHEN NO '\n' AT END OF FILE : LAST LINE DUPLICATES !!
 
-int	Config::basicCheck() { // !!! need to refacto this monstruosity !!!
+int	Config::basicCheck() {
 	int	bracketOpen = 0;
 	int	countLines = 1;
 
 	for (std::vector<std::string>::iterator it = _splitContent.begin(); \
 			it != _splitContent.end(); it++) {
-		if (*it == "\n") {
-			countLines++;
-			if (it != _splitContent.begin() && *it == "\n" && *(it - 1) != ";"  && *(it - 1) != "\n" \
-					&& *(it - 1) != "{"  && *(it - 1) != "}") {
-				printErr("expected ';' before '\\n'.", countLines - 1);
-				_nbrErr++;
-			}
-		}
-		else if (*it == "{") {
-			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-				printErr("expected '\\n' after '{'.", countLines);
-				_nbrErr++;
-			}
-			bracketOpen++;
-		}
-		else if (*it == "}") {
-			if (it + 1 != _splitContent.end() && *(it + 1) != "\n") {
-				printErr("expected '\\n' after '}'.", countLines);
-				_nbrErr++;
-			}
-			else if (it != _splitContent.begin() && *(it - 1) != "\n") {
-				printErr("expected '\\n' before '}'.", countLines);
-				_nbrErr++;
-			}
-			bracketOpen--;
-		}
-		else if ((it + 1) != _splitContent.end() && *it == ";" && *(it + 1) != "\n") {
-			printErr("expected '\\n' after ';'.", countLines);
-			_nbrErr++;
-		}
+		if (*it == "\n")
+			checkRetToL(it, countLines);
+		else if (*it == "{")
+			checkOpenBrack(it, countLines, bracketOpen);
+		else if (*it == "}")
+			checkCloseBrack(it, countLines, bracketOpen);
+		else if (*it == ";")
+			checkSemiCol(it, countLines);
 		if (bracketOpen < 0) {
 			return printErr("extra closing bracket", countLines), ++_nbrErr;
 		}
@@ -71,7 +49,6 @@ int	Config::fillStruct(int line, std::vector<std::string>::iterator & it) {
 	}
 	if (it != _splitContent.end() && *it == ";") {
 		pushToStructMap(it, _confData, line);
-		// std::cout << line << std::endl;
 	}
 	else if (it != _splitContent.end() && *it == "{") {
 		if (*(--it) != "server")
@@ -99,13 +76,15 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 	splitConf();
 
 
+	// for (size_t i=0; i<_splitContent.size(); i++) {
+	// 	std::cerr << "[" << _splitContent[i] << "]";
+	// }
+
 	_nbrErr = basicCheck();
 	if (_nbrErr)
 		return printNbErr();
 
 	std::vector<std::string>::iterator it = _splitContent.begin();
-	// std::cout << "test" << std::endl;
 	fillStruct(1, it);
-	// std::cout << "test" << std::endl;
 	return printNbErr(), _nbrErr;
 }

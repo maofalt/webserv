@@ -82,10 +82,15 @@ private:
     static void	                signal_handler(int sig);
     void                        cleanup();
 
-    //handle cllient Methods
+    //handle client Methods
     int                         accept_new_client(int epoll_fd, int sock_listen);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
     int                         handleClientEvent(int epoll_fd, struct epoll_event& event);
+    void                        validateClient(int client_fd);
+    void                        handleReadEvent(int epoll_fd, ClientHandler& client);
+    void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
+    void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
+    void                        handleEpollError(int client_fd);
     
     //Multiplexing methods
     int                         setUpEpoll();
@@ -97,12 +102,6 @@ private:
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
-    //ClientHandler methods
-    void                        validateClient(int client_fd);
-    void                        handleReadEvent(int epoll_fd, ClientHandler& client);
-    void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
-    void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
-    void                        handleEpollError(int client_fd);
 
 
 
