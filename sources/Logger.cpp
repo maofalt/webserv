@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 19:31:47 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 19:46:54 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     //formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
 
     #if DEBUG_LEVEL == 2
-    if (level == TRACE) {
+    if (level == TRACE || level == DEBUG_CONFIG) {
         std::vector<std::string> lines = splitIntoLines(message, MESSAGE_WIDTH);
         std::cout << formattedMsg.str() << std::endl;
         std::cout << SEPARATOR_START << std::endl;
@@ -284,11 +284,11 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
         std::cout << std::endl;
     } else if (level == DEBUG_DETAILED) {
         formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
-        std::cout << formattedMsg.str() << std::endl;
-    } else if (level == DEBUG_CONFIG) {
-        formattedMsg << formatSection(message, color, MESSAGE_WIDTH);
-        std::cout << formattedMsg.str() << std::endl;
-    }
+        std::cout << formattedMsg.str() << std::endl;}
+    // } else if (level == DEBUG_CONFIG) {
+    //     formattedMsg << formatSection(message, color, MESSAGE_WIDTH);
+    //     std::cout << formattedMsg.str() << std::endl;
+    // }
     #endif
     
     formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
