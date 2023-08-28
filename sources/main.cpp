@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 19:33:41 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/28 20:49:50 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ int main(int ac, char **av) {
     }
     INFO_LOG("Logger initialized.");
     
-    if (ac > 1)
-        server.loadConfig(av[1]);  // If you have a configuration file.
-    else
-        server.loadDefaultConfig();
-    INFO_LOG("Configuration loaded.");
+    if (ac > 1) {
+        if (server.loadConfig(av[1])) // If you have a configuration file.
+            return 1;
+    }
+    else if (server.loadDefaultConfig())
+        return 1;
 
+    INFO_LOG("Configuration loaded.");
     
     std::ostringstream oss;
     oss << server.getConfig();
