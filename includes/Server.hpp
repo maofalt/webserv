@@ -16,11 +16,13 @@
 #include <sys/epoll.h>  // epoll
 #include <sys/types.h>  // Required for sockets
 #include <sys/socket.h>
+#include <stdlib.h>
 
 #include "Config.hpp"
 #include "ClientHandler.hpp"
 #include "HttpRequest.hpp"
 # include "Logger.hpp"
+#include "Utils.hpp"
 
 
 #define PORT "8694"

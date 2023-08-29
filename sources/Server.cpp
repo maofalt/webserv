@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 19:50:27 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/29 17:12:18 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool Server::initializeSockets() {
 			cleanup();
 			return false; 
 		}
-		std::cout << "Listening on port: " << *it << std::endl;
+		log_message(Logger::INFO, "Listening on port: %s", it->c_str());
 	}
 	return true;	
 }
@@ -157,7 +157,7 @@ int Server::initializeSocket(const addrinfo* ad,
 		std::cerr << "Socket error: " << strerror(errno) << std::endl;
 		return -1;
 	}
-	std::cout << "Socket created for port: " << port << std::endl;
+	log_message(Logger::INFO, "Socket created for port: %s", port.c_str());
 
 	// Set the socket option to reuse the address (SO_REUSEADDR) to avoid "Address already in use" errors
 	if (setsockopt(*sock_listen, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
@@ -173,7 +173,7 @@ int Server::initializeSocket(const addrinfo* ad,
 		return -1;
 	}
 
-	std::cout << "Bind successful for port: " << port << std::endl;
+	log_message(Logger::INFO, "Bind successful for port: %s", port.c_str());
 	return 0;
 }
 
@@ -352,8 +352,6 @@ void Server::loadConfig(const std::string& configPath) {
 		return ;
 	}
 	INFO_LOG("Config = " + configPath);
-	//std::cout << "Config = " << configPath << std::endl;
-
 	return ;
 }
 

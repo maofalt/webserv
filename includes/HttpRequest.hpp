@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 13:25:16 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/29 17:18:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 # include "Logger.hpp"
+# include "Utils.hpp"
 
 
 

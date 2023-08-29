@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 14:13:29 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/29 17:20:17 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,6 @@ void	HttpRequest::_parseHeader(void)
 	setBuffer(buffer, it, _raw.end());
 	while (buffer.size() > 0)
 	{
-		std::cout << "in header while" << std::endl;
 		_parseHeaderField(buffer);
 		setBuffer(buffer, it, _raw.end());
 	}
@@ -336,9 +335,9 @@ int	HttpRequest::recv(int fd)
 	int		count;
 
 	std::memset(buffer, 0, BUFFER_SIZE_REQUEST + 1);
-	std::cout << "before recv" << std::endl;
+	log_message(Logger::DEBUG, "before recv");
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
-	std::cout << "fd : " << fd << std::endl;
+	log_message(Logger::DEBUG_DETAILED, "after recv");
 	if (count == 0)
 		throw (Error("LOL"));
 	if (count < 0)

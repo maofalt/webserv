@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   epoll.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/28 17:35:32 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/29 17:22:11 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,13 @@ int Server::handle_epoll_events(int epoll_fd) {
 
 	int timeout = calculate_dynamic_timeout();
 
-	std::cout << "Waiting for an epoll event..." << std::endl;
+	log_message(Logger::DEBUG, "Waiting for an epoll event...");
 	num_fds = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
 	if (num_fds == -1) {
 		return handle_epoll_error();
 	}
 
-	std::cout << "Epoll returned with " << num_fds << " events." << std::endl;
+	log_message(Logger::DEBUG, "Epoll returned with %d events.", num_fds);
 
 	for (int i = 0; i < num_fds; i++) {
 		inspect_epoll_event(events[i].events);
@@ -159,13 +159,14 @@ void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
  */
 void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
 
-	std::cout << "Handling client " << event.data.fd << " event" << std::endl;
+	log_message(Logger::INFO, "Handling client %d event", event.data.fd);
 	try {
 		handleClientEvent(epoll_fd, event);
 	} catch (const std::exception& e) {
 		//erase the clent from the epoll_fd and the clientHandlers
 		close_and_cleanup(epoll_fd, event.data.fd);
-		std::cerr << "Error handling client event: " << e.what() << std::endl;
+		//std::cerr << "Error handling client event: " << e.what() << std::endl;
+		log_message(Logger::DEBUG_DETAILED, "Error handling client event: %s", e.what());
 	}
 }
 
@@ -187,10 +188,10 @@ void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
 
 void Server::inspect_epoll_event(uint32_t events) {
 	// Check and print the type of event
-	if (events & EPOLLIN) std::cout << "EPOLLIN Event" << std::endl;
-	if (events & EPOLLOUT) std::cout << "EPOLLOUT Event" << std::endl;
-	if (events & EPOLLERR) std::cout << "EPOLLERR Event" << std::endl;
-	if (events & EPOLLHUP) std::cout << "EPOLLHUP Event" << std::endl;
+if (events & EPOLLIN)  log_message(Logger::DEBUG, "EPOLLIN event");
+if (events & EPOLLOUT) log_message(Logger::DEBUG, "EPOLLOUT event");
+if (events & EPOLLERR) log_message(Logger::DEBUG, "EPOLLERR event");
+if (events & EPOLLHUP) log_message(Logger::DEBUG, "EPOLLHUP event");
 
 }
 
