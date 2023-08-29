@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/29 17:12:18 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/29 17:47:40 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,22 +298,23 @@ void Server::stop() {
  *          for the server from a configuration file. It reads the default configuration
  *          file and sets up the `_config` object with the loaded settings. 
  */
-void Server::loadDefaultConfig() {
+int Server::loadDefaultConfig() {
 	std::ifstream	file;
 
 	file.open(defaultConf.c_str(), std::fstream::in);
 	if (!file) {
 		std::cerr << BOLD << defaultConf + ": "<< RED << "error: " << RESET;
 		std::cerr << "failed to open default config file." << std::endl;
-		exit(EXIT_FAILURE);
+		return 1;
 	}
 	_config = Config();
 	if (_config.setupConf(file, defaultConf)) {
 		std::cerr << BOLD << defaultConf << RESET;
 		std::cerr << ": could not setup default config, aborting." << std::endl;
-		exit(EXIT_FAILURE);
+		return 1;
 	}
 	INFO_LOG("Config = " + defaultConf);
+	return 0;
 }
 
 /**
@@ -331,7 +332,7 @@ void Server::loadDefaultConfig() {
  *       user-specified path, and if that fails, it will revert to loading the default
  *       configuration settings.
  */
-void Server::loadConfig(const std::string& configPath) {
+int Server::loadConfig(const std::string& configPath) {
 	// Load server configuration from the given path.
 	// create a specific object with a new class
 
@@ -341,18 +342,17 @@ void Server::loadConfig(const std::string& configPath) {
 	if (!file) {
 		std::cerr << BOLD << configPath + ": "<< RED << "error: " << RESET;
 		std::cerr << "failed to open config file, using default config instead." << std::endl;
-		loadDefaultConfig();
-		return ;
+		return loadDefaultConfig();
 	}
 	_config = Config();
 	if (_config.setupConf(file, configPath)) {
 		std::cerr << BOLD << configPath << RESET;
 		std::cerr << ": could not setup this config, using default config instead." << std::endl;
-		loadDefaultConfig();
-		return ;
+		return loadDefaultConfig();
 	}
 	INFO_LOG("Config = " + configPath);
-	return ;
+
+	return 0;
 }
 
 std::ostream& operator<<(std::ostream& os, const Server & server);
