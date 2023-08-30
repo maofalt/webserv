@@ -51,7 +51,7 @@ class Server {
 private:
     int                             epoll_fd;
     std::vector<int>                sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequest>  ongoingRequests;  // ongoing requests for each client_fd
+    std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
@@ -75,7 +75,6 @@ public:
     Config  getConfig() {return this->_config;};
 
 private:
-    // Encapsulate all the helper methods inside private scope
     std::vector<std::string>    getPorts();
     bool                        initializeSockets();
     int                         initializeSocket(const addrinfo* ad, int* sock_listen, const std::string& port);

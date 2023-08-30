@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 20:49:50 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/29 23:24:43 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ int main(int ac, char **av) {
         return 1;
 
     INFO_LOG("Configuration loaded.");
+    
+    //validate data
+    //vlidate global
+    //valdiate servers
     
     std::ostringstream oss;
     oss << server.getConfig();

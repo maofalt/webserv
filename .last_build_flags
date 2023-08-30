@@ -1,1 +1,1 @@
--Wall -Wextra -Werror -std=c++98 -g3
+-MMD -MP -Wall -Wextra -Werror -std=c++98
