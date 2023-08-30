@@ -21,8 +21,9 @@
 #include "Config.hpp"
 #include "ClientHandler.hpp"
 #include "HttpRequest.hpp"
-# include "Logger.hpp"
+#include "Logger.hpp"
 #include "Utils.hpp"
+#include "IniParser.hpp"
 
 
 #define PORT "8694"
@@ -30,6 +31,7 @@
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
 #define MAX_EVENTS 10
+#define PATH_INI "config/validation/contextFields.ini"
 /*
 Server Class:
 
@@ -53,10 +55,11 @@ private:
     std::vector<int>                sock_listens;  // to list to multiple ports
     std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
+    IniParser                       _validationFile;
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	run;
-    std::string              defaultConf;
+    std::string                     defaultConf;
     // Configuration details can go here.
     // E.g., struct Config or std::map<std::string, std::string> config;
     
@@ -73,6 +76,7 @@ public:
     void    start();  // Start the server
     void    stop();  // Stop the server
     Config  getConfig() {return this->_config;};
+    bool    loadValidationFile(const std::string& validationPath);
 
 private:
     std::vector<std::string>    getPorts();

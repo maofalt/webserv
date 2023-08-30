@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/29 23:24:43 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/30 17:54:59 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int main(int ac, char **av) {
     }
     INFO_LOG("Logger initialized.");
     
+
     if (ac > 1) {
         if (server.loadConfig(av[1])) // If you have a configuration file.
             return 1;
@@ -37,15 +38,23 @@ int main(int ac, char **av) {
     else if (server.loadDefaultConfig())
         return 1;
 
+    std::ostringstream oss;
+    oss << server.getConfig();
+    DEBUG_CONFIG(oss);
     INFO_LOG("Configuration loaded.");
-    
+
+    try {
+        server.loadValidationFile(PATH_INI);
+    } catch (const std::exception& e) {
+        ERROR_LOG(e.what());
+        return 1;
+    }
+
+    //parse config    
     //validate data
     //vlidate global
     //valdiate servers
     
-    std::ostringstream oss;
-    oss << server.getConfig();
-    DEBUG_CONFIG(oss);
 
     try {
         server.start();  // Starts listening on all ports and enters event loop.    
