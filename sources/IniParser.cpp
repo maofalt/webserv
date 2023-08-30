@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/30 18:08:06 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/30 18:28:54 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,12 @@ int IniParser::loadConfig(const std::string& filename) {
     std::string     currentSection;
 
     if (!inFile.is_open()) {
-        log_message(Logger::ERROR, "Failed to open the INI file: %s\n", filename.c_str());
+        throw std::runtime_error("Failed to open the INI file");
+        return 1;
+    }
+    
+    if (inFile.peek() == std::ifstream::traits_type::eof()) {
+        throw std::runtime_error("INI file is empty");
         return 1;
     }
     
