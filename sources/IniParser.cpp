@@ -6,11 +6,25 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/30 18:28:54 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/30 19:02:28 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IniParser.hpp"
+
+std::set<std::string> IniParser::_validKeys;
+
+void IniParser::initializeValidKeys() {
+    _validKeys.insert("Type");
+    _validKeys.insert("Mandatory");
+    _validKeys.insert("Default");
+    _validKeys.insert("Min");
+    _validKeys.insert("Max");
+    _validKeys.insert("Validation");
+    _validKeys.insert("Description");
+}
+
+
 
 int IniParser::loadConfig(const std::string& filename) {
     std::ifstream   inFile(filename.c_str());
@@ -28,6 +42,8 @@ int IniParser::loadConfig(const std::string& filename) {
     }
     
     log_message(Logger::DEBUG, "Loading INI file: %s\n", filename.c_str());
+    IniParser::initializeValidKeys();
+    _errorInSection = false;
     while (getline(inFile, line)) {
         trim(line);
         
@@ -36,11 +52,25 @@ int IniParser::loadConfig(const std::string& filename) {
         }
 
         if (line[0] == '[') {
+            // Before starting a new section, check if there was an error in the previous section
+            if (_errorInSection) {
+                data.erase(currentSection);
+                currentSection.clear();
+                _errorInSection = false;
+            }
+            
             handleSection(line, currentSection);
         } else {
             handleKeyValuePair(line, currentSection);
         }
     }
+
+    // Check one last time after the loop ends
+    if (_errorInSection) {
+        data.erase(currentSection);
+        currentSection.clear();
+    }
+    
     inFile.close();
     return 0;
 }
@@ -63,12 +93,17 @@ void IniParser::handleSection(const std::string& line, std::string& currentSecti
     
     if (end != std::string::npos) {
         currentSection = line.substr(1, end - 1);
-        //log_message(Logger::TRACE, "Section: %s\n", currentSection.c_str());
         data[currentSection] = std::map<std::string, std::string>();
     }
+    _errorInSection = false;
 }
 
 void IniParser::handleKeyValuePair(const std::string& line, const std::string& currentSection) {
+    if (_errorInSection) {
+        // If there's an error in the current section, skip processing further key-value pairs
+        return;
+    }
+    
     size_t equalPos = line.find('=');
     
     if (equalPos != std::string::npos) {
@@ -77,7 +112,13 @@ void IniParser::handleKeyValuePair(const std::string& line, const std::string& c
         
         trim(key);
         trim(value);
-        //log_message(Logger::TRACE, "Key: %s, Value: %s\n", key.c_str(), value.c_str());
+
+        if (_validKeys.find(key) == _validKeys.end()) {
+            log_message(Logger::WARN, "Invalid key: %s in section %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
+            _errorInSection = true;
+            return;
+        }
+    
         data[currentSection][key] = value;
     }
 }
@@ -109,6 +150,7 @@ bool IniParser::getSection(const std::string& section, std::map<std::string, std
     return false;
 }
 
+
 void IniParser::printAll() const {
     
     std::string iniFile;
@@ -117,10 +159,8 @@ void IniParser::printAll() const {
         sectionIter != data.end(); ++sectionIter) {
         iniFile += "[" + sectionIter->first + "]" + "\n";
         
-        //log_message(Logger::TRACE, "Section: %s\n", sectionIter->first.c_str());
         for (std::map<std::string, std::string>::const_iterator keyIter = sectionIter->second.begin(); keyIter != sectionIter->second.end(); ++keyIter) {
             iniFile += "\t" + keyIter->first + "=" + keyIter->second + "\n";
-            //log_message(Logger::TRACE, "Key: %s, Value: %s\n", keyIter->first.c_str(), keyIter->second.c_str());
         }
         iniFile += "\n\n";
     }

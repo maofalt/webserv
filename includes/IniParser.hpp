@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <set>
 #include <cctype>     // for std::isspace
 #include <algorithm>  // for std::find_if
 #include <functional> // for std::not1 and std::ptr_fun
@@ -14,12 +15,16 @@
 
 class IniParser {
 private:
-    std::map<std::string, std::map<std::string, std::string> > data;
-    
+    std::map<std::string, std::map<std::string, std::string> >  data;
+    static std::set<std::string>                                _validKeys;
+    bool                                                        _errorInSection;
+
     void trim(std::string& str);
     bool isCommentOrEmpty(const std::string& line) const;
     void handleSection(const std::string& line, std::string& currentSection);
     void handleKeyValuePair(const std::string& line, const std::string& currentSection);
+    void initializeValidKeys();
+
 
 public:
     IniParser();
