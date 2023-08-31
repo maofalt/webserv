@@ -1,0 +1,81 @@
+/* Reset default margin and padding for all elements */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Center the content horizontally and vertically */
+html, body {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+	background-color: #f0f0f0; /* Grey background color */
+}
+
+/* Style for the header section */
+header {
+	text-align: center;
+	margin-top: 50px;
+}
+
+/* Style for the h2 */
+h2 {
+	display: flex;
+	/* position: relative; */
+	align-items: center;
+	justify-content: center;
+
+	height: 50px;
+	width: 200px;
+	margin: 10px;
+	color: #090909;
+	border-radius: 0.7em;
+	transition: all 0.3s;
+	background: #e8e8e8;
+	border: 1px solid #e8e8e8;
+	box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+/* Style for the links (buttons) */
+h2 a {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	font-size: 13px;
+	text-align: center;
+	align-items: center;
+	font-weight: lighter;
+	text-decoration: none;
+	color: gray;
+	/* color: darkslategrey; */
+	justify-content: center;
+	/* border: 1px solid black; */
+	font-family:'Courier New', Courier, monospace;
+	/* padding: 10px 50px 10px 50px; */
+}
+
+/* Change button appearance on hover */
+h2 a:hover {
+    /* color: #666; */
+    /* box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff; */
+
+}
+
+/* Change button appearance on active state (clicked) */
+h2:active {
+	color: #666;
+	box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
+}
+
+/* Style for the footer section */
+footer {
+	/* border: 1px solid red; */
+	font-size: 13px;
+	margin-top: auto;
+	text-align: center;
+	display: inline-block;
+	color: darkslategrey;
+	font-family:'Courier New', Courier, monospace;
+}
