@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 19:25:12 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:11:44 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,8 @@ static std::map<std::string, std::string>	getContentType(void)
 	contentType["png"] = "image/png";
 	return (contentType);
 }
-static std::map<t_responseType, t_writeType>	getWriteType(void)
-{
-	std::map<t_responseType, t_writeType>	writeType;
-
-	writeType[GET] = _writeGet;
-	writeType[DELETE] = _writeDelete;
-	writeType[DIRECTORY] = _writeDirectory;
-	writeType[REDIRECTION] = _writeRedirection;
-	return (writeType);
-}
 std::map<std::string, std::string>	HttpResponse::_description = getDescription();
 std::map<std::string, std::string>	HttpResponse::_contentType = getContentType();
-std::map<std::string, std::string>	HttpResponse::_writeType = getWriteType();
 
 // Constructors
 HttpResponse::HttpResponse(void):
@@ -132,17 +121,19 @@ std::string	numberToString(T nb)
 	return (ss.str());
 }
 
-void	HttpResponse::_setRequest(HttpRequest const *request)
+int	HttpResponse::_setRequest(const HttpRequest *request)
 {
 	_request = request;
 	_method = request->_method;
 	_uri = request->_uri;
 	_status = request->_status;
+	return (0);
 }
 
-void	HttpResponse::_setServer(const Config &config)
+int	HttpResponse::_setServer(const Config &config)
 {
 	_server = config.findServer(_request->getHost(), _port);
+	return (0);
 }
 
 // Methods
@@ -199,21 +190,21 @@ int	HttpResponse::_stripUri(void)
 			_host = stripedUri;
 		std::getline(ss, stripedUri, '\0');
 		_uri = std::string("/");
-		_uri += stripUri;
+		_uri += stripedUri;
 	}
 	return (0);
 }
 
 int	HttpResponse::_limitClientBodySize(void)
 {
-	if (_request->body.size() > _server->maxSize)
+	if (_request->_body.size() > _server->_maxSize)
 		return (_writeError("413"));
 	return (0);
 }
 
 int	HttpResponse::_limitHttpMethod(void)
 {
-	if (_server->allowedMethods.count(_method) == 0)
+	if (_server->_allowedMethods.count(_method) == 0)
 		return (_writeError("405"));
 	return (0);
 }
@@ -222,9 +213,9 @@ int	HttpResponse::_determineLocation(void)
 {
 	std::string::size_type	maxLen = 0;
 
-	for (std::vector<t_location>::iterator location = _server->_locations.begin(); location != _server->_locations.end(); ++location)
+	for (std::vector<t_location>::const_iterator location = _server->_locations.begin(); location != _server->_locations.end(); ++location)
 	{
-		for (std::vector<std::string>::iterator prefix = location->_paths.begin(); prefix != location->_paths.end(); ++prefix)
+		for (std::vector<std::string>::const_iterator prefix = location->_paths.begin(); prefix != location->_paths.end(); ++prefix)
 		{
 			if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
 			{
@@ -243,12 +234,12 @@ int	HttpResponse::_refineUri(void)
 	std::string::size_type	maxLen = 0;
 	struct stat				statbuf;
 
-	if (!_location->locConfig.count("root"))
+	if (!_location->_locConfig.count("root"))
 		return (0);
-	for (std::vector<std::string>::iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
+	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
 		if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
 			maxLen = prefix->size();
-	_uri.replace(0, maxLen, _location->locConfig.at("root"));
+	_uri.replace(0, maxLen, _location->_locConfig.at("root")[0]);
 	if (access(_uri.c_str(), F_OK) == -1)
 		return (_writeError("404"));
 	if (access(_uri.c_str(), R_OK) == -1)
@@ -257,10 +248,10 @@ int	HttpResponse::_refineUri(void)
 		return (_writeError("500"));
 	if (statbuf.st_mode & S_IFDIR)
 	{
-		if (_uri.back() != '/')
+		if (*_uri.end() != '/')
 			_uri.push_back('/');
-		if (_location->locConfig.count("index"))
-			_uri += _location->locConfig.at("index");
+		if (_location->_locConfig.count("index"))
+			_uri += _location->_locConfig.at("index")[0];
 		else
 			_uriIsDirectory = true;
 	}
@@ -271,20 +262,58 @@ int	HttpResponse::_setType(void)
 {
 	if (_method == "GET")
 		_type = GET;
-	if (_location->locConfig.count("cgi"))
+	if (_location->_locConfig.count("cgi"))
 		_type = CGI;
 	if (_uriIsDirectory)
 		_type = DIRECTORY;
 	if (_method == "DELETE")
 		_type = DELETE;
-	if (_location->locConfig.count("return"))
+	if (_location->_locConfig.count("return"))
 		_type = REDIRECTION;
 	return (0);
+}
+int	HttpResponse::_writeType(void)
+{
+	if (_type == GET)
+		return (_writeGet());
+	else if (_type == DELETE)
+		return (_writeDelete());
+	else if (_type == DIRECTORY)
+		return (_writeDirectory());
+	else if (_type == REDIRECTION)
+		return (_writeRedirection());
+	return (1);
 }
 
 int	HttpResponse::_launchCgi(void)
 {
 	return (_writeError("500"));
+}
+int	HttpResponse::_writeRedirection(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeDirectory(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeCgi(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeGet(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeDelete(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeError(std::string status)
+{
+	_status = status;
+	_content = _status;
+	return (0);
 }
 
 int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
@@ -300,7 +329,7 @@ int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 		return (-1);
 	if (_type == CGI)
 		return (_launchCgi());
-	return (_writeType[_type]);
+	return (_writeType());
 }
 
 int	HttpResponse::respond(int fd, std::string status)
@@ -352,3 +381,44 @@ int	HttpResponse::respond(int fd, std::string status)
 	response += time_buffer;
 	response += "\r\n";
 
+// 3- Server: Information about the server CRLF
+	response += "Server: ";
+	response += "Webserv";
+	response += "\r\n";
+
+// 4- Content-Type: Type of the message body CRLF
+	extension = _uri.substr(_uri.find_last_of(".") + 1);
+	response += "Content-Type: ";
+	response += _contentType[extension];
+	response += "\r\n";
+
+// 5- Content-Length: Size of the message body in bytes CRLF
+	response += "Content-Length: ";
+	response += numberToString(_content.size());
+	response += "\r\n";
+
+	response += "Connection: ";
+	response += "keep-alive";
+	response += "\r\n";
+
+	response += "Accept-Ranges: ";
+	response += "bytes";
+	response += "\r\n";
+
+	response += "\r\n";
+
+	response += _content;
+
+	std::cout << "\033[32mResponse:\033[0m" << std::endl;
+	if (extension == "html" || extension == "css")
+	{
+		std::cout << response.substr(0, 4096) << std::endl;
+		if (response.size() > 4096)
+			std::cout << "[...]" << std::endl;
+	}
+	else
+		std::cout << "File \"" << _uri << "\" not printable" << std::endl;
+
+	::send(fd, response.c_str(), response.size(), 0);
+	return (0);
+}

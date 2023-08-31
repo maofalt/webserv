@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 16:49:51 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/26 20:12:07 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,22 @@ HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
 }
 
 // _verifyHeader
-void	HttpRequest::_verifyHeader(void) const
+int	HttpRequest::_verifyHeader(void)
 {
+	volatile int	i;
+
+	if (_field.count(CONTENT_LENGTH))
+	{
+		try
+			{i = std::atoi(_field[CONTENT_LENGTH].c_str());}
+		catch (std::exception &e)
+			{return (_status = "400", -1);}
+	}
 	if (find(HttpRequest::_methods_forbidden.begin(), HttpRequest::_methods_forbidden.end(), _method) != HttpRequest::_methods_forbidden.end())
-		throw (Error("405"));
+		return (_status = "405", -1);
 	if (find(HttpRequest::_methods_ok.begin(), HttpRequest::_methods_ok.end(), _method) == HttpRequest::_methods_ok.end())
-		throw (Error("501"));
+		return (_status = "501", -1);
+	return (0);
 }
 
 /* 
@@ -105,7 +115,7 @@ void	HttpRequest::_verifyHeader(void) const
 	 ?? ; do we account for chunked transmission or we suppose that the header 
 	 is contained in only one request?
 */
-static void	setBuffer(std::string &buffer,
+int	HttpRequest::_setBuffer(std::string &buffer,
 	std::string::iterator &it,
 	const std::string::iterator &end)
 {
@@ -114,9 +124,10 @@ static void	setBuffer(std::string &buffer,
 
 	it2 = search(it, end, crlf.begin(), crlf.end());
 	if (it2 == end)
-		throw (HttpRequest::Error("400"));
+		return (_status = "400", -1);
 	buffer = std::string(it, it2);
 	it = it2 + (crlf.end() - crlf.begin());
+	return (0);
 }
 
 /*
@@ -124,7 +135,7 @@ static void	setBuffer(std::string &buffer,
 	(e.g., GET, POST), the request URI, and the HTTP version
 	?? : Should we verify that the htpp version is 1.1?
 */
-void	HttpRequest::_parseMethod(const std::string &method)
+int	HttpRequest::_parseMethod(const std::string &method)
 {
 	size_t	first_sp;
 	size_t	second_sp;
@@ -132,15 +143,16 @@ void	HttpRequest::_parseMethod(const std::string &method)
 	//We extract the  the method between the spaces
 	first_sp = method.find_first_of(' ');
 	if (first_sp == std::string::npos)
-		throw (Error("400"));
+		return (_status = "400", -1);
 	second_sp = method.find_first_of(' ', first_sp + 1);
 	if (second_sp == std::string::npos)
-		throw (Error("400"));
+		return (_status = "400", -1);
 	_method = method.substr(0, first_sp);
 	//Since we already subtracted the CRLF, the middle part is the uri
 	_uri = method.substr(first_sp + 1, second_sp - (first_sp + 1));
 	// last part is the protocol (HTTP/1.1 )
 	_protocol = method.substr(second_sp + 1, std::string::npos);
+	return (0);
 }
 
 /* Pase of the a header field spliting name and value and saving it in the _field map
@@ -151,7 +163,7 @@ void	HttpRequest::_parseMethod(const std::string &method)
 	?? : if there are semicolon (diffrent parameters) should we split them or 
 	keep them as a unique value ?
 */
-void	HttpRequest::_parseHeaderField(const std::string &field)
+int	HttpRequest::_parseHeaderField(const std::string &field)
 {
 	// Find the first semicolon to separate the name and value
 	std::string	name;
@@ -162,7 +174,7 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 
 	semicolon = field.find_first_of(':');
 	if (semicolon == std::string::npos)
-		throw (Error("400"));
+		return (_status = "400", -1);
 	name = field.substr(0, semicolon);
 	value = field.substr(semicolon + 1, field.size());
 
@@ -170,17 +182,18 @@ void	HttpRequest::_parseHeaderField(const std::string &field)
 	first_char = name.find_first_not_of(' ');
 	last_char = name.find_last_not_of(' ');
 	if (first_char == std::string::npos || last_char == std::string::npos)
-		throw (Error("400"));
+		return (_status = "400", -1);
 	name = name.substr(first_char, last_char + 1);
 
 	first_char = value.find_first_not_of(' ');
 	last_char = value.find_last_not_of(' ');
 	if (first_char == std::string::npos || last_char == std::string::npos)
-		throw (Error("400"));
+		return (_status = "400", -1);
 	value = value.substr(first_char, last_char + 1);
 
 	// Add the name and value to the _field map
 	_field[name] = value;
+	return (0);
 }
 
 /*
@@ -189,25 +202,28 @@ Then we parse the method, uri and protocol
 Then we parse the header fields
 ?? : do we need to verify anything else besides if the methods is correct ? 
 */
-void	HttpRequest::_parseHeader(void)
+int	HttpRequest::_parseHeader(void)
 {
 	std::string				buffer;
 	std::string::iterator	it;
 
 	it = _raw.begin();
-	setBuffer(buffer, it, _raw.end());
-	_parseMethod(buffer);
-	//buffer to next header field
-	setBuffer(buffer, it, _raw.end());
+	if (_setBuffer(buffer, it, _raw.end())
+		|| _parseMethod(buffer) == -1
+		|| _setBuffer(buffer, it, _raw.end()) == -1)
+		return (-1);
 	while (buffer.size() > 0)
 	{
 		std::cout << "in header while" << std::endl;
-		_parseHeaderField(buffer);
-		setBuffer(buffer, it, _raw.end());
+		if (_parseHeaderField(buffer) == -1
+			|| _setBuffer(buffer, it, _raw.end()))
+			return (-1);
 	}
 	//We verify if the method is allowed
-	_verifyHeader();
+	if (_verifyHeader() == -1)
+		return (-1);
 	_raw.erase(_raw.begin(), it);
+	return (0);
 }
 
 // _parseBody
@@ -218,7 +234,7 @@ rather than implementing them
 	error ? we ignore the bdy?send a timeout suing 413 error ?
 	
 */
-void	HttpRequest::_parseBody(void)
+int	HttpRequest::_parseBody(void)
 {
 	// When the body is chunked, the size of the chunked data is unknown
 	if (_field.count(TRANSFER_ENCODING)
@@ -234,7 +250,7 @@ void	HttpRequest::_parseBody(void)
 			std::cout << "in body while" << std::endl;
 			// If the end chunk is found, the parsing is complete.
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
-				return ;
+				return(0);
 			// Get the size of the chunked data.
 			size = std::atoi(&*it);
 			// Get the start position of the chunked data
@@ -250,6 +266,7 @@ void	HttpRequest::_parseBody(void)
 	// When the body is not chunked
 	else if (_field.count(CONTENT_LENGTH))
 		_body = _raw.substr(0, std::atoi(_field[CONTENT_LENGTH].c_str()));
+	return (0);
 }
 
 // _rawHeaderComplete
@@ -259,23 +276,24 @@ bool	HttpRequest::_rawHeaderComplete(void) const
 }
 
 // _rawBodyComplete
-static void	nextIt(std::string::iterator &it, const std::string::iterator &end)
+int	HttpRequest::_nextIt(std::string::iterator &it, const std::string::iterator &end)
 {
 	std::string	crlf(CRLF);
 	int	size;
 
 	// 1. Get the size of the next field
-	try { size = std::atoi(&*it); }
-	catch (std::exception &e) {
-		throw (HttpRequest::Error("400")); }
+	try
+		{ size = std::atoi(&*it); }
+	catch (std::exception &e)
+		{ return (_status = "400", -1); }
 	// 2. Find the end of the field
 	it = search(it, end, crlf.begin(), crlf.end());
 	// 3. Skip the field
 	size += 2 * crlf.size();
 	while (it != end && size--)
 		++it;
+	return (0);
 }
-
 
 bool	HttpRequest::_rawBodyComplete(void)
 {
@@ -291,19 +309,14 @@ bool	HttpRequest::_rawBodyComplete(void)
 		{
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
 				return (true);
-			nextIt(it, _raw.end());
+			_nextIt(it, _raw.end());
 		}
 		return (false);
 	}
 	// If Content-Length is set, compare the size of the raw body to the value
 	// instead of  >= couldn't we use =! ? client is allowed to send somethign smaller ?
 	else if (_field.count(CONTENT_LENGTH))
-	{
-		try {
-			return ((int) _raw.size() >= std::atoi(_field[CONTENT_LENGTH].c_str()));
-		} catch (std::exception &e) {
-			throw (Error("400")); }
-	}
+		return ((int) _raw.size() >= std::atoi(_field[CONTENT_LENGTH].c_str()));
 	// If no headers are set, the body is complete
 	return (true);
 }
@@ -328,20 +341,21 @@ int	HttpRequest::recv(int fd)
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
 	std::cout << "fd : " << fd << std::endl;
 	if (count == 0)
-		throw (Error("LOL"));
+		return (_status = "Closed", -1);
 	if (count < 0)
-		throw (Error("500"));
+		return (_status = "500", -1);
 	_raw += buffer;
 	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
 		// std::cout << "parse Header" << std::endl;
-		_parseHeader();
+		if (_parseHeader() == -1)
+			return (-1);
 		_headerComplete = true;
 	}
 	// Request entity too large
 	if (_headerComplete && _raw.size() > SIZE_MAX_REQUEST)
-		throw (Error("413"));
+		return (_status = "413", -1);
 	//as long as the body is not complete, we parse it
 	if (_headerComplete && !_bodyComplete && _rawBodyComplete())
 	{
@@ -354,7 +368,8 @@ int	HttpRequest::recv(int fd)
 // isComplete
 bool	HttpRequest::isComplete(void) const
 {
-	return (_headerComplete && _bodyComplete);
+	return ((_headerComplete && _bodyComplete)
+		|| _status != "200");
 }
 
 // clear
@@ -387,10 +402,4 @@ std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs)
 	else
 		out << "Body: NONE" << std::endl;
 	return (out);
-}
-
-// Exception
-const char	*HttpRequest::Error::what(void) const throw()
-{
-	return (_type);
 }

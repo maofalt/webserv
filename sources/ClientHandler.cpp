@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 14:23:03 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:14:50 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int     ClientHandler::getClientFd() const {
 
 // Write the response back to the client.
 void    ClientHandler::writeResponse() {
-	_response.setRequest(&_request);
+	_response.setUp(&_request, Config());
 	_response.respond(_client_fd, "200");
 }
 

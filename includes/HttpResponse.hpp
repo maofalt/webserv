@@ -6,15 +6,17 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 19:02:01 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:11:30 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPRESPOND_HPP
 # define HTTPRESPOND_HPP
 
+# include <map>
 # include <stdint.h>
 # include <string>
+# include <unistd.h>
 # include "Config.hpp"
 # include "HttpRequest.hpp"
 
@@ -33,6 +35,7 @@ typedef	enum e_response_type
 	ERROR
 }	t_responseType;
 
+class HttpResponse;
 typedef int (HttpResponse::*t_writeType)(void);
 
 class HttpResponse
@@ -62,9 +65,8 @@ class HttpResponse
 		std::string::size_type				_iRaw;
 
 	// Static
-		static std::map<std::string, std::string>		_description;
-		static std::map<std::string, std::string>		_contentType;
-		static std::map<t_responseType, t_writeType>	_writeType;
+		static std::map<std::string, std::string>	_description;
+		static std::map<std::string, std::string>	_contentType;
 
 	// Utils
 		int	_determineLocation(void);
@@ -74,14 +76,16 @@ class HttpResponse
 		int	_refineUri(void);
 		int	_setRequest(const HttpRequest *request);
 		int	_setServer(const Config &config);
-		int	_setType(void) const;
+		int	_setType(void);
 		int	_stripUri(void);
 		int	_writeRedirection(void);
 		int	_writeDirectory(void);
 		int	_writeCgi(void);
 		int	_writeGet(void);
 		int	_writeDelete(void);
+		int	_writeType(void);
 		int	_writeError(std::string status);
+		std::map<t_responseType, t_writeType>	_getWriteType(void);
 
 	public:
 	// Constructors
