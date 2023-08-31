@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/29 17:18:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/31 20:16:25 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,17 @@ class HttpRequest {
 		static std::vector<std::string>				_methods_ok;
 
 	// Methods utils
-		void	_parseMethod(const std::string &method);
-		void	_parseHeaderField(const std::string &field);
-		void	_parseHeader(void);
-		void	_parseBody(void);
+		int	_nextIt(std::string::iterator &it, const std::string::iterator &end);
+		int	_parseMethod(const std::string &method);
+		int	_parseHeaderField(const std::string &field);
+		int	_parseHeader(void);
+		int	_parseBody(void);
 		bool	_rawHeaderComplete(void) const;
 		bool	_rawBodyComplete(void);
-		void	_verifyHeader(void) const;
+		int	_setBuffer(std::string &buffer,
+			std::string::iterator &it,
+			const std::string::iterator &end);
+		int	_verifyHeader(void);
 
 	public:
 	// Coplien
@@ -86,9 +90,6 @@ class HttpRequest {
 	
 	// Getters
 		const std::string	getHost(void) const;
-		const std::string	&getMethod(void) const;
-		const std::string	&getStatus(void) const;
-		const std::string	&getUri(void) const;
 
 	// Methods
 		void	        clear(void);
@@ -98,23 +99,8 @@ class HttpRequest {
 	// Operators
 		friend std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs);
 
-	// Exceptions
-		class Error;
-};
-
-struct RequestsTab{
-    std::string type;
-    HttpRequest* (*createRequest)(const HttpRequest&);
-};
-
-// Exceptions
-class HttpRequest::Error : public std::exception
-{
-	private:
-		char	_type[4];
-	public:
-		Error(const char type[4]) {memcpy(_type, type, 4);}
-		const char	*what(void) const throw();
+	// Friends
+		friend class HttpResponse;
 };
 
 std::ostream& operator<<(std::ostream& os, const HttpRequest & other);
