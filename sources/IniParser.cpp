@@ -6,13 +6,16 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/31 19:02:49 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/31 19:51:34 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IniParser.hpp"
 
-std::set<std::string> IniParser::_validKeys;
+std::set<std::string>                                   IniParser::_validKeys;
+std::map<std::string, IniParser::ValidationFunction>    IniParser::_validationFunctions;
+std::string                                             IniParser::_currentType;
+std::map<std::string, IniParser::ValidationFunction>    IniParser::_validTypes;
 
 void IniParser::initializeValidKeys() {
     _validKeys.insert("Type");
@@ -187,6 +190,7 @@ bool IniParser::getSection(const std::string& section, std::map<std::string, std
                      GENERAL VALIDATION METHODS
 ======================================================================*/
 void    IniParser::initializeValidationFunctions() {
+    _validationFunctions["Multiple"] =      &IniParser::isValidBoolean;
     _validationFunctions["Type"] =          &IniParser::isTypeValid;
     _validationFunctions["Mandatory"] =     &IniParser::isMandatoryValid;
     _validationFunctions["Default"] =       &IniParser::isDefaultValid; 
@@ -260,8 +264,6 @@ void    IniParser::initializeValidTypes() {
     _validTypes["integer"] =    &IniParser::isValidInteger;
     _validTypes["string"] =     &IniParser::isValidString;
     _validTypes["bool"] =       &IniParser::isValidBoolean;
-    _validTypes["list"] =       &IniParser::isValidList;
-    _validTypes["map"] =        &IniParser::isValidMap;
     _validTypes["ipv4"] =       &IniParser::isValidIpv4;
     _validTypes["port"] =       &IniParser::isValidPort;
 }
@@ -289,7 +291,7 @@ bool IniParser::isValidInteger(const std::string& value) {
 
 
 bool IniParser::isValidString(const std::string& value) {
-    
+    (void)value;
     return true;
 }
 
@@ -297,29 +299,35 @@ bool IniParser::isValidBoolean(const std::string& value) {
     return (value == "true"  || value == "false");
 }
 
-bool IniParser::isValidList(const std::string& value) {
-    // logic here
-    (void)value;
-    return true; // Placeholder
-}
-
-bool IniParser::isValidMap(const std::string& value) {
-    // logic here
-    (void)value;
-    return true; // Placeholder
-}
-
 bool IniParser::isValidIpv4(const std::string& value) {
-    // logic here
-    (void)value;
-    return true; // Placeholder
+    std::istringstream ss(value);
+    int a, b, c, d;
+    char ch1, ch2, ch3;
+
+    ss >> a >> ch1 >> b >> ch2 >> c >> ch3 >> d;
+
+    if (!(ch1 == '.' && ch2 == '.' && ch3 == '.')) {
+        return false;
+    }
+
+    if (a < 0 || a > 255 || b < 0 || b > 255 || c < 0 || c > 255 || d < 0 || d > 255) {
+        return false;
+    }
+
+    return ss.eof();  // Make sure we consumed the whole string
 }
+
 
 bool IniParser::isValidPort(const std::string& value) {
-    // logic here
-    (void)value;
-    return true; // Placeholder
+    std::istringstream ss(value);
+    int port;
+    ss >> port;
+    if (port < 0 || port > 65535) {
+        return false;
+    }
+    return ss.eof();  // Make sure we consumed the whole string
 }
+
 
 void IniParser::printAll() const {
     

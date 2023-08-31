@@ -35,7 +35,7 @@ private:
     void                                                        finalizeLoading(const std::string& previousSection, const std::string& currentSection);
 //field validation methods to place in another header
     typedef bool                                                (*ValidationFunction)(const std::string&);
-    static std::map<std::string, ValidationFunction>                   _validationFunctions;
+    static std::map<std::string, ValidationFunction>            _validationFunctions;
     void                                                        initializeValidationFunctions();
     static bool                                                 isTypeValid(const std::string& value);
     static bool                                                 isInteger(const std::string& value);
@@ -45,14 +45,12 @@ private:
     static bool                                                 isDefaultValid(const std::string& value);
     static bool                                                 isValidationStrategyValid(const std::string& value);
 //type validation methods no plac in another header
-    static std::string                                                 _currentType;
-    static std::map<std::string, ValidationFunction>                   _validTypes;
+    static std::string                                           _currentType;
+    static std::map<std::string, ValidationFunction>             _validTypes;
     void                                                        initializeValidTypes();                       
     static bool                                                 isValidInteger(const std::string& value);
     static bool                                                 isValidString(const std::string& value);
     static bool                                                 isValidBoolean(const std::string& value);
-    static bool                                                 isValidList(const std::string& value);
-    static bool                                                 isValidMap(const std::string& value);
     static bool                                                 isValidIpv4(const std::string& value);
     static bool                                                 isValidPort(const std::string& value);
 public:
