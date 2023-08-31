@@ -25,8 +25,10 @@ void	Config::readConf(std::ifstream & file) {
 	while (file)
 	{
 		std::getline(file, line);
-		removeComments(line);
-		_rawContent.push_back(line + "\n");
+		if (file) {
+			removeComments(line);
+			_rawContent.push_back(line + "\n");
+		}
 	}
 	file.close();
 }
@@ -34,7 +36,7 @@ void	Config::readConf(std::ifstream & file) {
 void	Config::splitConf() {
 	size_t	size = _rawContent.size();
 	size_t	start;
-	size_t	end;
+	size_t	end = 2;
 
 	for (size_t i=0; i<size; i++) {
 		while (!_rawContent[i].empty()) {

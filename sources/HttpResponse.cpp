@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/31 20:11:44 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:17:44 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,10 +336,13 @@ int	HttpResponse::respond(int fd, std::string status)
 {
 	std::string			response;
 	std::stringstream	buffer;
+	std::ostringstream	oss;
 	std::string			extension;
 
-	std::cout << "\033[31mRequest:\033[0m" << std::endl;
-	std::cout << *_request << std::endl;
+	log_message(Logger::DEBUG, "Request:");
+	oss << *_request << std::endl;
+	log_message(Logger::TRACE, "Request: %s", oss.str().c_str());
+	
 
 	if (_uri == "/")
 		_uri = "/index.html";
@@ -349,13 +352,13 @@ int	HttpResponse::respond(int fd, std::string status)
 	std::ifstream	file(_uri.c_str());
 	if (!file.is_open())
 	{
-		std::cerr << "File not opened" << std::endl;
+		ERROR_LOG("File not opened");
 		_uri = "./site/errors/404.html";
 		status = "404";
 		std::ifstream	file2(_uri.c_str());
 		if (!file2.is_open())
 			return (1);
-		std::cout << "404 opened" << std::endl;
+		log_message(Logger::WARN, "404 opened");
 		buffer << file2.rdbuf();
 	}
 	buffer << file.rdbuf();
@@ -409,15 +412,15 @@ int	HttpResponse::respond(int fd, std::string status)
 
 	response += _content;
 
-	std::cout << "\033[32mResponse:\033[0m" << std::endl;
+	log_message(Logger::DEBUG, "Response:");
 	if (extension == "html" || extension == "css")
 	{
-		std::cout << response.substr(0, 4096) << std::endl;
+		log_message(Logger::TRACE, "Response: %s", response.substr(0, 4096).c_str());
 		if (response.size() > 4096)
-			std::cout << "[...]" << std::endl;
+			log_message(Logger::TRACE, "[...]");
 	}
 	else
-		std::cout << "File \"" << _uri << "\" not printable" << std::endl;
+		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
 
 	::send(fd, response.c_str(), response.size(), 0);
 	return (0);

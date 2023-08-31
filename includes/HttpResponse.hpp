@@ -19,6 +19,7 @@
 # include <unistd.h>
 # include "Config.hpp"
 # include "HttpRequest.hpp"
+# include "Logger.hpp"
 
 # define DEFAULT_PROTOCOL "HTTP/1.1"
 

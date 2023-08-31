@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 20:12:07 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/31 20:17:22 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,9 +337,9 @@ int	HttpRequest::recv(int fd)
 	int		count;
 
 	std::memset(buffer, 0, BUFFER_SIZE_REQUEST + 1);
-	std::cout << "before recv" << std::endl;
+	log_message(Logger::DEBUG, "before recv");
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
-	std::cout << "fd : " << fd << std::endl;
+	log_message(Logger::DEBUG_DETAILED, "after recv");
 	if (count == 0)
 		return (_status = "Closed", -1);
 	if (count < 0)

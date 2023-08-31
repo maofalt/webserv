@@ -16,10 +16,14 @@
 #include <sys/epoll.h>  // epoll
 #include <sys/types.h>  // Required for sockets
 #include <sys/socket.h>
+#include <stdlib.h>
 
 #include "Config.hpp"
 #include "ClientHandler.hpp"
 #include "HttpRequest.hpp"
+# include "Logger.hpp"
+#include "Utils.hpp"
+
 
 #define PORT "8694"
 #define PORTAL "8000"
@@ -64,8 +68,8 @@ private://This way they can't be used, since it doesn't make sense implementing 
     Server& operator=(const Server& other);
     
 public:
-    void    loadConfig(const std::string& configPath);  // Load server configurations from a file;
-    void    loadDefaultConfig(); // Load default configuration from config/default.conf;
+    int     loadConfig(const std::string& configPath);  // Load server configurations from a file;
+    int     loadDefaultConfig(); // Load default configuration from config/default.conf;
     void    start();  // Start the server
     void    stop();  // Stop the server
     Config  getConfig() {return this->_config;};
@@ -80,10 +84,15 @@ private:
     static void	                signal_handler(int sig);
     void                        cleanup();
 
-    //handle cllient Methods
+    //handle client Methods
     int                         accept_new_client(int epoll_fd, int sock_listen);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
     int                         handleClientEvent(int epoll_fd, struct epoll_event& event);
+    void                        validateClient(int client_fd);
+    void                        handleReadEvent(int epoll_fd, ClientHandler& client);
+    void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
+    void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
+    void                        handleEpollError(int client_fd);
     
     //Multiplexing methods
     int                         setUpEpoll();
@@ -95,12 +104,6 @@ private:
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
-    //ClientHandler methods
-    void                        validateClient(int client_fd);
-    void                        handleReadEvent(int epoll_fd, ClientHandler& client);
-    void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
-    void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
-    void                        handleEpollError(int client_fd);
 
 
 

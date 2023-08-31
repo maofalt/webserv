@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:42 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 18:13:44 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/08/28 18:39:37 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,18 @@
 /*========================================= printing error messages ==============================================*/
 
 void	Config::printErr(std::string errMsg, int line) {
-	if (line != -1)
-		std::cerr << BOLD << _confFileName + ":" << line << ": " << RED << "error: " << RESET << errMsg << std::endl;
-	else
-		std::cerr << BOLD << _confFileName + ": " << RED << "error: " << RESET << errMsg << std::endl;
+	if (line != -1) {
+		std::cerr << BOLD << _confFileName + ":" << line << ": ";
+		std::cerr << RED << "error: " << RESET << errMsg << std::endl;
+	} else {
+		std::cerr << BOLD << _confFileName + ": " << RED << "error: ";
+		std::cerr << RESET << errMsg << std::endl;
+	}
 }
 
 int	Config::printNbErr() {
-	std::cerr << BOLD << _confFileName + ": ";
-	return std::cerr << (_nbrErr ? RED : GREEN) << _nbrErr << RESET << " error(s)." << std::endl, _nbrErr;
+	std::cerr << BOLD << _confFileName + ": " << (_nbrErr ? RED : GREEN);
+	return std::cerr << _nbrErr << RESET << " error(s)." << std::endl, _nbrErr;
 }
 
 /*========================================= printing config structs ==============================================*/
