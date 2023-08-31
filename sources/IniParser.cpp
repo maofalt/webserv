@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/31 15:39:05 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/31 19:02:49 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int IniParser::loadConfig(const std::string& filename) {
     log_message(Logger::DEBUG, "Loading INI file: %s\n", filename.c_str());
     
     IniParser::initializeValidKeys();
+    initializeValidationFunctions();
+    initializeValidTypes();
     _errorInSection = false;
 
     while (getline(inFile, line)) {
@@ -91,65 +93,6 @@ void IniParser::finalizeLoading(const std::string& previousSection, const std::s
     checkAndEraseEmptySection(previousSection);
 }
 
-// int IniParser::loadConfig(const std::string& filename) {
-//     std::ifstream   inFile(filename.c_str());
-//     std::string     line;
-//     std::string     currentSection;
-//     std::string     previousSection;
-
-//     if (!inFile.is_open()) {
-//         throw std::runtime_error("Failed to open the INI file");
-//         return 1;
-//     }
-    
-//     if (inFile.peek() == std::ifstream::traits_type::eof()) {
-//         throw std::runtime_error("INI file is empty");
-//         return 1;
-//     }
-    
-//     log_message(Logger::DEBUG, "Loading INI file: %s\n", filename.c_str());
-//     IniParser::initializeValidKeys();
-//     _errorInSection = false;
-//     while (getline(inFile, line)) {
-//         trim(line);
-        
-//         if (isCommentOrEmpty(line)) {
-//             continue;
-//         }
-
-//         if (line[0] == '[') {
-//             // Before starting a new section, check if there was an error in the previous section
-//             if (_errorInSection) {
-//                 data.erase(currentSection);
-//                 currentSection.clear();
-//                 _errorInSection = false;
-//             }
-            
-//             if (!previousSection.empty() && data[previousSection].empty()) {
-//                 log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
-//                 data.erase(previousSection);
-//             }
-//             previousSection = currentSection;
-//             handleSection(line, currentSection);
-//         } else {
-//             handleKeyValuePair(line, currentSection);
-//         }
-//     }
-
-//     // Check one last time after the loop ends
-//     if (_errorInSection) {
-//         data.erase(currentSection);
-//         currentSection.clear();
-//     }
-//     if (!previousSection.empty() && data[previousSection].empty()) {
-//         log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
-//         data.erase(previousSection);
-//     }
-    
-//     inFile.close();
-//     return 0;
-// }
-
 IniParser::IniParser() {
 }
 
@@ -171,6 +114,7 @@ void IniParser::handleSection(const std::string& line, std::string& currentSecti
         data[currentSection] = std::map<std::string, std::string>();
     }
     _errorInSection = false;
+    _currentType = "";
 }
 
 void IniParser::handleKeyValuePair(const std::string& line, const std::string& currentSection) {
@@ -188,15 +132,27 @@ void IniParser::handleKeyValuePair(const std::string& line, const std::string& c
         trim(key);
         trim(value);
 
+        if (key == "Type") {
+            _currentType = value;
+        }
+        
         if (_validKeys.find(key) == _validKeys.end()) {
             log_message(Logger::WARN, "Invalid key: %s in section %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
             _errorInSection = true;
             return;
         }
-    
+        
+        if (_validationFunctions.find(key) != _validationFunctions.end()) {
+            if (!_validationFunctions[key](value)) {
+                log_message(Logger::WARN, "Invalid value: %s for key: %s in section: %s.", value.c_str(), key.c_str(), currentSection.c_str());
+                _errorInSection = true;
+                return;
+            }
+        }       
         data[currentSection][key] = value;
     }
 }
+
 
 
 bool IniParser::getValue(const std::string& section, const std::string& key, std::string& value) const {
@@ -215,7 +171,9 @@ bool IniParser::getValue(const std::string& section, const std::string& key, std
 }
 
 bool IniParser::getSection(const std::string& section, std::map<std::string, std::string>& sectionData) const {
-    
+    /*=====================================================================
+                        VALIDATION TYPE METHODS
+======================================================================*/
     std::map<std::string, std::map<std::string, std::string> >::const_iterator sectionIter = data.find(section);
     
     if (sectionIter != data.end()) {
@@ -225,6 +183,143 @@ bool IniParser::getSection(const std::string& section, std::map<std::string, std
     return false;
 }
 
+/*=====================================================================
+                     GENERAL VALIDATION METHODS
+======================================================================*/
+void    IniParser::initializeValidationFunctions() {
+    _validationFunctions["Type"] =          &IniParser::isTypeValid;
+    _validationFunctions["Mandatory"] =     &IniParser::isMandatoryValid;
+    _validationFunctions["Default"] =       &IniParser::isDefaultValid; 
+    _validationFunctions["Min"] =           &IniParser::isMinValid;
+    _validationFunctions["Max"] =           &IniParser::isMaxValid;
+    _validationFunctions["Validation"] =    &IniParser::isValidationStrategyValid;
+    //"Description" key doesn't need validation.
+}
+
+bool    IniParser::isTypeValid(const std::string& value) {
+    std::set<std::string> validTypes;
+    validTypes.insert("integer");
+    validTypes.insert("string");
+    validTypes.insert("bool");
+    validTypes.insert("list");
+    validTypes.insert("map");
+    validTypes.insert("ipv4");
+    validTypes.insert("port");
+    return validTypes.find(value) != validTypes.end();
+}
+
+//Verify if the value is an integer, i mean an int number
+//only numbers between 0 and 9
+//integer must be between max int and min in
+bool    IniParser::isInteger(const std::string& value) {
+    std::string::const_iterator it = value.begin();
+    while (it != value.end() && std::isdigit(*it)) ++it;
+    return !value.empty() && it == value.end();
+}
+
+bool    IniParser::isMandatoryValid(const std::string& value) {
+    return value == "true" || value == "false";
+}
+
+bool    IniParser::isMaxValid(const std::string& value) {
+    //logic here
+    (void)value;
+    return true; // Placeholder
+}
+
+bool    IniParser::isMinValid(const std::string& value) {
+    //logic here
+    (void)value;
+    return true; // Placeholder
+}
+
+bool IniParser::isValidationStrategyValid(const std::string& value) {
+    std::set<std::string> validStrategies;
+    
+    validStrategies.insert("IsPositiveInteger");
+    validStrategies.insert("IsInteger");
+    validStrategies.insert("IsValidHostname");
+    validStrategies.insert("UniqueList");
+    validStrategies.insert("PathExistenceMap");
+    validStrategies.insert("IsValidPatternList");
+    validStrategies.insert("ListContainsValidMethods");
+    validStrategies.insert("IsValidURLList");
+    validStrategies.insert("PathExistenceList");
+    validStrategies.insert("IsValidOnOffSettingList");
+    validStrategies.insert("FileExistenceList");
+    validStrategies.insert("IsValidFileTypesList");
+    
+    return validStrategies.find(value) != validStrategies.end();
+}
+
+
+/*=====================================================================
+                        VALIDATION TYPE METHODS
+======================================================================*/
+void    IniParser::initializeValidTypes() {
+    _validTypes["integer"] =    &IniParser::isValidInteger;
+    _validTypes["string"] =     &IniParser::isValidString;
+    _validTypes["bool"] =       &IniParser::isValidBoolean;
+    _validTypes["list"] =       &IniParser::isValidList;
+    _validTypes["map"] =        &IniParser::isValidMap;
+    _validTypes["ipv4"] =       &IniParser::isValidIpv4;
+    _validTypes["port"] =       &IniParser::isValidPort;
+}
+
+bool    IniParser::isDefaultValid(const std::string& value) {
+    
+    if (_validTypes.find(_currentType) != _validTypes.end()) {
+        return _validTypes[_currentType](value);
+    }
+
+    return true;
+}
+
+bool IniParser::isValidInteger(const std::string& value) {
+    //test itha stringstream if the value is an integer
+    std::stringstream ss(value);
+    int i;
+    ss >> i;
+    if (ss.fail()) {
+        ss.clear(); 
+        return false;
+    }
+    return true;
+}
+
+
+bool IniParser::isValidString(const std::string& value) {
+    
+    return true;
+}
+
+bool IniParser::isValidBoolean(const std::string& value) {
+    return (value == "true"  || value == "false");
+}
+
+bool IniParser::isValidList(const std::string& value) {
+    // logic here
+    (void)value;
+    return true; // Placeholder
+}
+
+bool IniParser::isValidMap(const std::string& value) {
+    // logic here
+    (void)value;
+    return true; // Placeholder
+}
+
+bool IniParser::isValidIpv4(const std::string& value) {
+    // logic here
+    (void)value;
+    return true; // Placeholder
+}
+
+bool IniParser::isValidPort(const std::string& value) {
+    // logic here
+    (void)value;
+    return true; // Placeholder
+}
 
 void IniParser::printAll() const {
     
