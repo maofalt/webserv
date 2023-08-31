@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/30 19:25:02 by motero           ###   ########.fr       */
+/*   Updated: 2023/08/31 15:39:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,66 +24,131 @@ void IniParser::initializeValidKeys() {
     _validKeys.insert("Description");
 }
 
-
-
 int IniParser::loadConfig(const std::string& filename) {
-    std::ifstream   inFile(filename.c_str());
-    std::string     line;
-    std::string     currentSection;
-    std::string     previousSection;
+    std::ifstream inFile(filename.c_str());
+    std::string line, currentSection, previousSection;
 
-    if (!inFile.is_open()) {
-        throw std::runtime_error("Failed to open the INI file");
-        return 1;
-    }
-    
-    if (inFile.peek() == std::ifstream::traits_type::eof()) {
-        throw std::runtime_error("INI file is empty");
-        return 1;
-    }
-    
+    checkFileStatus(inFile);
     log_message(Logger::DEBUG, "Loading INI file: %s\n", filename.c_str());
+    
     IniParser::initializeValidKeys();
     _errorInSection = false;
+
     while (getline(inFile, line)) {
         trim(line);
-        
-        if (isCommentOrEmpty(line)) {
-            continue;
-        }
 
-        if (line[0] == '[') {
-            // Before starting a new section, check if there was an error in the previous section
-            if (_errorInSection) {
-                data.erase(currentSection);
-                currentSection.clear();
-                _errorInSection = false;
-            }
-            
-            if (!previousSection.empty() && data[previousSection].empty()) {
-                log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
-                data.erase(previousSection);
-            }
-            previousSection = currentSection;
+        if (isCommentOrEmpty(line)) continue;
+
+        if (isNewSection(line)) {
+            finalizePreviousSection(previousSection, currentSection);
             handleSection(line, currentSection);
+            previousSection = currentSection;
         } else {
             handleKeyValuePair(line, currentSection);
         }
     }
-
-    // Check one last time after the loop ends
-    if (_errorInSection) {
-        data.erase(currentSection);
-        currentSection.clear();
-    }
-    if (!previousSection.empty() && data[previousSection].empty()) {
-        log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
-        data.erase(previousSection);
-    }
     
+    finalizeLoading(previousSection, currentSection);
+
     inFile.close();
     return 0;
 }
+
+void IniParser::checkFileStatus(std::ifstream& file) const {
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open the INI file");
+        // No need for return 1 after a throw, it will exit the function.
+    }
+    
+    if (file.peek() == std::ifstream::traits_type::eof()) {
+        throw std::runtime_error("INI file is empty");
+    }
+}
+
+bool IniParser::isNewSection(const std::string& line) const {
+    return line[0] == '[';
+}
+
+void IniParser::finalizePreviousSection(std::string& previousSection, std::string& currentSection) {
+    if (_errorInSection) {
+        data.erase(currentSection);
+        _errorInSection = false;
+    }
+    checkAndEraseEmptySection(previousSection);
+}
+
+void IniParser::checkAndEraseEmptySection(const std::string& section) {
+    if (!section.empty() && data[section].empty()) {
+        log_message(Logger::WARN, "Section %s is empty. Erasing section.", section.c_str());
+        data.erase(section);
+    }
+}
+
+void IniParser::finalizeLoading(const std::string& previousSection, const std::string& currentSection) {
+    if (_errorInSection) {
+        data.erase(currentSection);
+    }
+    checkAndEraseEmptySection(previousSection);
+}
+
+// int IniParser::loadConfig(const std::string& filename) {
+//     std::ifstream   inFile(filename.c_str());
+//     std::string     line;
+//     std::string     currentSection;
+//     std::string     previousSection;
+
+//     if (!inFile.is_open()) {
+//         throw std::runtime_error("Failed to open the INI file");
+//         return 1;
+//     }
+    
+//     if (inFile.peek() == std::ifstream::traits_type::eof()) {
+//         throw std::runtime_error("INI file is empty");
+//         return 1;
+//     }
+    
+//     log_message(Logger::DEBUG, "Loading INI file: %s\n", filename.c_str());
+//     IniParser::initializeValidKeys();
+//     _errorInSection = false;
+//     while (getline(inFile, line)) {
+//         trim(line);
+        
+//         if (isCommentOrEmpty(line)) {
+//             continue;
+//         }
+
+//         if (line[0] == '[') {
+//             // Before starting a new section, check if there was an error in the previous section
+//             if (_errorInSection) {
+//                 data.erase(currentSection);
+//                 currentSection.clear();
+//                 _errorInSection = false;
+//             }
+            
+//             if (!previousSection.empty() && data[previousSection].empty()) {
+//                 log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
+//                 data.erase(previousSection);
+//             }
+//             previousSection = currentSection;
+//             handleSection(line, currentSection);
+//         } else {
+//             handleKeyValuePair(line, currentSection);
+//         }
+//     }
+
+//     // Check one last time after the loop ends
+//     if (_errorInSection) {
+//         data.erase(currentSection);
+//         currentSection.clear();
+//     }
+//     if (!previousSection.empty() && data[previousSection].empty()) {
+//         log_message(Logger::WARN, "Section %s is empty. Erasing section.", previousSection.c_str());
+//         data.erase(previousSection);
+//     }
+    
+//     inFile.close();
+//     return 0;
+// }
 
 IniParser::IniParser() {
 }

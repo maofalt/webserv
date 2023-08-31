@@ -18,19 +18,25 @@ private:
     std::map<std::string, std::map<std::string, std::string> >  data;
     static std::set<std::string>                                _validKeys;
     bool                                                        _errorInSection;
+  //  typedef bool                                                (*ValidationFunction)(const std::string&);
+   // std::map<std::string, ValidationFunction>                   _validationFunctions;
 
-    void trim(std::string& str);
-    bool isCommentOrEmpty(const std::string& line) const;
-    void handleSection(const std::string& line, std::string& currentSection);
-    void handleKeyValuePair(const std::string& line, const std::string& currentSection);
-    void initializeValidKeys();
+    void                                                        trim(std::string& str);
+    bool                                                        isCommentOrEmpty(const std::string& line) const;
+    void                                                        handleSection(const std::string& line, std::string& currentSection);
+    void                                                        handleKeyValuePair(const std::string& line, const std::string& currentSection);
+    void                                                        initializeValidKeys();
 
 
 public:
     IniParser();
 
-    int loadConfig(const std::string& filename);
-
+    int     loadConfig(const std::string& filename);
+    void    checkFileStatus(std::ifstream& file) const; 
+    bool    isNewSection(const std::string& line) const;
+    void    finalizePreviousSection(std::string& previousSection, std::string& currentSection);
+    void    checkAndEraseEmptySection(const std::string& section);
+    void    finalizeLoading(const std::string& previousSection, const std::string& currentSection);
     // Function to fetch value given a section and key.
     bool getValue(const std::string& section, const std::string& key, std::string& value) const;
 
