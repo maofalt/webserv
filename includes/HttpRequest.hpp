@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/31 20:16:25 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 21:25:18 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,10 @@ class HttpRequest {
 		const std::string	getHost(void) const;
 
 	// Methods
-		void	        clear(void);
-		int		        recv(int fd);
-		bool	        isComplete(void) const;
+		void	clear(void);
+		void	log(void) const;
+		int		recv(int fd);
+		bool	isComplete(void) const;
 
 	// Operators
 		friend std::ostream	&operator<<(std::ostream &out, const HttpRequest &rhs);

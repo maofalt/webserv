@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/01 22:50:25 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 21:35:10 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,10 @@ class ClientHandler {
 		static void	addPort(int fdSock, uint16_t port);
 
 	//Methods
-		void readData();
-		void writeResponse();
-		bool isRequestComplete();
+		int readData(void);
+		int	send(void);
+		int writeResponse(void);
+		bool isRequestComplete(void);
 		void closeConnection(int epoll_fd);
 };
 

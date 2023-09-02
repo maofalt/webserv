@@ -6,16 +6,19 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 00:56:45 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 23:50:41 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPRESPOND_HPP
 # define HTTPRESPOND_HPP
 
+# include <cstdio>
+# include <dirent.h>
 # include <map>
 # include <stdint.h>
 # include <string>
+# include <sys/types.h>
 # include <unistd.h>
 # include "Config.hpp"
 # include "HttpRequest.hpp"
@@ -51,6 +54,7 @@ class HttpResponse
 		std::string							_method;
 		std::string							_host;
 		std::string							_uri;
+		std::string							_path;
 		bool								_uriIsDirectory;
 		std::map<std::string, std::string>	_parameters;
 		const ServerConfig					*_server;
@@ -65,12 +69,13 @@ class HttpResponse
 		std::string							_status;
 		std::map<std::string, std::string>	_fields;
 		std::string							_content;
+		std::string							_contentType;
 		std::string							_raw;
 		std::string::size_type				_iRaw;
 
 	// Static
 		static std::map<std::string, std::string>		_description;
-		static std::map<std::string, std::string>		_contentType;
+		static std::map<std::string, std::string>		_mapContentType;
 		static std::map<t_responseType, t_writeType>	_writeType;
 		static std::map<std::string, std::string>		_defaultErrorPages;
 
@@ -112,6 +117,7 @@ class HttpResponse
 		int		getFdCgi(void) const;
 
 	// Methods
+		void	log(void) const;
 		int		readCgi(bool timeout);
 		int		send(int fd);
 		int		setUp(HttpRequest const *request, const Config &config);

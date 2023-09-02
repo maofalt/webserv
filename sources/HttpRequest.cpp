@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 02:35:52 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 21:48:07 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,6 +380,13 @@ void	HttpRequest::clear(void)
 	_raw.clear();
 	_headerComplete = false;
 	_bodyComplete = false;
+}
+void	HttpRequest::log(void) const
+{
+	std::ostringstream	oss;
+
+	oss << *this << std::endl;
+	log_message(Logger::TRACE, "Request: %s", oss.str().c_str());
 }
 
 // operator<<

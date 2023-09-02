@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 02:41:17 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 23:52:22 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,23 +52,36 @@ std::map<t_responseType, t_writeType>	HttpResponse::_getWriteType(void)
 	return (writeType);
 }
 std::map<std::string, std::string>	HttpResponse::_description = getDescription();
-std::map<std::string, std::string>	HttpResponse::_contentType = getContentType();
+std::map<std::string, std::string>	HttpResponse::_mapContentType = getContentType();
 std::map<t_responseType, t_writeType>	HttpResponse::_writeType = HttpResponse::_getWriteType();
 
 // Constructors
 HttpResponse::HttpResponse(void):
+	_port(0),
+	_request(NULL),
+	_method(""),
+	_host(""),
+	_uri(""),
+	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
+	_contentType(""),
 	_raw(""),
 	_iRaw(0)
 {
 }
 HttpResponse::HttpResponse(uint16_t port):
 	_port(port),
+	_request(NULL),
+	_method(""),
+	_host(""),
+	_uri(""),
+	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
+	_contentType(""),
 	_raw(""),
 	_iRaw(0)
 {
@@ -78,6 +91,7 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_request(rhs._request),
 	_method(rhs._method),
 	_uri(rhs._uri),
+	_path(rhs._path),
 	_uriIsDirectory(rhs._uriIsDirectory),
 	_parameters(rhs._parameters),
 	_server(rhs._server),
@@ -88,6 +102,7 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_status(rhs._status),
 	_fields(rhs._fields),
 	_content(rhs._content),
+	_contentType(rhs._contentType),
 	_raw(rhs._raw),
 	_iRaw(rhs._iRaw)
 {
@@ -109,6 +124,7 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_request = rhs._request;
 	_method = rhs._method;
 	_uri = rhs._uri;
+	_path = rhs._path;
 	_uriIsDirectory = rhs._uriIsDirectory;
 	_parameters = rhs._parameters;
 	_server = rhs._server;
@@ -119,6 +135,7 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_status = rhs._status;
 	_fields = rhs._fields;
 	_content = rhs._content;
+	_contentType = rhs._contentType;
 	_raw = rhs._raw;
 	_iRaw = rhs._iRaw;
 
@@ -149,40 +166,6 @@ int	HttpResponse::_setServer(const Config &config)
 	if (_server == 0)
 		return (_status = "500", -1);
 	return (0);
-}
-
-// Methods
-int	HttpResponse::readCgi(bool timeout)
-{
-	char	buffer[READ_BUFFER_SIZE] = {};
-	int		bytesRead;
-
-	if (timeout)
-		return (close(_fdCgi), _writeError("504"));
-	bytesRead = read(_fdCgi, buffer, READ_BUFFER_SIZE);
-	if (bytesRead == -1)
-		return (close(_fdCgi), _writeError("500"));
-	_content.append(buffer, bytesRead);
-	if (bytesRead == 0)
-		return (_writeCgi());
-	return (bytesRead);
-}
-
-int	HttpResponse::send(int fd)
-{
-	while (_iRaw + SEND_BUFFER_SIZE <= _raw.size())
-	{
-		::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
-		_iRaw += SEND_BUFFER_SIZE;
-	}
-	return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
-//	int	ret_value;
-//
-//	if (_raw.size() <= _iRaw + SEND_BUFFER_SIZE)
-//		return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
-//	ret_value = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
-//	_iRaw += SEND_BUFFER_SIZE;
-//	return (ret_value);
 }
 
 int	HttpResponse::_stripUri(void)
@@ -225,6 +208,8 @@ int	HttpResponse::_limitClientBodySize(void)
 
 int	HttpResponse::_limitHttpMethod(void)
 {
+	if (_location->_locConfig.count("return"))
+		return (0);
 	if (_location->_locConfig.count("methods"))
 		for (std::vector<std::string>::const_iterator it = _location->_locConfig.at("methods").begin(); it != _location->_locConfig.at("methods").end(); ++it)
 			if (*it == _method)
@@ -256,25 +241,40 @@ int	HttpResponse::_refineUri(void)
 {
 	std::string::size_type	maxLen = 0;
 	struct stat				statbuf;
+	std::string				index;
 
 	if (!_location->_locConfig.count("root"))
 		return (0);
 	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
 		if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
 			maxLen = prefix->size();
-	_uri.replace(0, maxLen, _location->_locConfig.at("root")[1]);
-	if (access(_uri.c_str(), F_OK) == -1)
+	_path = _uri;
+	_path.replace(0, maxLen, _location->_locConfig.at("root")[1]);
+	if (access(_path.c_str(), F_OK) == -1)
 		return (_status = "404", -1);
-	if (access(_uri.c_str(), R_OK) == -1)
+	if (access(_path.c_str(), R_OK) == -1)
 		return (_status = "403", -1);
-	if (stat(_uri.c_str(), &statbuf) == -1)
+	if (stat(_path.c_str(), &statbuf) == -1)
 		return (_status = "500", -1);
 	if (statbuf.st_mode & S_IFDIR)
 	{
-		if (*_uri.end() != '/')
+		if (*_path.rbegin() != '/')
+			_path.push_back('/');
+		if (*_uri.rbegin() != '/')
 			_uri.push_back('/');
 		if (_location->_locConfig.count("index"))
-			_uri += _location->_locConfig.at("index")[1];
+		{
+			index = _path;
+			index += _location->_locConfig.at("index")[1];
+			if (access(index.c_str(), F_OK) == -1)
+				_uriIsDirectory = true;
+			else
+			{
+				if (access(index.c_str(), R_OK) == -1)
+					return (_status = "403", -1);
+				_path = index;
+			}
+		}
 		else
 			_uriIsDirectory = true;
 	}
@@ -302,11 +302,52 @@ int	HttpResponse::_launchCgi(void)
 }
 int	HttpResponse::_writeRedirection(void)
 {
-	return (_writeError("500"));
+	std::ostringstream	content;
+
+	_status = "301";
+	_fields["Location"] = _location->_locConfig.at("return")[1];
+	content << "<!DOCTYPE html>\n"
+		<< "<html lang=\"en\">\n"
+		<< "<head>\n"
+		<< "	<meta charset=\"utf-8\" />\n"
+		<< "	<title>301 - Moved</title>\n"
+		<< "</head>\n"
+		<< "<body>\n"
+		<< "	<p>This page has moved to <a href=\"" << _fields["Location"]
+		<< "\">" << _fields["Location"] << "</a>.</p>\n"
+		<< "</body>\n"
+		<< "</html>\n";
+	_content = content.str();
+	return (_writeRaw());
 }
 int	HttpResponse::_writeDirectory(void)
 {
-	return (_writeError("500"));
+	std::ostringstream	content;
+	DIR					*dir;
+	struct dirent		*entry;
+
+	content << "<!DOCTYPE html>\n"
+			<< "<html lang=\"en\">\n"
+			<< "<head>\n"
+			<< "	<meta charset=\"utf-8\" />\n"
+			<< "	<title>"<< _uri << "</title>\n"
+			<< "</head>\n"
+			<< "<body>\n"
+			<< "	<h1>" << _uri << "</h1>\n"
+			<< "	<ul>\n";
+	dir = opendir(_path.c_str());
+	entry = readdir(dir);
+	while (entry)
+	{
+		content << "		<li><a href=\"" << _uri << entry->d_name << "\">" << entry->d_name << "</a></li\n>";
+		entry = readdir(dir);
+	}
+	closedir(dir);
+	content	<< "	</ul>\n"
+			<< "</body>\n"
+			<< "</html>\n";
+	_content = content.str();
+	return (_writeRaw());
 }
 int	HttpResponse::_writeCgi(void)
 {
@@ -315,38 +356,38 @@ int	HttpResponse::_writeCgi(void)
 int	HttpResponse::_writeGet(void)
 {
 	std::stringstream	buffer;
-	std::ostringstream	oss;
+	std::ifstream		file(_path.c_str());
+	std::string			extension;
 
-
-	log_message(Logger::DEBUG, "Request:");
-	oss << *_request << std::endl;
-	log_message(Logger::TRACE, "Request: %s", oss.str().c_str());
-	
-
-	if (_uri == "/")
-		_uri = "/index.html";
-
-	std::ifstream	file(_uri.c_str());
 	if (!file.is_open())
-	{
-		ERROR_LOG("File not opened");
-		_uri = "./site2/errors/404.html";
-		_status = "404";
-		std::ifstream	file2(_uri.c_str());
-		if (!file2.is_open())
-			return (1);
-		log_message(Logger::WARN, "404 opened");
-		buffer << file2.rdbuf();
-	}
+		return (ERROR_LOG("File not opened"), _writeError("404"));
 	buffer << file.rdbuf();
 	file.close();
 	_content = buffer.str();
+
+	extension = _path.substr(_path.find_last_of(".") + 1);
+	_contentType = _mapContentType[extension];
 
 	return (_writeRaw());
 }
 int	HttpResponse::_writeDelete(void)
 {
-	return (_writeError("500"));
+	std::ostringstream	content;
+
+	if (std::remove(_path.c_str()))
+		return (_writeError("500"));
+	content << "<!DOCTYPE html>\n"
+		<< "<html lang=\"en\">\n"
+		<< "<head>\n"
+		<< "	<meta charset=\"utf-8\" />\n"
+		<< "	<title>Deleted</title>\n"
+		<< "</head>\n"
+		<< "<body>\n"
+		<< "	<p>File has been deleted.</p>\n"
+		<< "</body>\n"
+		<< "</html>\n";
+	_content = content.str();
+	return (_writeRaw());
 }
 int	HttpResponse::_writeError(std::string status)
 {
@@ -356,74 +397,65 @@ int	HttpResponse::_writeError(std::string status)
 }
 int	HttpResponse::_writeRaw(void)
 {
-	std::string			extension;
+	std::ostringstream	response;
 
-	// we build the _raw
-	// 1- Status line HTTP-Version Status-Code Reason-Phrase CRLF
-
-	_raw += _protocol;
-	_raw += " ";
-	_raw += _status;
-	_raw += " ";
-	_raw += _description[_status];
-	_raw += "\r\n";
-
-// 2- Date: Date and time of the message CRLF
 	char	time_buffer[1000];
 	time_t	now = time(0);
 	struct tm	tm = *gmtime(&now);
 	strftime(time_buffer, 1000, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-	_raw += "Date: ";
-	_raw += time_buffer;
-	_raw += "\r\n";
 
-// 3- Server: Information about the server CRLF
-	_raw += "Server: ";
-	_raw += "Webserv";
-	_raw += "\r\n";
+	response << _protocol << " " << _status << " " << _description[_status] << "\r\n";
+	response << "Date: " << time_buffer << "\r\n";
+	response << "Server: " << "webserv" << "\r\n";
+	response << "Content-Type: " << _contentType << "\r\n";
+	response << "Content-Length: " << numberToString(_content.size()) << "\r\n";
+	response << "Connection: " << "keep-alive" << "\r\n";
+	response << "Accept-Ranges: " << "bytes" << "\r\n";
+	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
+		response << it->first << ": " << it->second << "\r\n";
+	response << "\r\n";
+	response << _content;
 
-// 4- Content-Type: Type of the message body CRLF
-	if (_status == "200")
-		extension = _uri.substr(_uri.find_last_of(".") + 1);
-	else
-		extension = "html";
-	_raw += "Content-Type: ";
-	_raw += _contentType[extension];
-	_raw += "\r\n";
-
-// 5- Content-Length: Size of the message body in bytes CRLF
-	_raw += "Content-Length: ";
-	_raw += numberToString(_content.size());
-	_raw += "\r\n";
-
-	_raw += "Connection: ";
-	_raw += "keep-alive";
-	_raw += "\r\n";
-
-	_raw += "Accept-Ranges: ";
-	_raw += "bytes";
-	_raw += "\r\n";
-
-	_raw += "\r\n";
-
-	_raw += _content;
-
-//	log_message(Logger::DEBUG, "Response:");
-//	if (extension == "html" || extension == "css")
-//	{
-//		log_message(Logger::TRACE, "Response: %s", _raw.substr(0, 4096).c_str());
-//		if (_raw.size() > 4096)
-//			log_message(Logger::TRACE, "[...]");
-//	}
-//	else
-//		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
+	_raw = response.str();
 
 	return (0);
+}
+
+// Methods
+void	HttpResponse::log(void) const
+{
+	log_message(Logger::DEBUG, "Response:");
+	if (_contentType == "text/html" || _contentType == "text/css")
+	{
+		log_message(Logger::TRACE, "Response: %s", _raw.substr(0, 4096).c_str());
+		if (_raw.size() > 4096)
+			log_message(Logger::TRACE, "[...]");
+	}
+	else
+		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
+}
+
+int	HttpResponse::readCgi(bool timeout)
+{
+	char	buffer[READ_BUFFER_SIZE] = {};
+	int		bytesRead;
+
+	if (timeout)
+		return (close(_fdCgi), _writeError("504"));
+	bytesRead = read(_fdCgi, buffer, READ_BUFFER_SIZE);
+	if (bytesRead == -1)
+		return (close(_fdCgi), _writeError("500"));
+	_content.append(buffer, bytesRead);
+	if (bytesRead == 0)
+		return (_writeCgi());
+	return (bytesRead);
 }
 
 int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 {
 	_setRequest(request);
+	if (_status != "200")
+		return (_writeError(_status));
 	_stripUri();
 	if (_setServer(config)
 		|| _limitClientBodySize()
@@ -435,4 +467,20 @@ int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 	if (_type == CGI)
 		return (_launchCgi());
 	return ((this->*_writeType[_type])());
+}
+
+int	HttpResponse::send(int fd)
+{
+	std::string::size_type	bytesSend;
+
+	if (_raw.size() <= _iRaw + SEND_BUFFER_SIZE)
+		bytesSend = ::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0);
+	else
+		bytesSend = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
+	if (bytesSend <= 0)
+		return (-1);
+	if (bytesSend == _raw.size() - _iRaw)
+		return (0);
+	_iRaw += bytesSend;
+	return (1);
 }
