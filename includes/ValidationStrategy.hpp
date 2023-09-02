@@ -8,6 +8,9 @@
 #include <vector> 
 #include <sstream>
 #include <algorithm>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "Utils.hpp"
 
 
@@ -27,7 +30,7 @@ class ValidationStrategy {
 public:
     virtual ~ValidationStrategy() {} // Virtual destructor to ensure derived classes get properly destroyed.
     
-    // Main validation function that derived classes will implement.
+    // Main validati  on function that derived classes will implement.
     virtual bool validate(const std::string& value,             const std::map<std::string, std::string>& fieldProperties) const = 0;
     virtual bool validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const = 0;
 };
