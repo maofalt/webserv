@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/30 16:11:03 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 18:34:54 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ struct GlobalConfig {
 
 //
 struct location {
-    std::vector<std::string> 						_paths;         
-    std::map<std::string, std::vector<std::string> > _locConfig; 
+    std::vector<std::string> 						_paths;    
+    std::map<std::string, std::vector<std::string> > _locConfig;
 
     std::vector<std::string> 						httpMethods;
     std::vector<std::string> 						redirectionTarget;

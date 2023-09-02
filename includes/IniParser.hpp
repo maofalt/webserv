@@ -16,6 +16,8 @@
 class IniParser {
 private:
     std::map<std::string, std::map<std::string, std::string> >  data;
+    std::set<std::string>                                       _keysInSection;
+    std::set<std::string>                                       _mandatoryKeys;
     static std::set<std::string>                                _validKeys;
     bool                                                        _errorInSection;
  
@@ -24,7 +26,8 @@ private:
     bool                                                        isCommentOrEmpty(const std::string& line) const;
     void                                                        handleSection(const std::string& line, std::string& currentSection);
 
-//Validating parsing methods    
+//Validating parsing methods
+    void                                                        initializeRequireKeys();
     void                                                        handleKeyValuePair(const std::string& line, const std::string& currentSection);
     bool                                                        isDuplicateKey(const std::string& key, const std::string& currentSection);
     bool                                                        isValidKey(const std::string& key);
@@ -36,7 +39,6 @@ private:
     void                                                        initializeValidKeys();
 
 //helper methods for readability
-
     void                                                        checkFileStatus(std::ifstream& file) const; 
     bool                                                        isNewSection(const std::string& line) const;
     void                                                        finalizePreviousSection(std::string& previousSection, std::string& currentSection);

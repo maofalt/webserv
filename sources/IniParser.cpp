@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 17:41:30 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 19:02:23 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,14 @@ void IniParser::initializeValidKeys() {
     _validKeys.insert("Description");
 }
 
+void IniParser::initializeRequireKeys() {
+    _mandatoryKeys.insert("Multiple");
+    _mandatoryKeys.insert("Type");
+    _mandatoryKeys.insert("Mandatory");
+    _mandatoryKeys.insert("Validation");
+    _mandatoryKeys.insert("Description");
+}
+
 int IniParser::loadConfig(const std::string& filename) {
     std::ifstream inFile(filename.c_str());
     std::string line, currentSection, previousSection;
@@ -38,6 +46,7 @@ int IniParser::loadConfig(const std::string& filename) {
     IniParser::initializeValidKeys();
     initializeValidationFunctions();
     initializeValidTypes();
+    initializeRequireKeys();
     _errorInSection = false;
 
     while (getline(inFile, line)) {
@@ -78,6 +87,19 @@ bool IniParser::isNewSection(const std::string& line) const {
 }
 
 void IniParser::finalizePreviousSection(std::string& previousSection, std::string& currentSection) {
+    if (!_keysInSection.empty()) {
+        for (std::set<std::string>::const_iterator it = _mandatoryKeys.begin();
+                it != _mandatoryKeys.end(); ++it) {
+            if (_keysInSection.find(*it) == _keysInSection.end()) {
+                log_message(Logger::WARN, "Missing mandatory key: %s in section: %s. Will skip the entire section.", it->c_str(), previousSection.c_str());
+                _errorInSection = true;
+                break;
+            }
+        
+        }
+    }
+    _keysInSection.clear();
+    
     if (_errorInSection) {
         data.erase(currentSection);
         _errorInSection = false;
@@ -162,7 +184,7 @@ void IniParser::handleKeyValuePair(const std::string& line, const std::string& c
         logInvalidKey(key, currentSection);
         return;
     }
-
+    _keysInSection.insert(key);
     if (!isValidValueForKey(key, value)) {
         logInvalidValueForKey(value, key, currentSection);
         return;
