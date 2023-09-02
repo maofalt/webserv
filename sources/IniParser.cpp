@@ -18,6 +18,7 @@ std::string                                             IniParser::_currentType;
 std::map<std::string, IniParser::ValidationFunction>    IniParser::_validTypes;
 
 void IniParser::initializeValidKeys() {
+    _validKeys.insert("Multiple");
     _validKeys.insert("Type");
     _validKeys.insert("Mandatory");
     _validKeys.insert("Default");
@@ -212,9 +213,7 @@ bool    IniParser::isTypeValid(const std::string& value) {
     return validTypes.find(value) != validTypes.end();
 }
 
-//Verify if the value is an integer, i mean an int number
-//only numbers between 0 and 9
-//integer must be between max int and min in
+
 bool    IniParser::isInteger(const std::string& value) {
     std::string::const_iterator it = value.begin();
     while (it != value.end() && std::isdigit(*it)) ++it;
@@ -225,33 +224,21 @@ bool    IniParser::isMandatoryValid(const std::string& value) {
     return value == "true" || value == "false";
 }
 
-bool    IniParser::isMaxValid(const std::string& value) {
-    //logic here
-    (void)value;
-    return true; // Placeholder
-}
-
-bool    IniParser::isMinValid(const std::string& value) {
-    //logic here
-    (void)value;
-    return true; // Placeholder
-}
-
 bool IniParser::isValidationStrategyValid(const std::string& value) {
     std::set<std::string> validStrategies;
     
-    validStrategies.insert("IsPositiveInteger");
-    validStrategies.insert("IsInteger");
-    validStrategies.insert("IsValidHostname");
-    validStrategies.insert("UniqueList");
-    validStrategies.insert("PathExistenceMap");
-    validStrategies.insert("IsValidPatternList");
-    validStrategies.insert("ListContainsValidMethods");
-    validStrategies.insert("IsValidURLList");
-    validStrategies.insert("PathExistenceList");
-    validStrategies.insert("IsValidOnOffSettingList");
-    validStrategies.insert("FileExistenceList");
-    validStrategies.insert("IsValidFileTypesList");
+    validStrategies.insert("isPositiveInteger");
+    validStrategies.insert("isInteger");
+    validStrategies.insert("isValidHostname");
+    validStrategies.insert("uniqueList");
+    validStrategies.insert("pathExistenceMap");
+    validStrategies.insert("isValidPatternList");
+    validStrategies.insert("listContainsValidMethods");
+    validStrategies.insert("isValidURLList");
+    validStrategies.insert("pathExistenceList");
+    validStrategies.insert("isValidOnOffSettingList");
+    validStrategies.insert("fileExistenceList");
+    validStrategies.insert("isValidFileTypesList");
     
     return validStrategies.find(value) != validStrategies.end();
 }
@@ -269,7 +256,6 @@ void    IniParser::initializeValidTypes() {
 }
 
 bool    IniParser::isDefaultValid(const std::string& value) {
-    
     if (_validTypes.find(_currentType) != _validTypes.end()) {
         return _validTypes[_currentType](value);
     }
@@ -277,8 +263,26 @@ bool    IniParser::isDefaultValid(const std::string& value) {
     return true;
 }
 
+bool    IniParser::isMaxValid(const std::string& value) {
+    
+    if (_validTypes.find(_currentType) != _validTypes.end()) {
+        return _validTypes[_currentType](value);
+    }
+
+    return true; 
+}
+
+bool    IniParser::isMinValid(const std::string& value) {
+    if (_validTypes.find(_currentType) != _validTypes.end()) {
+        return _validTypes[_currentType](value);
+    }
+    return true; 
+}
+
 bool IniParser::isValidInteger(const std::string& value) {
-    //test itha stringstream if the value is an integer
+    if (!isInteger(value)) {
+        return false;
+    }
     std::stringstream ss(value);
     int i;
     ss >> i;
@@ -291,7 +295,9 @@ bool IniParser::isValidInteger(const std::string& value) {
 
 
 bool IniParser::isValidString(const std::string& value) {
-    (void)value;
+    if (value.empty()) {
+        return false;
+    }
     return true;
 }
 
