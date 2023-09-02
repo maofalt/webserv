@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 23:32:34 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 23:40:24 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,18 @@ bool isValidPath::validate(const std::vector<std::string>& values, const std::ma
 }
 
 bool isValidPath::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const{
-    
+    struct stat s;
+    if(stat(value.c_str(), &s) == 0) {
+        if(s.st_mode & S_IFREG) {
+            return true;
+        } else {
+            throw std::invalid_argument("Path is not a file");
+            return false;
+        }
+    } else {
+        throw std::invalid_argument("File does not exist or don't have permissions. You stink");
+        return false;
+    }   
 }
 
 bool isValidMethod::validate(const std::map<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
@@ -198,12 +209,17 @@ bool isValidMethod::validate(const std::map<std::string>& values, const std::map
 }
 
 bool isValidMethod::validate(const std::string& values, const std::map<std::string, std::string>& fieldProperties) const {
-    
+    std::string methods[] = {"GET", "POST", "DELETE"};
+    for(int i = 0; i < 3; ++i) {
+        if(value == methods[i]) {
+            return true;
+        }
+    }
+    throw std::invalid_argument("Method " + value + " is not valid");
+    return false;
 }
 
-bool isValidRedirect::validate(const std::map<std::string>& value, const std::const {
-    
-}map<std::string, std::string>& fieldProperties) const {
+bool isValidRedirect::validate(const std::map<std::string>& value, const map<std::string, std::string>& fieldProperties) const {
     for (const std::map<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
