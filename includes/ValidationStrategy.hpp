@@ -17,7 +17,7 @@ typedef struct IniField {
     std::string Mandatory;
     std::string Default;
     std::string Min;
-    std::string Max;std::string&
+    std::string Max;
     std::string Validation;
     std::string Description;
 } IniField;
@@ -29,68 +29,29 @@ public:
     
     // Main validation function that derived classes will implement.
     virtual bool validate(const std::string& value,             const std::map<std::string, std::string>& fieldProperties) const = 0;
-    virtual bool validate(const std::vector<std::string>& value, const std::map<std::string, std::string>& fieldProperties) const = 0;
+    virtual bool validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const = 0;
 };
 
 
-class IsInteger : public ValidationStrategy {
+class isPositiveInteger : public ValidationStrategy {
 public:
     virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
+    virtual bool validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const;
 };
 
-class IsPositiveInteger : public ValidationStrategy {
+
+class isValidServerName : public ValidationStrategy {
 public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
+    virtual bool validate(const std::string& value, const std::map<std::string, std::string> fieldProperties) const;
+    virtual bool validate(const std::vector<std::string>& values, const std::map<std::string, std::string> fieldProperties) const;
 };
 
-class IsValidHostname : public ValidationStrategy {
+class pathExistenceMap : public ValidationStrategy {
 public:
     virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
+    virtual bool validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const;
 };
 
-class UniqueList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
 
-class PathExistenceMap : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class IsValidPatternList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class ListContainsValidMethods : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class IsValidURLList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class PathExistenceList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class IsValidOnOffSettingList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class FileExistenceList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
-
-class IsValidFileTypesList : public ValidationStrategy {
-public:
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const;
-};
 
 #endif // VALIDATIONSTRATEGY_HPP

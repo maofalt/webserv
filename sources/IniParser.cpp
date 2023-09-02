@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 19:02:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 22:50:10 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,17 +302,14 @@ bool IniParser::isValidationStrategyValid(const std::string& value) {
     
     validStrategies.insert("isPositiveInteger");
     validStrategies.insert("isInteger");
-    validStrategies.insert("isValidHostname");
-    validStrategies.insert("uniqueList");
-    validStrategies.insert("pathExistenceMap");
-    validStrategies.insert("isValidPatternList");
-    validStrategies.insert("listContainsValidMethods");
-    validStrategies.insert("isValidURLList");
-    validStrategies.insert("pathExistenceList");
-    validStrategies.insert("isValidOnOffSettingList");
-    validStrategies.insert("fileExistenceList");
-    validStrategies.insert("isValidFileTypesList");
-    
+    validStrategies.insert("isValidDirectoryPath");
+    validStrategies.insert("isValidPath");
+    validStrategies.insert("isValidServerName");
+    validStrategies.insert("isValidMethod");
+    validStrategies.insert("isValidRedirect");
+    validStrategies.inser("isValidOnOff");
+    validStrategies.insert("isValidCgiExtension");
+    validStrategies.insert("isValidFileUploadTypes");
     return validStrategies.find(value) != validStrategies.end();
 }
 
