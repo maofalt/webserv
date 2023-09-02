@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 17:14:34 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 17:19:23 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,13 @@ void IniParser::handleSection(const std::string& line, std::string& currentSecti
     
     if (end != std::string::npos) {
         currentSection = line.substr(1, end - 1);
-        data[currentSection] = std::map<std::string, std::string>();
+        if (data.find(currentSection) == data.end()) {
+            data[currentSection] = std::map<std::string, std::string>();
+        } else {
+            log_message(Logger::WARN, "Duplicate section: %s. Will skip the entire section.", currentSection.c_str());
+            _errorInSection = true;
+            return ;
+        }
     }
     _errorInSection = false;
     _currentType = "";
