@@ -5,6 +5,22 @@
 
 #include <string>
 #include <map>
+#include <vector> 
+#include <sstream>
+#include <algorithm>
+#include "Utils.hpp"
+
+
+typedef struct IniField {
+    std::string Multiple;
+    std::string Type;
+    std::string Mandatory;
+    std::string Default;
+    std::string Min;
+    std::string Max;std::string&
+    std::string Validation;
+    std::string Description;
+} IniField;
 
 // Base Strategy Interface
 class ValidationStrategy {
@@ -12,7 +28,8 @@ public:
     virtual ~ValidationStrategy() {} // Virtual destructor to ensure derived classes get properly destroyed.
     
     // Main validation function that derived classes will implement.
-    virtual bool validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const = 0;
+    virtual bool validate(const std::string& value,             const std::map<std::string, std::string>& fieldProperties) const = 0;
+    virtual bool validate(const std::vector<std::string>& value, const std::map<std::string, std::string>& fieldProperties) const = 0;
 };
 
 
