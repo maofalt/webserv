@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 17:19:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 17:22:48 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,11 @@ void IniParser::handleKeyValuePair(const std::string& line, const std::string& c
         std::string value = line.substr(equalPos + 1);
         
         trim(key);
+        if (data[currentSection].find(key) != data[currentSection].end()) {
+            log_message(Logger::WARN, "Duplicate key: %s in section: %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
+            _errorInSection = true;
+            return;
+        }
         trim(value);
 
         if (key == "Type") {
