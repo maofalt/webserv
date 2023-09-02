@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/29 17:45:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/01 18:16:12 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,12 +152,12 @@ int	HttpResponse::respond(int fd, std::string status)
 		_uri = "/index.html";
 
 	// we try to open the requested page and if it fails we send a 404 error
-	_uri = "./site" + _uri;
+	_uri = "./site2" + _uri;
 	std::ifstream	file(_uri.c_str());
 	if (!file.is_open())
 	{
 		ERROR_LOG("File not opened");
-		_uri = "./site/errors/404.html";
+		_uri = "./site2/errors/404.html";
 		status = "404";
 		std::ifstream	file2(_uri.c_str());
 		if (!file2.is_open())
