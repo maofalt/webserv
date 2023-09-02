@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 17:22:48 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 17:41:30 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,51 +129,86 @@ void IniParser::handleSection(const std::string& line, std::string& currentSecti
     _currentType = "";
 }
 
+/*=====================================================================
+                        VALIDATING PARSING METHODS
+======================================================================*/
+
 void IniParser::handleKeyValuePair(const std::string& line, const std::string& currentSection) {
     if (_errorInSection) {
-        // If there's an error in the current section, skip processing further key-value pairs
         return;
     }
     
     size_t equalPos = line.find('=');
-    
-    if (equalPos != std::string::npos) {
-        std::string key = line.substr(0, equalPos);
-        std::string value = line.substr(equalPos + 1);
-        
-        trim(key);
-        if (data[currentSection].find(key) != data[currentSection].end()) {
-            log_message(Logger::WARN, "Duplicate key: %s in section: %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
-            _errorInSection = true;
-            return;
-        }
-        trim(value);
-
-        if (key == "Type") {
-            _currentType = value;
-        }
-        
-        if (_validKeys.find(key) == _validKeys.end()) {
-            log_message(Logger::WARN, "Invalid key: %s in section %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
-            _errorInSection = true;
-            return;
-        }
-        
-        if (_validationFunctions.find(key) != _validationFunctions.end()) {
-            if (!_validationFunctions[key](value)) {
-                log_message(Logger::WARN, "Invalid value: %s for key: %s in section: %s.", value.c_str(), key.c_str(), currentSection.c_str());
-                _errorInSection = true;
-                return;
-            }
-        }       
-        data[currentSection][key] = value;
-    } else {
-        log_message(Logger::WARN, "Invalid key-value pair: %s in section: %s.", line.c_str(), currentSection.c_str());
-        _errorInSection = true;
+    if (equalPos == std::string::npos) {
+        logInvalidKeyValuePair(line, currentSection);
+        return;
     }
+    
+    std::string key = line.substr(0, equalPos);
+    std::string value = line.substr(equalPos + 1);
+    trim(key);
+    trim(value);
+
+    if (isDuplicateKey(key, currentSection)) {
+        logDuplicateKey(key, currentSection);
+        return;
+    }
+
+    if (key == "Type") {
+        _currentType = value;
+    }
+
+    if (!isValidKey(key)) {
+        logInvalidKey(key, currentSection);
+        return;
+    }
+
+    if (!isValidValueForKey(key, value)) {
+        logInvalidValueForKey(value, key, currentSection);
+        return;
+    }
+
+    data[currentSection][key] = value;
 }
 
+bool IniParser::isDuplicateKey(const std::string& key, const std::string& currentSection) {
+    return data[currentSection].find(key) != data[currentSection].end();
+}
 
+bool IniParser::isValidKey(const std::string& key) {
+    return _validKeys.find(key) != _validKeys.end();
+}
+
+bool IniParser::isValidValueForKey(const std::string& key, const std::string& value) {
+    if (_validationFunctions.find(key) == _validationFunctions.end()) {
+        return true; // No validation function for this key, assume valid
+    }
+    return _validationFunctions[key](value);
+}
+
+void IniParser::logInvalidKeyValuePair(const std::string& line, const std::string& currentSection) {
+    log_message(Logger::WARN, "Invalid key-value pair: %s in section: %s.", line.c_str(), currentSection.c_str());
+    _errorInSection = true;
+}
+
+void IniParser::logDuplicateKey(const std::string& key, const std::string& currentSection) {
+    log_message(Logger::WARN, "Duplicate key: %s in section: %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
+    _errorInSection = true;
+}
+
+void IniParser::logInvalidKey(const std::string& key, const std::string& currentSection) {
+    log_message(Logger::WARN, "Invalid key: %s in section %s. Will skip the entire section.", key.c_str(), currentSection.c_str());
+    _errorInSection = true;
+}
+
+void IniParser::logInvalidValueForKey(const std::string& value, const std::string& key, const std::string& currentSection) {
+    log_message(Logger::WARN, "Invalid value: %s for key: %s in section: %s.", value.c_str(), key.c_str(), currentSection.c_str());
+    _errorInSection = true;
+}
+
+/*=====================================================================
+                        GETTERS
+======================================================================*/                        
 
 bool IniParser::getValue(const std::string& section, const std::string& key, std::string& value) const {
     

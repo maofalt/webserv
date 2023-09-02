@@ -23,7 +23,16 @@ private:
     void                                                        trim(std::string& str);
     bool                                                        isCommentOrEmpty(const std::string& line) const;
     void                                                        handleSection(const std::string& line, std::string& currentSection);
+
+//Validating parsing methods    
     void                                                        handleKeyValuePair(const std::string& line, const std::string& currentSection);
+    bool                                                        isDuplicateKey(const std::string& key, const std::string& currentSection);
+    bool                                                        isValidKey(const std::string& key);
+    bool                                                        isValidValueForKey(const std::string& key, const std::string& value);
+    void                                                        logInvalidKeyValuePair(const std::string& line, const std::string& currentSection);
+    void                                                        logDuplicateKey(const std::string& key, const std::string& currentSection);
+    void                                                        logInvalidKey(const std::string& key, const std::string& currentSection);
+    void                                                        logInvalidValueForKey(const std::string& value, const std::string& key, const std::string& currentSection);
     void                                                        initializeValidKeys();
 
 //helper methods for readability
