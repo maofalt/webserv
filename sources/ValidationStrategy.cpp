@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 22:51:00 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 23:04:59 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,3 +85,13 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
 }
 
 
+bool isValidServerName::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
+    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+        if (!validate(*it, fieldProperties)) return false;
+    }
+    return true;
+}
+
+bool isValidServerName::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
+    
+}

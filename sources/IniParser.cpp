@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 22:50:10 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 23:05:13 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,9 +302,9 @@ bool IniParser::isValidationStrategyValid(const std::string& value) {
     
     validStrategies.insert("isPositiveInteger");
     validStrategies.insert("isInteger");
+    validStrategies.insert("isValidServerName");
     validStrategies.insert("isValidDirectoryPath");
     validStrategies.insert("isValidPath");
-    validStrategies.insert("isValidServerName");
     validStrategies.insert("isValidMethod");
     validStrategies.insert("isValidRedirect");
     validStrategies.inser("isValidOnOff");
