@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 02:44:33 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 02:48:59 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,6 +314,7 @@ int Server::loadDefaultConfig() {
 		std::cerr << ": could not setup default config, aborting." << std::endl;
 		return 1;
 	}
+	ClientHandler::setConfig(_config);
 	INFO_LOG("Config = " + defaultConf);
 	return 0;
 }
