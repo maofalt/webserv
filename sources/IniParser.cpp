@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/08/31 19:51:34 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/02 17:14:34 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,10 @@ void IniParser::checkFileStatus(std::ifstream& file) const {
     }
 }
 
+//We encounter a new sencitona and we look if it is new or not
 bool IniParser::isNewSection(const std::string& line) const {
-    return line[0] == '[';
+    return (line[0] == '[' && line.find(']') != std::string::npos 
+            &&  line.rfind(']') == line.find(']') && line.find(']') == line.size() - 1);
 }
 
 void IniParser::finalizePreviousSection(std::string& previousSection, std::string& currentSection) {
@@ -154,6 +156,9 @@ void IniParser::handleKeyValuePair(const std::string& line, const std::string& c
             }
         }       
         data[currentSection][key] = value;
+    } else {
+        log_message(Logger::WARN, "Invalid key-value pair: %s in section: %s.", line.c_str(), currentSection.c_str());
+        _errorInSection = true;
     }
 }
 
