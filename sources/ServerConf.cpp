@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/30 17:20:15 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/02 02:36:23 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) c
 bool	ServerConfig::isListeningTo(uint16_t port) const
 {
 	if (_servConfig.count("listen"))
-		return (port == atoi(_servConfig.at("listen")[0].c_str()));
+		return (port == atoi(_servConfig.at("listen")[1].c_str()));
 	return (false);
 }
 

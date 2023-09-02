@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/31 20:21:08 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/02 02:41:17 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,26 @@ static std::map<std::string, std::string>	getContentType(void)
 	contentType["png"] = "image/png";
 	return (contentType);
 }
+std::map<t_responseType, t_writeType>	HttpResponse::_getWriteType(void)
+{
+	std::map<t_responseType, t_writeType>	writeType;
+
+	writeType[GET] = &HttpResponse::_writeGet;
+	writeType[DELETE] = &HttpResponse::_writeDelete;
+	writeType[DIRECTORY] = &HttpResponse::_writeDirectory;
+	writeType[REDIRECTION] = &HttpResponse::_writeRedirection;
+	return (writeType);
+}
 std::map<std::string, std::string>	HttpResponse::_description = getDescription();
 std::map<std::string, std::string>	HttpResponse::_contentType = getContentType();
+std::map<t_responseType, t_writeType>	HttpResponse::_writeType = HttpResponse::_getWriteType();
 
 // Constructors
 HttpResponse::HttpResponse(void):
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
+	_raw(""),
 	_iRaw(0)
 {
 }
@@ -57,6 +69,7 @@ HttpResponse::HttpResponse(uint16_t port):
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
+	_raw(""),
 	_iRaw(0)
 {
 }
@@ -133,6 +146,8 @@ int	HttpResponse::_setRequest(const HttpRequest *request)
 int	HttpResponse::_setServer(const Config &config)
 {
 	_server = config.findServer(_request->getHost(), _port);
+	if (_server == 0)
+		return (_status = "500", -1);
 	return (0);
 }
 
@@ -155,13 +170,19 @@ int	HttpResponse::readCgi(bool timeout)
 
 int	HttpResponse::send(int fd)
 {
-	int	ret_value;
-
-	if (_iRaw + SEND_BUFFER_SIZE <= _raw.size())
-		return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
-	ret_value = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
-	_iRaw += SEND_BUFFER_SIZE;
-	return (ret_value);
+	while (_iRaw + SEND_BUFFER_SIZE <= _raw.size())
+	{
+		::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
+		_iRaw += SEND_BUFFER_SIZE;
+	}
+	return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
+//	int	ret_value;
+//
+//	if (_raw.size() <= _iRaw + SEND_BUFFER_SIZE)
+//		return (::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0));
+//	ret_value = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
+//	_iRaw += SEND_BUFFER_SIZE;
+//	return (ret_value);
 }
 
 int	HttpResponse::_stripUri(void)
@@ -197,16 +218,18 @@ int	HttpResponse::_stripUri(void)
 
 int	HttpResponse::_limitClientBodySize(void)
 {
-	if (_request->_body.size() > _server->_maxSize)
-		return (_writeError("413"));
+	if (!_server->_maxSize && _request->_body.size() > _server->_maxSize)
+		return (_status = "413", -1);
 	return (0);
 }
 
 int	HttpResponse::_limitHttpMethod(void)
 {
-	if (_server->_allowedMethods.count(_method) == 0)
-		return (_writeError("405"));
-	return (0);
+	if (_location->_locConfig.count("methods"))
+		for (std::vector<std::string>::const_iterator it = _location->_locConfig.at("methods").begin(); it != _location->_locConfig.at("methods").end(); ++it)
+			if (*it == _method)
+				return (0);
+	return (_status = "405", -1);
 }
 
 int	HttpResponse::_determineLocation(void)
@@ -225,7 +248,7 @@ int	HttpResponse::_determineLocation(void)
 		}
 	}
 	if (maxLen == 0)
-		return (_writeError("404"));
+		return (_status = "404", -1);
 	return (0);
 }
 
@@ -239,19 +262,19 @@ int	HttpResponse::_refineUri(void)
 	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
 		if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
 			maxLen = prefix->size();
-	_uri.replace(0, maxLen, _location->_locConfig.at("root")[0]);
+	_uri.replace(0, maxLen, _location->_locConfig.at("root")[1]);
 	if (access(_uri.c_str(), F_OK) == -1)
-		return (_writeError("404"));
+		return (_status = "404", -1);
 	if (access(_uri.c_str(), R_OK) == -1)
-		return (_writeError("403"));
+		return (_status = "403", -1);
 	if (stat(_uri.c_str(), &statbuf) == -1)
-		return (_writeError("500"));
+		return (_status = "500", -1);
 	if (statbuf.st_mode & S_IFDIR)
 	{
 		if (*_uri.end() != '/')
 			_uri.push_back('/');
 		if (_location->_locConfig.count("index"))
-			_uri += _location->_locConfig.at("index")[0];
+			_uri += _location->_locConfig.at("index")[1];
 		else
 			_uriIsDirectory = true;
 	}
@@ -272,18 +295,6 @@ int	HttpResponse::_setType(void)
 		_type = REDIRECTION;
 	return (0);
 }
-int	HttpResponse::_writeType(void)
-{
-	if (_type == GET)
-		return (_writeGet());
-	else if (_type == DELETE)
-		return (_writeDelete());
-	else if (_type == DIRECTORY)
-		return (_writeDirectory());
-	else if (_type == REDIRECTION)
-		return (_writeRedirection());
-	return (1);
-}
 
 int	HttpResponse::_launchCgi(void)
 {
@@ -303,41 +314,9 @@ int	HttpResponse::_writeCgi(void)
 }
 int	HttpResponse::_writeGet(void)
 {
-	return (_writeError("500"));
-}
-int	HttpResponse::_writeDelete(void)
-{
-	return (_writeError("500"));
-}
-int	HttpResponse::_writeError(std::string status)
-{
-	_status = status;
-	_content = _status;
-	return (0);
-}
-
-int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
-{
-	_setRequest(request);
-	_stripUri();
-	_setServer(config);
-	if (_limitClientBodySize()
-		|| _limitHttpMethod()
-		|| _determineLocation()
-		|| _refineUri()
-		|| _setType())
-		return (-1);
-	if (_type == CGI)
-		return (_launchCgi());
-	return (_writeType());
-}
-
-int	HttpResponse::respond(int fd, std::string status)
-{
-	std::string			response;
 	std::stringstream	buffer;
 	std::ostringstream	oss;
-	std::string			extension;
+
 
 	log_message(Logger::DEBUG, "Request:");
 	oss << *_request << std::endl;
@@ -347,14 +326,12 @@ int	HttpResponse::respond(int fd, std::string status)
 	if (_uri == "/")
 		_uri = "/index.html";
 
-	// we try to open the requested page and if it fails we send a 404 error
-	_uri = "./site2" + _uri;
 	std::ifstream	file(_uri.c_str());
 	if (!file.is_open())
 	{
 		ERROR_LOG("File not opened");
 		_uri = "./site2/errors/404.html";
-		status = "404";
+		_status = "404";
 		std::ifstream	file2(_uri.c_str());
 		if (!file2.is_open())
 			return (1);
@@ -365,63 +342,97 @@ int	HttpResponse::respond(int fd, std::string status)
 	file.close();
 	_content = buffer.str();
 
-	// we build the response
+	return (_writeRaw());
+}
+int	HttpResponse::_writeDelete(void)
+{
+	return (_writeError("500"));
+}
+int	HttpResponse::_writeError(std::string status)
+{
+	_status = status;
+	_content = _defaultErrorPages[status];
+	return (_writeRaw());
+}
+int	HttpResponse::_writeRaw(void)
+{
+	std::string			extension;
+
+	// we build the _raw
 	// 1- Status line HTTP-Version Status-Code Reason-Phrase CRLF
-	
-	response += _protocol;
-	response += " ";
-	response += status;
-	response += " ";
-	response += _description[status];
-	response += "\r\n";
+
+	_raw += _protocol;
+	_raw += " ";
+	_raw += _status;
+	_raw += " ";
+	_raw += _description[_status];
+	_raw += "\r\n";
 
 // 2- Date: Date and time of the message CRLF
 	char	time_buffer[1000];
 	time_t	now = time(0);
 	struct tm	tm = *gmtime(&now);
 	strftime(time_buffer, 1000, "%a, %d %b %Y %H:%M:%S %Z", &tm);
-	response += "Date: ";
-	response += time_buffer;
-	response += "\r\n";
+	_raw += "Date: ";
+	_raw += time_buffer;
+	_raw += "\r\n";
 
 // 3- Server: Information about the server CRLF
-	response += "Server: ";
-	response += "Webserv";
-	response += "\r\n";
+	_raw += "Server: ";
+	_raw += "Webserv";
+	_raw += "\r\n";
 
 // 4- Content-Type: Type of the message body CRLF
-	extension = _uri.substr(_uri.find_last_of(".") + 1);
-	response += "Content-Type: ";
-	response += _contentType[extension];
-	response += "\r\n";
+	if (_status == "200")
+		extension = _uri.substr(_uri.find_last_of(".") + 1);
+	else
+		extension = "html";
+	_raw += "Content-Type: ";
+	_raw += _contentType[extension];
+	_raw += "\r\n";
 
 // 5- Content-Length: Size of the message body in bytes CRLF
-	response += "Content-Length: ";
-	response += numberToString(_content.size());
-	response += "\r\n";
+	_raw += "Content-Length: ";
+	_raw += numberToString(_content.size());
+	_raw += "\r\n";
 
-	response += "Connection: ";
-	response += "keep-alive";
-	response += "\r\n";
+	_raw += "Connection: ";
+	_raw += "keep-alive";
+	_raw += "\r\n";
 
-	response += "Accept-Ranges: ";
-	response += "bytes";
-	response += "\r\n";
+	_raw += "Accept-Ranges: ";
+	_raw += "bytes";
+	_raw += "\r\n";
 
-	response += "\r\n";
+	_raw += "\r\n";
 
-	response += _content;
+	_raw += _content;
 
-	log_message(Logger::DEBUG, "Response:");
-	if (extension == "html" || extension == "css")
-	{
-		log_message(Logger::TRACE, "Response: %s", response.substr(0, 4096).c_str());
-		if (response.size() > 4096)
-			log_message(Logger::TRACE, "[...]");
-	}
-	else
-		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
+//	log_message(Logger::DEBUG, "Response:");
+//	if (extension == "html" || extension == "css")
+//	{
+//		log_message(Logger::TRACE, "Response: %s", _raw.substr(0, 4096).c_str());
+//		if (_raw.size() > 4096)
+//			log_message(Logger::TRACE, "[...]");
+//	}
+//	else
+//		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
 
-	::send(fd, response.c_str(), response.size(), 0);
 	return (0);
+}
+
+int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
+{
+	_setRequest(request);
+	_stripUri();
+	if (_setServer(config)
+		|| _limitClientBodySize()
+		|| _determineLocation()
+		|| _limitHttpMethod()
+		|| _refineUri()
+		|| _setType())
+		return (_writeError(_status));
+	if (_type == CGI)
+		return (_launchCgi());
+	return ((this->*_writeType[_type])());
 }

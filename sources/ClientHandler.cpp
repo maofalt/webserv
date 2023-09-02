@@ -6,11 +6,14 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/31 20:14:50 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/01 23:44:17 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClientHandler.hpp"
+
+Config				ClientHandler::_config;
+std::map<int, uint16_t>	ClientHandler::_port;
 
 ClientHandler::~ClientHandler() 
 {
@@ -27,10 +30,10 @@ ClientHandler::ClientHandler(const ClientHandler& other) :
 {
 }
 
-ClientHandler::ClientHandler(uint16_t port, int fd) :
+ClientHandler::ClientHandler(int fdSock, int fd) :
 	_client_fd(fd),
 	_request(),
-	_response(port)
+	_response(_port[fdSock])
 {
 }
 
@@ -52,10 +55,20 @@ int     ClientHandler::getClientFd() const {
 	return _client_fd;
 }
 
+
+void	ClientHandler::addPort(int fdSock, uint16_t port)
+{
+	(ClientHandler::_port)[fdSock] = port;
+}
+void	ClientHandler::setConfig(const Config &config)
+{
+	ClientHandler::_config = config;
+}
+
 // Write the response back to the client.
 void    ClientHandler::writeResponse() {
-	_response.setUp(&_request, Config());
-	_response.respond(_client_fd, "200");
+	_response.setUp(&_request, _config);
+	_response.send(_client_fd);
 }
 
 bool    ClientHandler::isRequestComplete() {

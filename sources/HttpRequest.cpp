@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/31 20:17:22 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 02:35:52 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,6 @@ int	HttpRequest::_parseHeader(void)
 		return (-1);
 	while (buffer.size() > 0)
 	{
-		std::cout << "in header while" << std::endl;
 		if (_parseHeaderField(buffer) == -1
 			|| _setBuffer(buffer, it, _raw.end()))
 			return (-1);
@@ -247,7 +246,6 @@ int	HttpRequest::_parseBody(void)
 
 		while (it != _raw.end())
 		{
-			std::cout << "in body while" << std::endl;
 			// If the end chunk is found, the parsing is complete.
 			if (it == search(it, _raw.end(), endChunk.begin(), endChunk.end()))
 				return(0);
@@ -348,7 +346,6 @@ int	HttpRequest::recv(int fd)
 	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
-		// std::cout << "parse Header" << std::endl;
 		if (_parseHeader() == -1)
 			return (-1);
 		_headerComplete = true;

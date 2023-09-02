@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/31 20:11:30 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 00:56:45 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 
 # define READ_BUFFER_SIZE 16384
 # define SEND_BUFFER_SIZE 16384
+
+# define RESPONSE_SET 0
+# define CGI_LAUNCHED 1
 
 typedef	enum e_response_type
 {
@@ -66,8 +69,10 @@ class HttpResponse
 		std::string::size_type				_iRaw;
 
 	// Static
-		static std::map<std::string, std::string>	_description;
-		static std::map<std::string, std::string>	_contentType;
+		static std::map<std::string, std::string>		_description;
+		static std::map<std::string, std::string>		_contentType;
+		static std::map<t_responseType, t_writeType>	_writeType;
+		static std::map<std::string, std::string>		_defaultErrorPages;
 
 	// Utils
 		int	_determineLocation(void);
@@ -84,9 +89,11 @@ class HttpResponse
 		int	_writeCgi(void);
 		int	_writeGet(void);
 		int	_writeDelete(void);
-		int	_writeType(void);
 		int	_writeError(std::string status);
-		std::map<t_responseType, t_writeType>	_getWriteType(void);
+		int	_writeRaw(void);
+
+	// Utils types
+		static std::map<t_responseType, t_writeType>	_getWriteType(void);
 
 	public:
 	// Constructors
@@ -109,8 +116,8 @@ class HttpResponse
 		int		send(int fd);
 		int		setUp(HttpRequest const *request, const Config &config);
 
-	// Temp
-		int	respond(int fd, std::string status);
+	// Static
+		static std::map<std::string, std::string>	getDefaultErrorPages(void);
 };
 
 #endif

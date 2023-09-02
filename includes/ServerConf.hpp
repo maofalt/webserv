@@ -6,7 +6,7 @@
 /*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/31 18:48:00 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 01:21:07 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <vector>
 
 typedef struct location {
-	std::vector< std::string >								_paths;
+	std::vector< std::string >							_paths;
 	std::map< std::string, std::vector< std::string > >	_locConfig;
 }	t_location;
 
