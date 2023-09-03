@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/03 17:19:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/03 17:51:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ struct location {
 class ServerConfig {
 	public:
 		std::map< std::string, std::vector< std::string > >	_servConfig;
-		std::vector<struct location>								_locations;
+		std::vector<struct location>					    _locations;
 
     	int 												clientBodyLimit;                     // Limit on the client's request body.
 		bool												isListeningTo(uint16_t port) const;
@@ -59,6 +59,9 @@ class ServerConfig {
     	std::map<std::string, std::string>					errorPages;   // Map of error codes to error page file paths.
     private:
         void                                                validateConfigValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+        void                                                validateGlobalConfig();
+        void                                                validateVirtualServerConfig();
+        void                                                validateLocationConfig();
 };
 
 #endif
