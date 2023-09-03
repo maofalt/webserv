@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 18:34:54 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/03 17:19:31 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include "validationFactory.hpp"
+#include "ValidationStrategy.hpp"
 
 struct GlobalConfig {
     int clientBodyLimit;        // Maximum size of the body of a request.
@@ -55,6 +57,8 @@ class ServerConfig {
     	std::vector<std::string> 							host;                        // Server's hostname.
     	std::vector<std::string> 							serverNames;    // List of names the server should respond to.
     	std::map<std::string, std::string>					errorPages;   // Map of error codes to error page file paths.
+    private:
+        void                                                validateConfigValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
 };
 
 #endif
