@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 23:40:24 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/03 16:29:39 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ bool isValidServerName::validate(const std::string& value, const std::map<std::s
     // 2. Valid Characters
     for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
         if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*') {
-            throw std::invalid_argument("ServerName contains invalid characters: " + *it);
+            throw std::invalid_argument(std::string("ServerName contains invalid characters: ") + *it);
             return false;
         }
     }
@@ -259,7 +259,7 @@ bool isValidRedirect::validate(const std::vector<std::string>& values, const std
     // 2. Valid Characters
     for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
         if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*' && *it != '/' && *it != ':' && *it != '_') {
-            throw std::invalid_argument("URL contains invalid characters: " + *it);
+            throw std::invalid_argument(std::string("URL contains invalid characters: ") + *it);
             return false;
         }
     }

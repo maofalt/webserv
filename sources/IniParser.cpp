@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/02 23:05:13 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/03 16:52:07 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,10 @@ void IniParser::finalizePreviousSection(std::string& previousSection, std::strin
             }
         
         }
+    }
+    //Create a list of mandatory section for later verification during the validation
+    if (_keysInSection.find("Mandatory") != _keysInSection.end()) {
+        _mandatorySections.insert(previousSection);
     }
     _keysInSection.clear();
     
@@ -404,6 +408,13 @@ bool IniParser::isValidPort(const std::string& value) {
     return ss.eof();  // Make sure we consumed the whole string
 }
 
+const std::set<std::string>& IniParser::getMandatorySections() const{
+    if (_mandatorySections.empty()) {
+        log_message(Logger::WARN, "No mandatory sections found in the INI file. Set is empty.");
+        return _mandatorySections;
+    }
+    return _mandatorySections;
+}
 
 void IniParser::printAll() const {
     

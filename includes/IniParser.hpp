@@ -7,7 +7,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <cctype>     // for std::isspace
+#include <cctype>
 #include <algorithm>  // for std::find_if
 #include <functional> // for std::not1 and std::ptr_fun
 #include "Utils.hpp"
@@ -17,6 +17,7 @@ class IniParser {
 private:
     std::map<std::string, std::map<std::string, std::string> >  data;
     std::set<std::string>                                       _keysInSection;
+    std::set<std::string>                                       _mandatorySections;
     std::set<std::string>                                       _mandatoryKeys;
     static std::set<std::string>                                _validKeys;
     bool                                                        _errorInSection;
@@ -75,6 +76,9 @@ public:
 
     // Function to fetch all keys and values in a section
     bool getSection(const std::string& section, std::map<std::string, std::string>& sectionData) const;
+
+    //get for mandatory section
+    const std::set<std::string>& getMandatorySections() const;
 
     // Debug function to print all sections, keys and values
     void printAll() const;

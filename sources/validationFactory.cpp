@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponse.cpp                                   :+:      :+:    :+:   */
+/*   validationFactory.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/01 18:16:12 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/03 16:44:24 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void validationFactory::cleanupStrategies() {
     std::map<std::string, ValidationStrategy*>::iterator it;
     for (it = strategyMap.begin(); it != strategyMap.end(); ++it) {
         delete it->second;
-        it->second = NULL; // C++98 equivalent of nullptr
+        it->second = NULL;
     }
     strategyMap.clear(); // Ensure the map is empty after cleanup.
 }
