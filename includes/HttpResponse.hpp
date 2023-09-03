@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 23:50:41 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 01:43:22 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdint.h>
 # include <string>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <unistd.h>
 # include "Config.hpp"
 # include "HttpRequest.hpp"
@@ -31,6 +32,9 @@
 
 # define RESPONSE_SET 0
 # define CGI_LAUNCHED 1
+
+# define SERVER_NAME "webserv"
+# define SERVER_VERSION "1.0"
 
 typedef	enum e_response_type
 {
@@ -56,20 +60,21 @@ class HttpResponse
 		std::string							_uri;
 		std::string							_path;
 		bool								_uriIsDirectory;
-		std::map<std::string, std::string>	_parameters;
+		std::string							_queryString;
 		const ServerConfig					*_server;
 		const t_location					*_location;
 
 	// Temp
 		t_responseType						_type;
 		int									_fdCgi;
+		int									_pidCgi;
+		std::vector<std::string>			_envCgi;
 
 	// Content
 		std::string							_protocol;
 		std::string							_status;
 		std::map<std::string, std::string>	_fields;
 		std::string							_content;
-		std::string							_contentType;
 		std::string							_raw;
 		std::string::size_type				_iRaw;
 
@@ -85,13 +90,13 @@ class HttpResponse
 		int	_limitClientBodySize(void);
 		int	_limitHttpMethod(void);
 		int	_refineUri(void);
+		int	_setEnvCgi(void);
 		int	_setRequest(const HttpRequest *request);
 		int	_setServer(const Config &config);
 		int	_setType(void);
 		int	_stripUri(void);
 		int	_writeRedirection(void);
 		int	_writeDirectory(void);
-		int	_writeCgi(void);
 		int	_writeGet(void);
 		int	_writeDelete(void);
 		int	_writeError(std::string status);

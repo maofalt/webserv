@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 23:52:22 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 02:05:11 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ HttpResponse::HttpResponse(void):
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
-	_contentType(""),
 	_raw(""),
 	_iRaw(0)
 {
@@ -81,7 +80,6 @@ HttpResponse::HttpResponse(uint16_t port):
 	_uriIsDirectory(false),
 	_type(ERROR),
 	_protocol(DEFAULT_PROTOCOL),
-	_contentType(""),
 	_raw(""),
 	_iRaw(0)
 {
@@ -93,7 +91,6 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_uri(rhs._uri),
 	_path(rhs._path),
 	_uriIsDirectory(rhs._uriIsDirectory),
-	_parameters(rhs._parameters),
 	_server(rhs._server),
 	_location(rhs._location),
 	_type(rhs._type),
@@ -102,7 +99,6 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_status(rhs._status),
 	_fields(rhs._fields),
 	_content(rhs._content),
-	_contentType(rhs._contentType),
 	_raw(rhs._raw),
 	_iRaw(rhs._iRaw)
 {
@@ -126,7 +122,6 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_uri = rhs._uri;
 	_path = rhs._path;
 	_uriIsDirectory = rhs._uriIsDirectory;
-	_parameters = rhs._parameters;
 	_server = rhs._server;
 	_location = rhs._location;
 	_type = rhs._type;
@@ -135,7 +130,6 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_status = rhs._status;
 	_fields = rhs._fields;
 	_content = rhs._content;
-	_contentType = rhs._contentType;
 	_raw = rhs._raw;
 	_iRaw = rhs._iRaw;
 
@@ -170,32 +164,10 @@ int	HttpResponse::_setServer(const Config &config)
 
 int	HttpResponse::_stripUri(void)
 {
-	std::stringstream	ss(_uri);
-	std::string			stripedUri;
-	std::string			name;
-	std::string			value;
+	std::istringstream	ss(_uri);
 
-	std::getline(ss, stripedUri, ':');
-	std::getline(ss, stripedUri, '?');
-	while (std::getline(ss, name, '='))
-	{
-		if (!std::getline(ss, value, '&'))
-			break ;
-		_parameters[name] = value;
-	}
-	_uri = stripedUri;
-	if (_uri.size() >= 2 && _uri[0] == '/' && _uri[1] == '/')
-	{
-		std::stringstream	ss(_uri);
-
-		ss.ignore(2);
-		std::getline(ss, stripedUri, '/');
-		if (_host.empty())
-			_host = stripedUri;
-		std::getline(ss, stripedUri, '\0');
-		_uri = std::string("/");
-		_uri += stripedUri;
-	}
+	std::getline(ss, _uri, '?');
+	std::getline(ss, _queryString, '\0');
 	return (0);
 }
 
@@ -296,9 +268,79 @@ int	HttpResponse::_setType(void)
 	return (0);
 }
 
+int	HttpResponse::_setEnvCgi(void)
+{
+	std::ostringstream	variable("");
+
+	variable << "SERVER_SOFTWARE=" << SERVER_NAME << "/" << SERVER_VERSION;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "SERVER_NAME=" << _host;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "GATEWAY_INTERFACE=CGI/1.1";
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "SCRIPT_NAME=" << _uri;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "SCRIPT_FILENAME=" << _path;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "REQUEST_FILENAME=" << _path;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "QUERY_STRING=" << _queryString;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	variable << "REDIRECT_STATUS=";
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
+	return (0);
+}
 int	HttpResponse::_launchCgi(void)
 {
-	return (_writeError("500"));
+	int		pid;
+	int		pipeFd[2];
+
+	if (pipe(pipeFd) == -1)
+		return (_writeError("500"));
+	pid = fork();
+	if (pid == -1)
+		return (close(pipeFd[0]), close(pipeFd[1]), _writeError("500"));
+	if (pid == 0)
+	{
+		close(pipeFd[0]);
+		if (dup2(pipeFd[1], 1) == -1)
+			return (-1);
+		close(pipeFd[1]);
+		std::string	pathExec;
+		char		*argv[3];
+		char		*env[100];
+
+		pathExec = _location->_locConfig.at("cgi")[1];
+		argv[0] = &pathExec[0];
+		argv[1] = &_path[0];
+		argv[2] = NULL;
+		_setEnvCgi();
+		int	i = 0;
+		for (std::vector<std::string>::iterator it = _envCgi.begin(); i < 99 && it != _envCgi.end(); ++it)
+			env[i++] = &((*it)[0]);
+		env[i] = NULL;
+		execve(argv[0], argv, env);
+	}
+	_pidCgi = pid;
+	close(pipeFd[1]);
+	_fdCgi = pipeFd[0];
+	return (CGI_LAUNCHED);
 }
 int	HttpResponse::_writeRedirection(void)
 {
@@ -318,6 +360,7 @@ int	HttpResponse::_writeRedirection(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
+	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeDirectory(void)
@@ -347,11 +390,8 @@ int	HttpResponse::_writeDirectory(void)
 			<< "</body>\n"
 			<< "</html>\n";
 	_content = content.str();
+	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
-}
-int	HttpResponse::_writeCgi(void)
-{
-	return (_writeError("500"));
 }
 int	HttpResponse::_writeGet(void)
 {
@@ -366,7 +406,7 @@ int	HttpResponse::_writeGet(void)
 	_content = buffer.str();
 
 	extension = _path.substr(_path.find_last_of(".") + 1);
-	_contentType = _mapContentType[extension];
+	_fields["ContentType"] = _mapContentType[extension];
 
 	return (_writeRaw());
 }
@@ -387,12 +427,14 @@ int	HttpResponse::_writeDelete(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
+	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeError(std::string status)
 {
 	_status = status;
 	_content = _defaultErrorPages[status];
+	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeRaw(void)
@@ -407,13 +449,13 @@ int	HttpResponse::_writeRaw(void)
 	response << _protocol << " " << _status << " " << _description[_status] << "\r\n";
 	response << "Date: " << time_buffer << "\r\n";
 	response << "Server: " << "webserv" << "\r\n";
-	response << "Content-Type: " << _contentType << "\r\n";
 	response << "Content-Length: " << numberToString(_content.size()) << "\r\n";
 	response << "Connection: " << "keep-alive" << "\r\n";
 	response << "Accept-Ranges: " << "bytes" << "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
-	response << "\r\n";
+	if (_type != CGI)
+		response << "\r\n";
 	response << _content;
 
 	_raw = response.str();
@@ -425,14 +467,9 @@ int	HttpResponse::_writeRaw(void)
 void	HttpResponse::log(void) const
 {
 	log_message(Logger::DEBUG, "Response:");
-	if (_contentType == "text/html" || _contentType == "text/css")
-	{
-		log_message(Logger::TRACE, "Response: %s", _raw.substr(0, 4096).c_str());
-		if (_raw.size() > 4096)
-			log_message(Logger::TRACE, "[...]");
-	}
-	else
-		log_message(Logger::TRACE, "File \"%s\" not printable", _uri.c_str());
+	log_message(Logger::TRACE, "Response: %s", _raw.substr(0, 4096).c_str());
+	if (_raw.size() > 4096)
+		log_message(Logger::TRACE, "[...]");
 }
 
 int	HttpResponse::readCgi(bool timeout)
@@ -444,10 +481,10 @@ int	HttpResponse::readCgi(bool timeout)
 		return (close(_fdCgi), _writeError("504"));
 	bytesRead = read(_fdCgi, buffer, READ_BUFFER_SIZE);
 	if (bytesRead == -1)
-		return (close(_fdCgi), _writeError("500"));
+		return (close(_fdCgi), waitpid(_pidCgi, NULL, 0), _writeError("500"));
 	_content.append(buffer, bytesRead);
 	if (bytesRead == 0)
-		return (_writeCgi());
+		return (close(_fdCgi), waitpid(_pidCgi, NULL, 0),  _writeRaw());
 	return (bytesRead);
 }
 
