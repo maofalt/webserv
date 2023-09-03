@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 01:08:06 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 21:37:30 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,11 @@ int	ClientHandler::writeResponse(void)
 	status = _response.setUp(&_request, _config);
 	if (status == CGI_LAUNCHED)
 	{
+		status = _response.writeToCgi() > 0;
+		while (status > 0)
+			status = _response.writeToCgi() > 0;
+		if (status == -1)
+			_response.readCgi(true);
 		::usleep(100000);
 		while (_response.readCgi(false) > 0) ;
 	}

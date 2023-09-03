@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 02:05:11 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 21:37:48 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ HttpResponse::HttpResponse(void):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
+	_iWriteToCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
 	_raw(""),
 	_iRaw(0)
@@ -79,6 +80,7 @@ HttpResponse::HttpResponse(uint16_t port):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
+	_iWriteToCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
 	_raw(""),
 	_iRaw(0)
@@ -94,7 +96,9 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_server(rhs._server),
 	_location(rhs._location),
 	_type(rhs._type),
-	_fdCgi(rhs._fdCgi),
+	_fdCgiIn(rhs._fdCgiIn),
+	_iWriteToCgi(rhs._iWriteToCgi),
+	_fdCgiOut(rhs._fdCgiOut),
 	_protocol(rhs._protocol),
 	_status(rhs._status),
 	_fields(rhs._fields),
@@ -125,7 +129,9 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_server = rhs._server;
 	_location = rhs._location;
 	_type = rhs._type;
-	_fdCgi = rhs._fdCgi;
+	_fdCgiIn = rhs._fdCgiIn;
+	_iWriteToCgi = rhs._iWriteToCgi;
+	_fdCgiOut = rhs._fdCgiOut;
 	_protocol = rhs._protocol;
 	_status = rhs._status;
 	_fields = rhs._fields;
@@ -173,7 +179,7 @@ int	HttpResponse::_stripUri(void)
 
 int	HttpResponse::_limitClientBodySize(void)
 {
-	if (!_server->_maxSize && _request->_body.size() > _server->_maxSize)
+	if (_server->_maxSize && _request->_body.size() > _server->_maxSize)
 		return (_status = "413", -1);
 	return (0);
 }
@@ -284,6 +290,10 @@ int	HttpResponse::_setEnvCgi(void)
 	_envCgi.push_back(variable.str());
 	variable.str("");
 
+	variable << "REQUEST_METHOD=" << _method;
+	_envCgi.push_back(variable.str());
+	variable.str("");
+
 	variable << "SCRIPT_NAME=" << _uri;
 	_envCgi.push_back(variable.str());
 	variable.str("");
@@ -304,24 +314,45 @@ int	HttpResponse::_setEnvCgi(void)
 	_envCgi.push_back(variable.str());
 	variable.str("");
 
+	if (_method == "POST")
+	{
+		if (_request->_field.count("Content-Type"))
+		{
+			variable << "CONTENT_TYPE=" << _request->_field.at("Content-Type");
+			_envCgi.push_back(variable.str());
+			variable.str("");
+		}
+
+		variable << "CONTENT_LENGTH=" << _request->_body.size();
+		_envCgi.push_back(variable.str());
+		variable.str("");
+	}
+
 	return (0);
 }
 int	HttpResponse::_launchCgi(void)
 {
 	int		pid;
-	int		pipeFd[2];
+	int		pipeFdIn[2];
+	int		pipeFdOut[2];
 
-	if (pipe(pipeFd) == -1)
+	if (pipe(pipeFdIn) == -1)
 		return (_writeError("500"));
+	if (pipe(pipeFdOut) == -1)
+		return (close(pipeFdIn[0]), close(pipeFdIn[1]), _writeError("500"));
 	pid = fork();
 	if (pid == -1)
-		return (close(pipeFd[0]), close(pipeFd[1]), _writeError("500"));
+		return (close(pipeFdIn[0]), close(pipeFdIn[1]), close(pipeFdOut[0]), close(pipeFdOut[1]), _writeError("500"));
 	if (pid == 0)
 	{
-		close(pipeFd[0]);
-		if (dup2(pipeFd[1], 1) == -1)
-			return (-1);
-		close(pipeFd[1]);
+		close(pipeFdIn[1]);
+		close(pipeFdOut[0]);
+		if (dup2(pipeFdIn[0], 0) == -1)
+			return (close(pipeFdIn[0]), close(pipeFdOut[1]), -1);
+		close(pipeFdIn[0]);
+		if (dup2(pipeFdOut[1], 1) == -1)
+			return (close(pipeFdOut[1]), -1);
+		close(pipeFdOut[1]);
 		std::string	pathExec;
 		char		*argv[3];
 		char		*env[100];
@@ -335,11 +366,14 @@ int	HttpResponse::_launchCgi(void)
 		for (std::vector<std::string>::iterator it = _envCgi.begin(); i < 99 && it != _envCgi.end(); ++it)
 			env[i++] = &((*it)[0]);
 		env[i] = NULL;
+		chdir(_path.substr(0, _path.find_last_of("/")).c_str());
 		execve(argv[0], argv, env);
 	}
 	_pidCgi = pid;
-	close(pipeFd[1]);
-	_fdCgi = pipeFd[0];
+	close(pipeFdIn[0]);
+	close(pipeFdOut[1]);
+	_fdCgiIn = pipeFdIn[1];
+	_fdCgiOut = pipeFdOut[0];
 	return (CGI_LAUNCHED);
 }
 int	HttpResponse::_writeRedirection(void)
@@ -472,19 +506,37 @@ void	HttpResponse::log(void) const
 		log_message(Logger::TRACE, "[...]");
 }
 
+int	HttpResponse::writeToCgi(void)
+{
+	long	bytesWritten;
+
+	if (_method != "POST")
+		return (0);
+	_iWriteToCgi = 0;
+	if (_request->_body.size() <= _iWriteToCgi + WRITE_CGI_BUFFER_SIZE)
+		bytesWritten = write(_fdCgiIn, _request->_body.c_str() + _iWriteToCgi, _request->_body.size() - _iWriteToCgi);
+	else
+		bytesWritten = write(_fdCgiIn, _request->_body.c_str() + _iWriteToCgi, WRITE_CGI_BUFFER_SIZE);
+	if (bytesWritten == -1)
+		return (-1);
+	_iWriteToCgi += bytesWritten;
+	if (_iWriteToCgi >= _request->_body.size())
+		return (close(_fdCgiIn), 0);
+	return (1);
+}
 int	HttpResponse::readCgi(bool timeout)
 {
 	char	buffer[READ_BUFFER_SIZE] = {};
 	int		bytesRead;
 
 	if (timeout)
-		return (close(_fdCgi), _writeError("504"));
-	bytesRead = read(_fdCgi, buffer, READ_BUFFER_SIZE);
+		return (close(_fdCgiIn), close(_fdCgiOut), _writeError("504"));
+	bytesRead = read(_fdCgiOut, buffer, READ_BUFFER_SIZE);
 	if (bytesRead == -1)
-		return (close(_fdCgi), waitpid(_pidCgi, NULL, 0), _writeError("500"));
+		return (close(_fdCgiOut), waitpid(_pidCgi, NULL, 0), _writeError("500"));
 	_content.append(buffer, bytesRead);
-	if (bytesRead == 0)
-		return (close(_fdCgi), waitpid(_pidCgi, NULL, 0),  _writeRaw());
+	if (bytesRead < READ_BUFFER_SIZE)
+		return (close(_fdCgiOut), waitpid(_pidCgi, NULL, 0),  _writeRaw());
 	return (bytesRead);
 }
 

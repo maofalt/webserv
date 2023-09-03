@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 01:43:22 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 08:10:02 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 
 # define READ_BUFFER_SIZE 16384
 # define SEND_BUFFER_SIZE 16384
+# define WRITE_CGI_BUFFER_SIZE 16384
 
 # define RESPONSE_SET 0
 # define CGI_LAUNCHED 1
@@ -66,7 +67,9 @@ class HttpResponse
 
 	// Temp
 		t_responseType						_type;
-		int									_fdCgi;
+		int									_fdCgiIn;
+		std::string::size_type				_iWriteToCgi;
+		int									_fdCgiOut;
 		int									_pidCgi;
 		std::vector<std::string>			_envCgi;
 
@@ -124,6 +127,7 @@ class HttpResponse
 	// Methods
 		void	log(void) const;
 		int		readCgi(bool timeout);
+		int		writeToCgi(void);
 		int		send(int fd);
 		int		setUp(HttpRequest const *request, const Config &config);
 
