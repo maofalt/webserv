@@ -307,7 +307,7 @@ bool IniParser::isValidationStrategyValid(const std::string& value) {
     validStrategies.insert("isValidPath");
     validStrategies.insert("isValidMethod");
     validStrategies.insert("isValidRedirect");
-    validStrategies.inser("isValidOnOff");
+    validStrategies.insert("isValidOnOff");
     validStrategies.insert("isValidCgiExtension");
     validStrategies.insert("isValidFileUploadTypes");
     return validStrategies.find(value) != validStrategies.end();

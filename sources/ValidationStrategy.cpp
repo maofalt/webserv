@@ -27,8 +27,8 @@ std::vector<std::string> split(const std::string &s, char delimiter) {
 }
 
 
-bool isPositiveInteger::validate(const std::vector<std::string> values, const std::map<std::string, std::string>& fieldProperties>) const {
-    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+bool isPositiveInteger::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) return false;
     }
     return true;
@@ -37,8 +37,9 @@ bool isPositiveInteger::validate(const std::vector<std::string> values, const st
 bool isPositiveInteger::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
         // Use the Default value if value is empty or wrong and a default is provided
     std::string actualValue = value;
-    if(value.empty() && !fieldProperties.Default.empty()) {
-        actualValue = fieldProperties.Default;
+    std::string defaultValue = fieldProperties.find("Default")->second;
+    if(value.empty() && !defaultValue.empty()) {
+        actualValue = defaultValue;
     }
 
     // Check if actualValue is an integer
@@ -52,7 +53,7 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
     //We check if is an integer by converting it to int
     std::stringstream ss(value);
     int integerValue;
-    ss >> value;
+    ss >> integerValue;
     if (ss.fail()) {
         ss.clear();
         throw std::invalid_argument("Value overflows or underflows");
@@ -65,16 +66,18 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
     }
 
     // Validate Min and Max
-    if(!fieldProperties.Min.empty()) {
-        int minValue = std::atoi(fieldProperties.Min.c_str());
+    std::string min = fieldProperties.find("Min")->second;
+    if(!min.empty()) {
+        int minValue = std::atoi(min.c_str());
         if(integerValue < minValue) {
             throw std::invalid_argument("Value is less than Min");
             return false; 
         }
     }
 
-    if(!fieldProperties.Max.empty()) {
-        int maxValue = std::atoi(fieldProperties.Max.c_str());
+    std::string max = fieldProperties.find("Max")->second;
+    if(!max.empty()) {
+        int maxValue = std::atoi(max.c_str());
         if(integerValue > maxValue) {
             throw std::invalid_argument("Value is greater than Max");
             return false; 
@@ -86,7 +89,7 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
 
 
 bool isValidServerName::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
@@ -94,6 +97,8 @@ bool isValidServerName::validate(const std::vector<std::string>& values, const s
 }
 
 bool isValidServerName::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
+    
+    (void)fieldProperties;
     // 1. Non-emptiness
     if (value.empty()) {
         throw std::invalid_argument("ServerName is empty");
@@ -151,15 +156,16 @@ bool isValidServerName::validate(const std::string& value, const std::map<std::s
 }
 
 bool isValidDirectoryPath::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
     return true;
 }
 
-bool isValidDirectoryPath::validate(const std::string& value, const std::map<std::string>& fieldProperties) const {
+bool isValidDirectoryPath::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
     struct stat s;
+    (void)fieldProperties;
     if(stat(value.c_str(), &s) == 0) {
         if(s.st_mode & S_IFDIR) {
             // It's a directory
@@ -179,7 +185,7 @@ bool isValidDirectoryPath::validate(const std::string& value, const std::map<std
 }
 
 bool isValidPath::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
@@ -188,6 +194,7 @@ bool isValidPath::validate(const std::vector<std::string>& values, const std::ma
 
 bool isValidPath::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const{
     struct stat s;
+    (void)fieldProperties;
     if(stat(value.c_str(), &s) == 0) {
         if(s.st_mode & S_IFREG) {
             return true;
@@ -201,15 +208,17 @@ bool isValidPath::validate(const std::string& value, const std::map<std::string,
     }   
 }
 
-bool isValidMethod::validate(const std::map<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::map<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+bool isValidMethod::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
+    return true;
 }
 
-bool isValidMethod::validate(const std::string& values, const std::map<std::string, std::string>& fieldProperties) const {
+bool isValidMethod::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
     std::string methods[] = {"GET", "POST", "DELETE"};
+    (void)fieldProperties;
     for(int i = 0; i < 3; ++i) {
         if(value == methods[i]) {
             return true;
@@ -219,46 +228,60 @@ bool isValidMethod::validate(const std::string& values, const std::map<std::stri
     return false;
 }
 
-bool isValidRedirect::validate(const std::map<std::string>& value, const map<std::string, std::string>& fieldProperties) const {
-    for (const std::map<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+bool isValidRedirect::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
+    return true;
 }
 
-bool isValidRedirect::validate(const std::string& values, const std::map<std::string, std::string>& fieldProperties) const {
-    
+bool isValidRedirect::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
+    (void)value;
+    (void)fieldProperties;
+    return true;
 }
 
-bool isValidOnOff::validate(const std::map<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const{
-    for (const std::map<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+bool isValidOnOff::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const{
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
+    return true;
 }
 
 bool isValidOnOff::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-    
+    (void)value;
+    (void)fieldProperties;
+    return true;
 }
 
 bool isValidCgiExtension::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::vector<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
+    return true;
 }
 
 bool isValidCgiExtension::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-        
+    (void)value;
+    (void)fieldProperties;
+
+    return true;
 }
 
 bool isValidFileUploadTypes::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (const std::vecor<std::string>::const_iterator& it = values.begin(); it != values.end(); ++it) {
+    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) {
             return false; }
     }
+    return true;
 }
 
-bool isValidFileUploadTypes::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-        
+bool isValidFileUploadTypes::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
+    (void)value;
+    (void)fieldProperties;
+
+    return true;
 }
