@@ -229,10 +229,65 @@ bool isValidMethod::validate(const std::string& value, const std::map<std::strin
 }
 
 bool isValidRedirect::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
-    for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
-        if (!validate(*it, fieldProperties)) {
-            return false; }
+    (void)fieldProperties;
+    // Check if the vector has only 2 strings
+    if (values.size() != 2) {
+        throw std::invalid_argument("Redirection does not contain exactly two values.");
+        return false;
     }
+
+    // Check for valid redirection codes
+    std::set<std::string> validCodes;
+    validCodes.insert("301");
+    validCodes.insert("302");
+    validCodes.insert("303");
+    validCodes.insert("307");
+    validCodes.insert("308");
+    if (validCodes.find(values[0]) == validCodes.end()) {
+        throw std::invalid_argument("Invalid redirection type: " + values[0]);
+        return false;
+    }
+    // Check the URL (using a modified version of your provided validation)
+    const std::string& value = values[1];
+
+    // 1. Check if Empty
+    if (value.empty()) {
+        throw std::invalid_argument("URL is empty");
+        return false;
+    }
+
+    // 2. Valid Characters
+    for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
+        if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*' && *it != '/' && *it != ':' && *it != '_') {
+            throw std::invalid_argument("URL contains invalid characters: " + *it);
+            return false;
+        }
+    }
+
+    // 3. Wildcard Usage (wildcards in URLs are more unusual, so let's not allow them)
+    if (value.find('*') != std::string::npos) {
+        throw std::invalid_argument("URL contains a wildcard");
+        return false;
+    }
+
+    // 4. Domain Length
+    if (value.length() > 2048) { // Most browsers support URLs up to 2048 characters
+        throw std::invalid_argument("URL is too long [2048 characters max]");
+        return false;
+    }
+
+    // 5. Number of Dots
+    if (std::count(value.begin(), value.end(), '.') < 1) {
+        throw std::invalid_argument("URL does not contain a domain");
+        return false;
+    }
+
+    // 6. No Consecutive Dots
+    if (value.find("..") != std::string::npos) {
+        throw std::invalid_argument("URL contains consecutive dots");
+        return false;
+    }
+
     return true;
 }
 
@@ -251,8 +306,16 @@ bool isValidOnOff::validate(const std::vector<std::string>& values, const std::m
 }
 
 bool isValidOnOff::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-    (void)value;
     (void)fieldProperties;
+    
+    std::vector<std::string> validValues;
+    validValues.push_back("on");
+    validValues.push_back("off");
+    if (std::find(validValues.begin(), validValues.end(), value) == validValues.end()) {
+        throw std::invalid_argument("Invalid value for OnOff: " + value);
+        return false;
+    }
+
     return true;
 }
 
@@ -265,8 +328,32 @@ bool isValidCgiExtension::validate(const std::vector<std::string>& values, const
 }
 
 bool isValidCgiExtension::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-    (void)value;
-    (void)fieldProperties;
+    (void)fieldProperties; // Unused
+
+    // 1. Check for known extensions
+    if (value.find("/php-cgi") == std::string::npos && value.find("/python-cgi") == std::string::npos) {
+        throw std::invalid_argument("Invalid CGI extension in path: " + value);
+        return false;
+    }
+
+    // 2. Ensure the path exists
+    struct stat buffer;
+    if (stat(value.c_str(), &buffer) != 0) {
+        throw std::invalid_argument("Path does not exist: " + value);
+        return false;
+    }
+
+    // 3. Ensure the path is a file
+    if (S_ISDIR(buffer.st_mode)) {
+        throw std::invalid_argument("Path is a directory, not a file: " + value);
+        return false;
+    }
+
+    // 4. Check if the current user has execute rights on the file
+    if (access(value.c_str(), X_OK) != 0) {
+        throw std::invalid_argument("No execute rights on the file: " + value);
+        return false;
+    }
 
     return true;
 }
@@ -280,8 +367,28 @@ bool isValidFileUploadTypes::validate(const std::vector<std::string>& values, co
 }
 
 bool isValidFileUploadTypes::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-    (void)value;
-    (void)fieldProperties;
+    
+    (void)fieldProperties; // Unused
+    // Extract valid types from fieldProperties or use a hardcoded set.
+    std::set<std::string> validTypes;
+    validTypes.insert("jpg");
+    validTypes.insert("jpeg");
+    validTypes.insert("png");
+    validTypes.insert("gif");
+    // Split the 'value' by commas or spaces, if you expect multiple values.
+    std::vector<std::string> givenTypes;
+    std::stringstream ss(value);
+    std::string item;
+    while (std::getline(ss, item, ',')) { // Assuming ',' as delimiter.
+        givenTypes.push_back(item);
+    }
+    // Check each given type against validTypes.
+    for (std::vector<std::string>::iterator type = givenTypes.begin(); type != givenTypes.end(); ++type) {
+        if (validTypes.find(*type) == validTypes.end()) {
+            throw std::invalid_argument("Invalid file type: " + *type);
+            return false; // Found an invalid type.
+        }
+    }
+    return true; // All given types are valid.
 
-    return true;
 }
