@@ -12,7 +12,7 @@
 
 #include "Config.hpp"
 
-Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t"){
+Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t"), _validationFile(NULL){
 }
 
 Config::~Config() {
@@ -34,4 +34,8 @@ std::vector< ServerConfig >	Config::getServList() const {
 
 std::map< std::string, std::vector< std::string > >	Config::getConfData() const {
 	return this->_confData;
+}
+
+void	Config::setValidationFile(IniParser* validationFile) {
+	this->_validationFile = validationFile;
 }

@@ -12,21 +12,6 @@
 
 #include "ValidationStrategy.hpp"
 
-
-// Split function to break down comma-separated values
-std::vector<std::string> split(const std::string &s, char delimiter) {
-    
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(s);
-    
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
-
 bool isPositiveInteger::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
     for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
         if (!validate(*it, fieldProperties)) return false;
@@ -108,7 +93,7 @@ bool isValidServerName::validate(const std::string& value, const std::map<std::s
     // 2. Valid Characters
     for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
         if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*') {
-            throw std::invalid_argument(std::string("ServerName contains invalid characters: ") + *it);
+            throw std::invalid_argument(std::string("ServerName ") + value + std::string(" contains invalid characters: ") + *it);
             return false;
         }
     }

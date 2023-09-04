@@ -252,15 +252,14 @@ bool IniParser::getValue(const std::string& section, const std::string& key, std
 }
 
 bool IniParser::getSection(const std::string& section, std::map<std::string, std::string>& sectionData) const {
-    /*=====================================================================
-                        VALIDATION TYPE METHODS
-======================================================================*/
+    log_message(Logger::DEBUG, "Looking for section: %s", section.c_str());
     std::map<std::string, std::map<std::string, std::string> >::const_iterator sectionIter = data.find(section);
-    
     if (sectionIter != data.end()) {
         sectionData = sectionIter->second;
+        log_message(Logger::DEBUG, "Found section: %s", section.c_str());
         return true;
     }
+    log_message(Logger::WARN, "Section %s not found in the INI file.", section.c_str());
     return false;
 }
 

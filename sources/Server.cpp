@@ -24,6 +24,10 @@ Server::~Server() {
 	stop();
 }
 
+IniParser* Server::getValidationFile(){
+	return &_validationFile;
+}
+
 /**
  * @brief Starts the server's operation by setting up sockets, epoll, and handling events.
  *

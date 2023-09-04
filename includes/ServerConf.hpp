@@ -57,11 +57,6 @@ class ServerConfig {
     	std::vector<std::string> 							host;                        // Server's hostname.
     	std::vector<std::string> 							serverNames;    // List of names the server should respond to.
     	std::map<std::string, std::string>					errorPages;   // Map of error codes to error page file paths.
-    private:
-        void                                                validateConfigValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
-        void                                                validateGlobalConfig();
-        void                                                validateVirtualServerConfig();
-        void                                                validateLocationConfig();
 };
 
 #endif

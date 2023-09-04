@@ -45,26 +45,3 @@ bool	ServerConfig::isNamed(const std::string &name) const
 				return (true);
 	return (false);
 }
-
-void ServerConfig::validateConfigValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
-    validationFactory&	factory = validationFactory::getInstance();
-    ValidationStrategy*	strategy = NULL;
-    
-    try {
-        strategy = factory.getStrategy(fullContext);
-        if (strategy) {
-            for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it) {
-                strategy->validate(*it, fieldProperties);
-            }
-        } else {
-			log_message(Logger::ERROR, "No validation strategy found for context [%s]", fullContext.c_str());
-			return ;
-		}
-    } catch (std::exception& e) {
-        log_message(Logger::ERROR, "Error during context [%s], value [%s] validation: %s", fullContext.c_str(), values[0].c_str(), e.what());
-        delete strategy;
-        throw; 
-    }
-    
-    delete strategy;
-}

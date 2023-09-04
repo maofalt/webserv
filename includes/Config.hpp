@@ -24,6 +24,7 @@
 #include "Colors.hpp"
 #include "ServerConf.hpp"
 #include "Logger.hpp"
+#include "IniParser.hpp"
 
 # define DISPLAY_CONF 1
 
@@ -34,11 +35,11 @@ class Config {
 		std::string									_tokens;
 		std::string									_whiteSp;
 		std::string									_confFileName;
-		// size_t										_fileSize;
 		std::vector< std::string >					_rawContent;
 		std::vector< std::string >					_splitContent;
 		std::vector< ServerConfig >						_servList;
 		std::map< std::string, std::vector< std::string > >	_confData;
+		IniParser*									_validationFile;
 
 	public:
 		// missing coplien !!!!;
@@ -75,6 +76,14 @@ class Config {
 		int		parseServConf2(std::vector<std::string>::iterator & it,
 				int & line, ServerConfig & newServ);
 
+		//validate the data struct for server and location blocks
+		bool	validateConfig();
+		void	validateValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+        bool	validateGlobalConfig();
+        bool	validateVirtualServerConfig();
+        bool	validateLocationConfig(std::vector<location>& locations);
+		std::map<std::string, std::string>	getFieldProperties(const std::string& context);
+
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);
@@ -84,6 +93,9 @@ class Config {
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< ServerConfig >	getServList() const;
 		std::map< std::string, std::vector< std::string > >	getConfData() const;
+
+		//dependency injection through setter
+		void	setValidationFile(IniParser* validationFile);
 
 		// specific server getter
 		const ServerConfig	*findServer(std::string server_name, uint16_t port) const;

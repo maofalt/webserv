@@ -71,12 +71,14 @@ private://This way they can't be used, since it doesn't make sense implementing 
     Server& operator=(const Server& other);
     
 public:
-    int     loadConfig(const std::string& configPath);  // Load server configurations from a file;
-    int     loadDefaultConfig(); // Load default configuration from config/default.conf;
-    void    start();  // Start the server
-    void    stop();  // Stop the server
-    Config  getConfig() {return this->_config;};
-    bool    loadValidationFile(const std::string& validationPath);
+    int                 loadConfig(const std::string& configPath);  // Load server configurations from a file;
+    int                 loadDefaultConfig(); // Load default configuration from config/default.conf;
+    void                start();  // Start the server
+    void                stop();  // Stop the server
+    Config              getConfig() {return this->_config;};
+    void                setValidationFile(IniParser* validationFile) {_config.setValidationFile(validationFile);};
+    IniParser*          getValidationFile();
+    bool                loadValidationFile(const std::string& validationPath);
 
 private:
     std::vector<std::string>    getPorts();

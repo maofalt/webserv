@@ -45,16 +45,13 @@ int main(int ac, char **av) {
 
     try {
         server.loadValidationFile(PATH_INI);
+        server.setValidationFile(server.getValidationFile());
+        server.getConfig().validateConfig();
     } catch (const std::exception& e) {
         ERROR_LOG(e.what());
         return 1;
     }
 
-    //parse config    
-    //validate data
-    //vlidate global
-    //valdiate servers
-    
 
     try {
         server.start();  // Starts listening on all ports and enters event loop.    
