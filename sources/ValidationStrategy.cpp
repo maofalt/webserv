@@ -51,8 +51,9 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
     }
 
     // Validate Min and Max
-    std::string min = fieldProperties.find("Min")->second;
-    if(!min.empty()) {
+    std::map<std::string, std::string>::const_iterator minIt = fieldProperties.find("Min");
+    if (minIt != fieldProperties.end()) {
+        std::string min = minIt->second;
         int minValue = std::atoi(min.c_str());
         if(integerValue < minValue) {
             throw std::invalid_argument("Value is less than Min");
@@ -60,14 +61,18 @@ bool isPositiveInteger::validate(const std::string& value, const std::map<std::s
         }
     }
 
-    std::string max = fieldProperties.find("Max")->second;
-    if(!max.empty()) {
-        int maxValue = std::atoi(max.c_str());
-        if(integerValue > maxValue) {
-            throw std::invalid_argument("Value is greater than Max");
-            return false; 
+    std::map<std::string, std::string>::const_iterator itMax = fieldProperties.find("Max");
+    if (itMax != fieldProperties.end()) {
+        std::string max = itMax->second;
+        if(!max.empty()) {
+            int maxValue = std::atoi(max.c_str());
+            if(integerValue > maxValue) {
+                throw std::invalid_argument("Value is greater than Max");
+                return false;  // Note: this line will not be reached due to the 'throw' statement above.
+            }
         }
     }
+
 
     return true;
 }

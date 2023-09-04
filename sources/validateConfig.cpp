@@ -31,7 +31,9 @@ bool Config::validateGlobalConfig() {
             for (std::vector<std::string>::const_iterator vec_it = it->second.begin(); vec_it != it->second.end(); ++vec_it) {
                 log_message(Logger::DEBUG, "Vector content: %s", vec_it->c_str());
             }
-            validateValue("global." + it->first, it->second, getFieldProperties("global." + it->first));
+            //new vector but removing the first element
+            std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
+            validateValue("global." + it->first, newVec, getFieldProperties("global." + it->first));
         } catch (std::exception& e) {
             log_message(Logger::ERROR, "Failed to validate global config key [%s]: %s", it->first.c_str(), e.what());
             return false;
@@ -45,8 +47,8 @@ bool Config::validateVirtualServerConfig() {
         for (std::map<std::string, std::vector<std::string> >::iterator it = server_it->_servConfig.begin(); it != server_it->_servConfig.end(); ++it) {
             try {
                                 //create new vector  but removing the first element
-                //std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
-                validateValue("server." + it->first, it->second, getFieldProperties("server." + it->first));
+                std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
+                validateValue("server." + it->first, newVec, getFieldProperties("server." + it->first));
             } catch (std::exception& e) {
                 log_message(Logger::ERROR, "Failed to validate server config key [%s]: %s", it->first.c_str(), e.what());
                 return false; // Stop further validation if one fails

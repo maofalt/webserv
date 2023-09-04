@@ -25,9 +25,9 @@ void validationFactory::registerStrategies() {
         strategyMap["isValidOnOff"] = new isValidOnOff();
         strategyMap["isValidCgiExtension"] = new isValidCgiExtension();
         strategyMap["isValidFileUploadTypes"] = new isValidFileUploadTypes();
-    } catch (std::bad_alloc& ba) {
+    } catch (const std::exception& e) {
         cleanupStrategies();
-        throw("Memory allocation failed while registering strategies: " + std::string(ba.what()));
+        throw("Memory allocation failed while registering strategies: " + std::string(e.what()));
     }
 }
 
@@ -49,6 +49,7 @@ ValidationStrategy* validationFactory::getStrategy(const std::string& validation
 }
 
 void validationFactory::cleanupStrategies() {
+    log_message(Logger::DEBUG, "Cleaning up strategies because they failed to register.");
     std::map<std::string, ValidationStrategy*>::iterator it;
     for (it = strategyMap.begin(); it != strategyMap.end(); ++it) {
         delete it->second;
