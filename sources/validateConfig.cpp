@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   validationFactory.cpp                              :+:      :+:    :+:   */
+/*   validateConfig.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 17:21:24 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 14:20:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ bool Config::validateLocationConfig(std::vector<location>& locations) {
 
 
 bool Config::validateConfig() {
-    _validationFile->printAll();
     if (!validateGlobalConfig()) {
         return false;
     }

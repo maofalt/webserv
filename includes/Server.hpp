@@ -26,8 +26,8 @@
 #include "IniParser.hpp"
 
 
-#define PORT "8694"
-#define PORTAL "8000"
+#define PORT "8695"
+#define PORTAL "8001"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
 #define MAX_EVENTS 10
