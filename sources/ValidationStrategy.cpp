@@ -392,24 +392,24 @@ bool isValidCgiExtension::validate(const std::string& value, const std::map<std:
         return false;
     }
 
-    // 2. Ensure the path exists
-    struct stat buffer;
-    if (stat(value.c_str(), &buffer) != 0) {
-        throw std::invalid_argument("Path does not exist: " + value);
-        return false;
-    }
+    // // 2. Ensure the path exists
+    // struct stat buffer;
+    // if (stat(value.c_str(), &buffer) != 0) {
+    //     throw std::invalid_argument("Path does not exist: " + value);
+    //     return false;
+    // }
 
-    // 3. Ensure the path is a file
-    if (S_ISDIR(buffer.st_mode)) {
-        throw std::invalid_argument("Path is a directory, not a file: " + value);
-        return false;
-    }
+    // // 3. Ensure the path is a file
+    // if (S_ISDIR(buffer.st_mode)) {
+    //     throw std::invalid_argument("Path is a directory, not a file: " + value);
+    //     return false;
+    // }
 
     // 4. Check if the current user has execute rights on the file
-    if (access(value.c_str(), X_OK) != 0) {
-        throw std::invalid_argument("No execute rights on the file: " + value);
-        return false;
-    }
+    // if (access(value.c_str(), X_OK) != 0) {
+    //     throw std::invalid_argument("No execute rights on the file: " + value);
+    //     return false;
+    // }
 
     return true;
 }
