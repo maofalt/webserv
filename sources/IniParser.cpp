@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 16:11:41 by motero            #+#    #+#             */
-/*   Updated: 2023/09/03 16:52:07 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 20:01:27 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void IniParser::finalizePreviousSection(std::string& previousSection, std::strin
         }
     }
     //Create a list of mandatory section for later verification during the validation
-    if (_keysInSection.find("Mandatory") != _keysInSection.end()) {
+    if (_keysInSection.find("Mandatory") != _keysInSection.end() && data[previousSection]["Mandatory"] == "true") {
         _mandatorySections.insert(previousSection);
     }
     _keysInSection.clear();
