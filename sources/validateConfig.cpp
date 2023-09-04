@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/04 19:09:18 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 19:58:31 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ bool Config::validateGlobalConfig() {
         try {         
             // Check individually each global context
             const std::map<std::string, std::string>& fieldProperties = getFieldProperties("global." + it->first);
-            
-            handleDuplicateValues(it->second, fieldProperties);
-            
+            if (!fieldProperties.empty()) {
+                handleDuplicateValues(it->second, fieldProperties);
+            }
             std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
-            
             validateValue("global." + it->first, newVec, fieldProperties);
         } catch (std::exception& e) {
             log_message(Logger::ERROR, "Failed to validate global config key [%s]: %s", it->first.c_str(), e.what());
@@ -44,6 +43,9 @@ bool Config::validateGlobalConfig() {
 
     // Check if all mandatory global context are present
     const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
+    for (std::set<std::string>::iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
+        log_message(Logger::DEBUG, "Mandatory section: %s", it->c_str());   
+    }
     for (std::set<std::string>::iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find("global.") != std::string::npos) {
             std::string parameter = it->substr(it->find("global.") + std::string("global.").length());
@@ -78,7 +80,7 @@ void Config::handleDuplicateValues(std::vector<std::string>& values, const std::
                 values.push_back(*it);
             }
         } else {
-            log_message(Logger::ERROR, "Multiple values found but multiple values are not allowed");
+            log_message(Logger::ERROR, "Multiple values found but multiple values are not allowed in section [%s]", values[0].c_str());
 
             // Keep only the first value and the first from the subvector.
             values.erase(values.begin() + 2, values.end()); // Remove all elements except the first two.
