@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/30 17:54:59 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 14:40:50 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ int main(int ac, char **av) {
     try {
         server.loadValidationFile(PATH_INI);
         server.setValidationFile(server.getValidationFile());
-        server.getConfig().validateConfig();
+        
+        if(!server.getConfig().validateConfig()) {
+            log_message(Logger::ERROR, "Configuration validation failed.");
+            return 1;}
     } catch (const std::exception& e) {
         ERROR_LOG(e.what());
         return 1;

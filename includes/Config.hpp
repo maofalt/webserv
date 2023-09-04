@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/04 14:10:53 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 18:57:18 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,11 @@ class Config {
 
 		//validate the data struct for server and location blocks
 		bool	validateConfig();
-		void	validateValue(const std::string& fullContext, const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+		void	validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
         bool	validateGlobalConfig();
         bool	validateVirtualServerConfig();
         bool	validateLocationConfig(std::vector<location>& locations);
+		void	handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
 		std::map<std::string, std::string>	getFieldProperties(const std::string& context);
 
 		// main functions
