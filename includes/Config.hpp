@@ -85,6 +85,10 @@ class Config {
 		void	handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
 		std::map<std::string, std::string>	getFieldProperties(const std::string& context);
 
+		//Helper methdos for validating data and structure more the code 
+		bool	validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
+		bool	validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
+
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);

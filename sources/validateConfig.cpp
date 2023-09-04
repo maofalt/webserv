@@ -23,39 +23,34 @@ std::map<std::string, std::string> Config::getFieldProperties(const std::string&
     return std::map<std::string, std::string>();
 }
 
-
 bool Config::validateGlobalConfig() {
-    // Validate existing global contexts
-    for (std::map<std::string, std::vector<std::string> >::iterator it = _confData.begin(); it != _confData.end(); ++it) {
-        try {         
-            // Check individually each global context
-            const std::map<std::string, std::string>& fieldProperties = getFieldProperties("global." + it->first);
-            if (!fieldProperties.empty()) {
-                handleDuplicateValues(it->second, fieldProperties);
-            }
-            std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
-            validateValue("global." + it->first, newVec, fieldProperties);
-        } catch (std::exception& e) {
-            log_message(Logger::ERROR, "Failed to validate global config key [%s]: %s", it->first.c_str(), e.what());
+    if (!validateConfigData(_confData, "global")) {
+        return false;
+    }
+    return validateMandatoryKeys(_confData, "global");
+}
+
+bool Config::validateVirtualServerConfig() {
+    for (std::vector< ServerConfig >::iterator server_it = _servList.begin(); server_it != _servList.end(); ++server_it) {
+        if (!validateConfigData(server_it->_servConfig, "server")) {
+            return false;
+        }
+
+        // Now validate the locations inside this server
+        log_message(Logger::DEBUG, "Validating locations for server [%s]", server_it->_servConfig["server_name"][1].c_str());
+        if (!validateLocationConfig(server_it->_locations)) {
+            return false; // If location validation fails for one server, stop further validation
+        }
+    }
+    return true;
+}
+
+bool Config::validateLocationConfig(std::vector<location>& locations) {
+    for (std::vector<location>::iterator loc_it = locations.begin(); loc_it != locations.end(); ++loc_it) {
+        if (!validateConfigData(loc_it->_locConfig, "location")) {
             return false;
         }
     }
-
-    // Check if all mandatory global context are present
-    const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
-    for (std::set<std::string>::iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
-        log_message(Logger::DEBUG, "Mandatory section: %s", it->c_str());   
-    }
-    for (std::set<std::string>::iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
-        if(it->find("global.") != std::string::npos) {
-            std::string parameter = it->substr(it->find("global.") + std::string("global.").length());
-            if (_confData.find(parameter) == _confData.end()) {
-                log_message(Logger::ERROR, "Mandatory global config key [%s] not found", parameter.c_str());
-                return false;
-            }
-        }
-    }
-    
     return true;
 }
 
@@ -89,53 +84,6 @@ void Config::handleDuplicateValues(std::vector<std::string>& values, const std::
             }
         }
     }
-}
-
-
-bool Config::validateVirtualServerConfig() {
-    for (std::vector< ServerConfig >::iterator server_it = _servList.begin(); server_it != _servList.end(); ++server_it) {
-        for (std::map<std::string, std::vector<std::string> >::iterator it = server_it->_servConfig.begin(); it != server_it->_servConfig.end(); ++it) {
-            try {
-                std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
-                validateValue("server." + it->first, newVec, getFieldProperties("server." + it->first));
-            } catch (std::exception& e) {
-                log_message(Logger::ERROR, "Failed to validate server config key [%s]: %s", it->first.c_str(), e.what());
-                return false; // Stop further validation if one fails
-            }
-        }
-        // Now validate the locations inside this server
-        log_message(Logger::DEBUG, "Validating locations for server [%s]", server_it->_servConfig["server_name"][1].c_str());
-        if (!validateLocationConfig(server_it->_locations)) {
-            return false; // If location validation fails for one server, stop further validation
-        }
-    }
-    return true; 
-}
-
-bool Config::validateLocationConfig(std::vector<location>& locations) {
-    for (std::vector<location>::iterator loc_it = locations.begin(); loc_it != locations.end(); ++loc_it) {
-        // Validate the location paths
-        try {
-            if (loc_it->_paths.size() != 1) {
-               log_message(Logger::ERROR, "Location path not found or multiple paths found for server [%s]");
-               return false;
-            }
-            validateValue("location.path", loc_it->_paths, getFieldProperties("location.path"));
-        } catch (std::exception& e) {
-            log_message(Logger::ERROR, "Failed to validate location config key [path]: %s", e.what());
-            return false; // Stop further validation if one fails
-        }
-        for (std::map<std::string, std::vector<std::string> >::iterator it = loc_it->_locConfig.begin(); it != loc_it->_locConfig.end(); ++it) {
-            try {
-                std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
-                validateValue(it->first, newVec, getFieldProperties("location." + it->first));
-            } catch (std::exception& e) {
-                log_message(Logger::ERROR, "Failed to validate location config key [%s]: %s", it->first.c_str(), e.what());
-                return false; // Stop further validation if one fails
-            }
-        }
-    }
-    return true; // All validations passed
 }
 
 bool Config::validateConfig() {
@@ -180,4 +128,37 @@ void Config::validateValue(const std::string& fullContext, std::vector<std::stri
         log_message(Logger::ERROR, "Error during context [%s], value [%s] validation: %s", fullContext.c_str(), values[0].c_str(), e.what());
         throw; 
     }
+}
+
+// Helper function to handle duplicate values and validate them
+bool Config::validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+    for (std::map<std::string, std::vector<std::string> >::iterator it = confData.begin(); it != confData.end(); ++it) {
+        try {
+            const std::map<std::string, std::string>& fieldProperties = getFieldProperties(contextType + "." + it->first);
+            if (!fieldProperties.empty()) {
+                handleDuplicateValues(it->second, fieldProperties);
+            }
+            std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
+            validateValue(contextType + "." + it->first, newVec, fieldProperties);
+        } catch (std::exception& e) {
+            log_message(Logger::ERROR, "Failed to validate %s config key [%s]: %s", contextType.c_str(), it->first.c_str(), e.what());
+            return false;
+        }
+    }
+    return true;
+}
+
+// Helper function to ensure all mandatory contexts are present
+bool Config::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+    const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
+    for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
+        if(it->find(contextType + ".") != std::string::npos) {
+            std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
+            if (confData.find(parameter) == confData.end()) {
+                log_message(Logger::ERROR, "Mandatory %s config key [%s] not found", contextType.c_str(), parameter.c_str());
+                return false;
+            }
+        }
+    }
+    return true;
 }
