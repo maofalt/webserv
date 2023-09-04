@@ -104,6 +104,7 @@ bool Config::validateVirtualServerConfig() {
             }
         }
         // Now validate the locations inside this server
+        log_message(Logger::DEBUG, "Validating locations for server [%s]", server_it->_servConfig["server_name"][1].c_str());
         if (!validateLocationConfig(server_it->_locations)) {
             return false; // If location validation fails for one server, stop further validation
         }
@@ -113,6 +114,17 @@ bool Config::validateVirtualServerConfig() {
 
 bool Config::validateLocationConfig(std::vector<location>& locations) {
     for (std::vector<location>::iterator loc_it = locations.begin(); loc_it != locations.end(); ++loc_it) {
+        // Validate the location paths
+        try {
+            if (loc_it->_paths.size() != 1) {
+               log_message(Logger::ERROR, "Location path not found or multiple paths found for server [%s]");
+               return false;
+            }
+            validateValue("location.path", loc_it->_paths, getFieldProperties("location.path"));
+        } catch (std::exception& e) {
+            log_message(Logger::ERROR, "Failed to validate location config key [path]: %s", e.what());
+            return false; // Stop further validation if one fails
+        }
         for (std::map<std::string, std::vector<std::string> >::iterator it = loc_it->_locConfig.begin(); it != loc_it->_locConfig.end(); ++it) {
             try {
                 validateValue(it->first, it->second, getFieldProperties("location." + it->first));

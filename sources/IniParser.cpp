@@ -307,6 +307,7 @@ bool IniParser::isValidationStrategyValid(const std::string& value) {
     validStrategies.insert("isInteger");
     validStrategies.insert("isValidServerName");
     validStrategies.insert("isValidDirectoryPath");
+    validStrategies.insert("isValidLocPath");
     validStrategies.insert("isValidPath");
     validStrategies.insert("isValidMethod");
     validStrategies.insert("isValidRedirect");

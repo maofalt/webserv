@@ -19,6 +19,7 @@ void validationFactory::registerStrategies() {
         strategyMap["isPositiveInteger"] = new isPositiveInteger();
         strategyMap["isValidServerName"] = new isValidServerName();
         strategyMap["isValidDirectoryPath"] = new isValidDirectoryPath();
+        strategyMap["isValidLocPath"] = new isValidLocPath();
         strategyMap["isValidPath"] = new isValidPath();
         strategyMap["isValidMethod"] = new isValidMethod();
         strategyMap["isValidRedirect"] = new isValidRedirect();
