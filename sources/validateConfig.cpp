@@ -127,7 +127,8 @@ bool Config::validateLocationConfig(std::vector<location>& locations) {
         }
         for (std::map<std::string, std::vector<std::string> >::iterator it = loc_it->_locConfig.begin(); it != loc_it->_locConfig.end(); ++it) {
             try {
-                validateValue(it->first, it->second, getFieldProperties("location." + it->first));
+                std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
+                validateValue(it->first, newVec, getFieldProperties("location." + it->first));
             } catch (std::exception& e) {
                 log_message(Logger::ERROR, "Failed to validate location config key [%s]: %s", it->first.c_str(), e.what());
                 return false; // Stop further validation if one fails
