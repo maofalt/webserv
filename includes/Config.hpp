@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/04 18:57:18 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/05 17:55:56 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ class Config {
 		//Helper methdos for validating data and structure more the code 
 		bool	validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
 		bool	validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
+		bool 	validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType);
 
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);

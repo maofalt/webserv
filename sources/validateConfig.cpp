@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/05 16:53:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/05 17:58:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ bool Config::validateGlobalConfig() {
 
 bool Config::validateVirtualServerConfig() {
     for (std::vector< ServerConfig >::iterator server_it = _servList.begin(); server_it != _servList.end(); ++server_it) {
+        
+        // Validate mandatory keys for virtual server
+        if (!validateMandatoryKeys(server_it->_servConfig, "server")) {
+            return false;
+        }
         if (!validateConfigData(server_it->_servConfig, "server")) {
             return false;
         }
@@ -47,6 +52,10 @@ bool Config::validateVirtualServerConfig() {
 
 bool Config::validateLocationConfig(std::vector<location>& locations) {
     for (std::vector<location>::iterator loc_it = locations.begin(); loc_it != locations.end(); ++loc_it) {
+        if (!validateMandatoryKeys(loc_it->_locConfig, "location")) {
+            return false;
+        }
+        
         if (!validateConfigData(loc_it->_locConfig, "location")) {
             return false;
         }
@@ -150,6 +159,20 @@ bool Config::validateConfigData(std::map<std::string, std::vector<std::string> >
 
 // Helper function to ensure all mandatory contexts are present
 bool Config::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+    const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
+    for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
+        if(it->find(contextType + ".") != std::string::npos) {
+            std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
+            if (confData.find(parameter) == confData.end()) {
+                log_message(Logger::ERROR, "Mandatory %s config key [%s] not found", contextType.c_str(), parameter.c_str());
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Config::validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType) {
     const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find(contextType + ".") != std::string::npos) {
