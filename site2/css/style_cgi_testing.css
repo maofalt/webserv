@@ -20,7 +20,6 @@ header {
 	margin-top: 50px;
 }
 
-
 h1 {
 	color: lightgray;
 	font-size: 3em;
@@ -36,13 +35,17 @@ h2 {
 
 	height: 50px;
 	width: 200px;
-	margin: 10px;
+	margin: 40px;
 	color: #090909;
 	border-radius: 0.7em;
 	transition: all 0.3s;
 	background: #e8e8e8;
 	border: 1px solid #e8e8e8;
 	box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+#back {
+	margin-top: 100px;
 }
 
 /* Style for the links (buttons) */
@@ -64,12 +67,11 @@ h2 a {
 }
 
 /* Change button appearance on hover */
-h2 a:hover {
+/* h2 a:hover { */
     /* color: #666; */
     /* box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff; */
 
-}
-
+/* } */
 
 /* Change button appearance on active state (clicked) */
 h2:active {
@@ -85,6 +87,6 @@ footer {
 	margin-top: auto;
 	text-align: center;
 	display: inline-block;
-	color: darkslategrey;
+	color: gray;
 	font-family:'Courier New', Courier, monospace;
 }

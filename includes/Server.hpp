@@ -21,15 +21,17 @@
 #include "Config.hpp"
 #include "ClientHandler.hpp"
 #include "HttpRequest.hpp"
-# include "Logger.hpp"
+#include "Logger.hpp"
 #include "Utils.hpp"
+#include "IniParser.hpp"
 
 
-#define PORT "8694"
-#define PORTAL "8000"
+#define PORT "8695"
+#define PORTAL "8001"
 #define BACKLOG 5
 #define BUFFER_SIZE 2048
 #define MAX_EVENTS 10
+#define PATH_INI "config/validation/contextFields.ini"
 /*
 Server Class:
 
@@ -51,12 +53,13 @@ class Server {
 private:
     int                             epoll_fd;
     std::vector<int>                sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequest>  ongoingRequests;  // ongoing requests for each client_fd
+    std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
+    IniParser                       _validationFile;
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	run;
-    std::string              defaultConf;
+    std::string                     defaultConf;
     // Configuration details can go here.
     // E.g., struct Config or std::map<std::string, std::string> config;
     
@@ -68,14 +71,16 @@ private://This way they can't be used, since it doesn't make sense implementing 
     Server& operator=(const Server& other);
     
 public:
-    int     loadConfig(const std::string& configPath);  // Load server configurations from a file;
-    int     loadDefaultConfig(); // Load default configuration from config/default.conf;
-    void    start();  // Start the server
-    void    stop();  // Stop the server
-    Config  getConfig() {return this->_config;};
+    int                 loadConfig(const std::string& configPath);  // Load server configurations from a file;
+    int                 loadDefaultConfig(); // Load default configuration from config/default.conf;
+    void                start();  // Start the server
+    void                stop();  // Stop the server
+    Config              getConfig() {return this->_config;};
+    void                setValidationFile(IniParser* validationFile) {_config.setValidationFile(validationFile);};
+    IniParser*          getValidationFile();
+    bool                loadValidationFile(const std::string& validationPath);
 
 private:
-    // Encapsulate all the helper methods inside private scope
     std::vector<std::string>    getPorts();
     bool                        initializeSockets();
     int                         initializeSocket(const addrinfo* ad, int* sock_listen, const std::string& port);

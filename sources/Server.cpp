@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 02:48:59 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/08/30 17:50:45 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@ Server::Server() :
 
 Server::~Server() {
 	stop();
+}
+
+IniParser* Server::getValidationFile(){
+	return &_validationFile;
 }
 
 /**
@@ -357,5 +361,16 @@ int Server::loadConfig(const std::string& configPath) {
 
 	return 0;
 }
+
+bool	Server::loadValidationFile(const std::string& validationPath) {
+	
+	DEBUG_LOG("Loading validation file");
+	_validationFile.loadConfig(validationPath);
+	DEBUG_LOG("Validation file loaded");
+	_validationFile.printAll();
+
+	return true;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const Server & server);
