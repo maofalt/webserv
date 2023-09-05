@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 13:15:34 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/02 21:35:10 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <iostream>
 # include <unistd.h>
 # include <sys/epoll.h>
+# include "Config.hpp"
 # include "HttpRequest.hpp"
 # include "HttpResponse.hpp"
 # include "Logger.hpp"
@@ -38,13 +39,15 @@ Methods:
 
 class ClientHandler {
 	private:
-		int				_client_fd;
-		HttpRequest		_request;
-		HttpResponse	_response;
+		int								_client_fd;
+		HttpRequest						_request;
+		HttpResponse					_response;
+		static Config					_config;
+		static std::map<int, uint16_t>	_port;
 
 	public:
 		ClientHandler();
-		ClientHandler(uint16_t port, int fd);
+		ClientHandler(int fdSock, int fd);
 		ClientHandler(const ClientHandler& other);
 		ClientHandler& operator=(const ClientHandler& other);
 	// Destructor
@@ -52,12 +55,17 @@ class ClientHandler {
 
 	// Getters
 		HttpRequest getRequest() const;
-		int getClientFd() const;
+		int			getClientFd() const;
+	
+	// Setters
+		static void	setConfig(const Config &config);
+		static void	addPort(int fdSock, uint16_t port);
 
 	//Methods
-		void readData();
-		void writeResponse();
-		bool isRequestComplete();
+		int readData(void);
+		int	send(void);
+		int writeResponse(void);
+		bool isRequestComplete(void);
 		void closeConnection(int epoll_fd);
 };
 

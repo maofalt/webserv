@@ -176,6 +176,7 @@ int Server::initializeSocket(const addrinfo* ad,
 		close(*sock_listen);
 		return -1;
 	}
+	ClientHandler::addPort(*sock_listen, ntohs(((struct sockaddr_in *)ad->ai_addr)->sin_port));
 
 	log_message(Logger::INFO, "Bind successful for port: %s", port.c_str());
 	return 0;
@@ -208,7 +209,7 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
 
 	// Setup addrinfo structure
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
+	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags |= AI_PASSIVE;
 
@@ -317,6 +318,7 @@ int Server::loadDefaultConfig() {
 		std::cerr << ": could not setup default config, aborting." << std::endl;
 		return 1;
 	}
+	ClientHandler::setConfig(_config);
 	INFO_LOG("Config = " + defaultConf);
 	return 0;
 }
@@ -354,6 +356,7 @@ int Server::loadConfig(const std::string& configPath) {
 		std::cerr << ": could not setup this config, using default config instead." << std::endl;
 		return loadDefaultConfig();
 	}
+	ClientHandler::setConfig(_config);
 	INFO_LOG("Config = " + configPath);
 
 	return 0;

@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:02:45 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/28 15:02:46 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/02 01:20:56 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ in server block (expected 'location').", line), ++_nbrErr;
 int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	ServerConfig	newServ;
 
+	newServ._maxSize = 0;
 	it += 2;
 	while (it != _splitContent.end() && *it == "\n") {
 		line++;

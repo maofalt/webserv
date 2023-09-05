@@ -33,7 +33,7 @@ const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) c
 bool	ServerConfig::isListeningTo(uint16_t port) const
 {
 	if (_servConfig.count("listen"))
-		return (port == atoi(_servConfig.at("listen")[0].c_str()));
+		return (port == atoi(_servConfig.at("listen")[1].c_str()));
 	return (false);
 }
 

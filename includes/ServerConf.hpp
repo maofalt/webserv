@@ -13,6 +13,7 @@
 #ifndef	SERVERCONF_HPP
 # define SERVERCONF_HPP
 
+
 #include <map>
 #include <vector>
 #include <iostream>
@@ -29,7 +30,7 @@ struct GlobalConfig {
 };
 
 //
-struct location {
+typedef struct location {
     std::vector<std::string> 						_paths;    
     std::map<std::string, std::vector<std::string> > _locConfig;
 
@@ -41,13 +42,16 @@ struct location {
     std::vector<std::string> 						uploadDir;
     std::vector<std::string> 						uploadSettings;
     bool 											directoryListing;
-};
+} t_location;
+
 
 
 class ServerConfig {
 	public:
 		std::map< std::string, std::vector< std::string > >	_servConfig;
-		std::vector<struct location>					    _locations;
+		std::vector< struct location >						_locations;
+		std::string::size_type								_maxSize;
+		std::set<std::string>								_allowedMethods;
 
     	int 												clientBodyLimit;                     // Limit on the client's request body.
 		bool												isListeningTo(uint16_t port) const;

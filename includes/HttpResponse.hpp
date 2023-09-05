@@ -6,32 +6,49 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/26 14:21:14 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/03 08:10:02 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPRESPOND_HPP
 # define HTTPRESPOND_HPP
 
+# include <cstdio>
+# include <dirent.h>
+# include <map>
 # include <stdint.h>
 # include <string>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
 # include "Config.hpp"
 # include "HttpRequest.hpp"
 # include "Logger.hpp"
 
 # define DEFAULT_PROTOCOL "HTTP/1.1"
 
+# define READ_BUFFER_SIZE 16384
 # define SEND_BUFFER_SIZE 16384
+# define WRITE_CGI_BUFFER_SIZE 16384
+
+# define RESPONSE_SET 0
+# define CGI_LAUNCHED 1
+
+# define SERVER_NAME "webserv"
+# define SERVER_VERSION "1.0"
 
 typedef	enum e_response_type
 {
-	REDIRECTION,
-	DIRECTORY,
-	CGI,
 	GET,
 	DELETE,
+	DIRECTORY,
+	REDIRECTION,
+	CGI,
 	ERROR
-}	t_response_type;
+}	t_responseType;
+
+class HttpResponse;
+typedef int (HttpResponse::*t_writeType)(void);
 
 class HttpResponse
 {
@@ -40,13 +57,21 @@ class HttpResponse
 		uint16_t							_port;
 		const HttpRequest					*_request;
 		std::string							_method;
+		std::string							_host;
 		std::string							_uri;
-		std::map<std::string, std::string>	_parameters;
+		std::string							_path;
+		bool								_uriIsDirectory;
+		std::string							_queryString;
 		const ServerConfig					*_server;
+		const t_location					*_location;
 
 	// Temp
-		t_response_type						_type;
-		int									_fdCgi;
+		t_responseType						_type;
+		int									_fdCgiIn;
+		std::string::size_type				_iWriteToCgi;
+		int									_fdCgiOut;
+		int									_pidCgi;
+		std::vector<std::string>			_envCgi;
 
 	// Content
 		std::string							_protocol;
@@ -54,22 +79,34 @@ class HttpResponse
 		std::map<std::string, std::string>	_fields;
 		std::string							_content;
 		std::string							_raw;
-		std::string::size_type				_i_raw;
+		std::string::size_type				_iRaw;
 
 	// Static
-		static std::map<std::string, std::string>	_description;
-		static std::map<std::string, std::string>	_content_type;
+		static std::map<std::string, std::string>		_description;
+		static std::map<std::string, std::string>		_mapContentType;
+		static std::map<t_responseType, t_writeType>	_writeType;
+		static std::map<std::string, std::string>		_defaultErrorPages;
 
 	// Utils
+		int	_determineLocation(void);
+		int	_launchCgi(void);
 		int	_limitClientBodySize(void);
 		int	_limitHttpMethod(void);
 		int	_refineUri(void);
-		int	_setType(void) const;
+		int	_setEnvCgi(void);
+		int	_setRequest(const HttpRequest *request);
+		int	_setServer(const Config &config);
+		int	_setType(void);
+		int	_stripUri(void);
 		int	_writeRedirection(void);
 		int	_writeDirectory(void);
-		int	_writeCgi(void);
 		int	_writeGet(void);
 		int	_writeDelete(void);
+		int	_writeError(std::string status);
+		int	_writeRaw(void);
+
+	// Utils types
+		static std::map<t_responseType, t_writeType>	_getWriteType(void);
 
 	public:
 	// Constructors
@@ -88,14 +125,14 @@ class HttpResponse
 		int		getFdCgi(void) const;
 
 	// Methods
+		void	log(void) const;
+		int		readCgi(bool timeout);
+		int		writeToCgi(void);
 		int		send(int fd);
-		void	setRequest(HttpRequest const *request);
-		void	setServer(const Config &config);
-		int		write(void);
-		int		writeAfterCgi(bool timeout);
+		int		setUp(HttpRequest const *request, const Config &config);
 
-	// Temp
-		int	respond(int fd, std::string status);
+	// Static
+		static std::map<std::string, std::string>	getDefaultErrorPages(void);
 };
 
 #endif
