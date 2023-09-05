@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/05 13:34:08 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/05 16:53:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ bool Config::validateVirtualServerConfig() {
         }
 
         // Now validate the locations inside this server
-        log_message(Logger::DEBUG, "Validating locations for server [%s]", server_it->_servConfig["server_name"][1].c_str());
+        //log_message(Logger::DEBUG, "Validating locations for server [%s]", server_it->_servConfig["server_name"][1].c_str());
         if (!validateLocationConfig(server_it->_locations)) {
             return false; // If location validation fails for one server, stop further validation
         }
