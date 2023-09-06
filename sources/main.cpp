@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/06 15:54:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 16:49:00 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
     } else {
         if (server.loadDefaultConfig()) return false;
     }
+
+    //Validate config, if it fails, load default config and validate it
     printConfigFile(server);
     ConfigValidator validator(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
     if (!validator.validateConfig()) {
@@ -63,6 +65,11 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
         ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
         if (!!validatorDefault.validateConfig()) return false;
     }
+    
+    // if validate we set the global config
+    t_globalConfig globalConfig = validator.getGlobalConfig();
+    Config& config = server.getConfig();
+    config.setGlobalConfig(globalConfig);
     
     return true;
 }

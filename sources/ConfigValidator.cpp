@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/06 15:35:49 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 17:46:06 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,15 @@ ConfigValidator::ConfigValidator(
     std::map<std::string, std::vector<std::string> >&   confData,
     std::vector<ServerConfig>&                          servList
 ) : _validationFile(validationFile), _confData(confData), _servList(servList) {
+    
+    // Setting the setter functions for globalconfig
+    _setterMap["clientBodyLimit"]      =   &ConfigValidator::setClientBodyLimit;
+    _setterMap["clientHeaderLimit"]    =   &ConfigValidator::setClientHeaderLimit;
+    _setterMap["timeout"]              =   &ConfigValidator::setTimeout;
+    _setterMap["maxConnections"]       =   &ConfigValidator::setMaxConnections;
+    _setterMap["maxRequests"]          =   &ConfigValidator::setMaxRequests;
+    _setterMap["maxRequestsPerIP"]     =   &ConfigValidator::setMaxRequestsPerIP;
+
 }
 
 
@@ -33,12 +42,19 @@ std::map<std::string, std::string> ConfigValidator::getFieldProperties(const std
     
     return std::map<std::string, std::string>();
 }
+const t_globalConfig& ConfigValidator::getGlobalConfig() const{
+    return _globalConfig;
+}
 
 bool ConfigValidator::validateGlobalConfig() {
     if (!validateConfigData(_confData, "global")) {
         return false;
     }
-    return validateMandatoryKeys(_confData, "global");
+    
+    if (validateMandatoryKeys(_confData, "global"))
+        return false; 
+
+    return true;
 }
 
 bool ConfigValidator::validateVirtualServerConfig() {
@@ -80,8 +96,8 @@ void ConfigValidator::handleDuplicateValues(std::vector<std::string>& values, co
         return;
     }
 
-    std::vector<std::string> subVec(values.begin() + 1, values.end()); // Create a subvector excluding the first string.
-    std::set<std::string> uniqueValues(subVec.begin(), subVec.end()); // Check for unique values within the subvector.
+    std::vector<std::string>    subVec(values.begin() + 1, values.end()); // Create a subvector excluding the first string.
+    std::set<std::string>       uniqueValues(subVec.begin(), subVec.end()); // Check for unique values within the subvector.
 
     std::map<std::string, std::string>::const_iterator multipleIt = fieldProperties.find("Multiple");
     
@@ -154,12 +170,24 @@ void ConfigValidator::validateValue(const std::string& fullContext, std::vector<
 bool ConfigValidator::validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
     for (std::map<std::string, std::vector<std::string> >::iterator it = confData.begin(); it != confData.end(); ++it) {
         try {
+            
             const std::map<std::string, std::string>& fieldProperties = getFieldProperties(contextType + "." + it->first);
             if (!fieldProperties.empty()) {
                 handleDuplicateValues(it->second, fieldProperties);
             }
+            
             std::vector<std::string> newVec(it->second.begin() + 1, it->second.end());
             validateValue(contextType + "." + it->first, newVec, fieldProperties);
+
+            log_message(Logger::DEBUG, "Validated %s config key [%s]", contextType.c_str(), it->first.c_str());
+            log_message(Logger::DEBUG, "\t\tContext is [%s]", contextType.c_str());
+            log_message(Logger::DEBUG, "\t\tConfig key is [%s]", it->first.c_str());
+            
+            //fill struct global
+            if (contextType == "global" && _setterMap.find(it->first) != _setterMap.end()) {
+                (this->*_setterMap[it->first])(it->second[1]);
+            }
+
         } catch (std::exception& e) {
             log_message(Logger::ERROR, "Failed to validate %s config key [%s]: %s", contextType.c_str(), it->first.c_str(), e.what());
             return false;
@@ -171,8 +199,10 @@ bool ConfigValidator::validateConfigData(std::map<std::string, std::vector<std::
 // Helper function to ensure all mandatory contexts are present
 bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
     const std::set<std::string>& _mandatorySections = _validationFile.getMandatorySections();
+    
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find(contextType + ".") != std::string::npos) {
+            
             std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
             if (confData.find(parameter) == confData.end()) {
                 log_message(Logger::ERROR, "Mandatory %s config key [%s] not found", contextType.c_str(), parameter.c_str());
@@ -196,3 +226,37 @@ bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::str
     }
     return true;
 }
+
+void ConfigValidator::setClientBodyLimit(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.clientBodyLimit;
+}
+
+void ConfigValidator::setClientHeaderLimit(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.clientHeaderLimit;
+}
+
+void ConfigValidator::setTimeout(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.timeout;
+}
+
+void ConfigValidator::setMaxConnections(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.maxConnections;
+}
+
+void ConfigValidator::setMaxRequests(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.maxRequests;
+}
+
+void ConfigValidator::setMaxRequestsPerIP(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.maxRequestsPerIP;
+    log_message(Logger::DEBUG, "Max requests per IP set to %d", _globalConfig.maxRequestsPerIP);
+}
+
+
+

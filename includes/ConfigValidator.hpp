@@ -19,6 +19,10 @@ private:
     IniParser&                                          _validationFile;
     std::map<std::string, std::vector<std::string> >&   _confData;
     std::vector<ServerConfig>&                          _servList;
+    t_globalConfig                                      _globalConfig;
+
+    typedef void (ConfigValidator::*setterFunc)(const std::string& );
+    std::map<std::string, setterFunc>                   _setterMap;
     
    /* =============== Unnused Coplien =============== */
 
@@ -39,6 +43,14 @@ private:
     bool validateVirtualServerConfig();
     bool validateLocationConfig(std::vector<location>& locations);
 
+    /* =============== Setter Functions for globalconfig =============== */
+    void setClientBodyLimit(const std::string& value);
+    void setClientHeaderLimit(const std::string& value);
+    void setTimeout(const std::string& value);
+    void setMaxConnections(const std::string& value);
+    void setMaxRequests(const std::string& value);
+    void setMaxRequestsPerIP(const std::string& value);
+
 public:
     /* =============== Lifecycle Methods =============== */
     ConfigValidator(
@@ -49,7 +61,10 @@ public:
     
     ~ConfigValidator();
     
-    
+    /* =============== Accessor Methods =============== */
+    const t_globalConfig&                                     getGlobalConfig() const;
+
+    /* =============== Validation Methods =============== */
     bool validateConfig();
 };
 
