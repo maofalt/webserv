@@ -6,11 +6,12 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/05 16:42:38 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 15:54:23 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
+#include "ConfigValidator.hpp"
 #include "Server.hpp"
 #include "Logger.hpp"
 
@@ -44,6 +45,8 @@ bool loadServerValidationFile(Server& server) {
     }
 }
 
+
+//Some logic to be improved here : if we laod the default config, and it fails it will laod the default config again and revalidate it
 bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
     if (configFile) {
         if (server.loadConfig(configFile)) return false;
@@ -51,14 +54,14 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
         if (server.loadDefaultConfig()) return false;
     }
     printConfigFile(server);
-    server.setValidationFile(server.getValidationFile());
-    if (!server.getConfig().validateConfig()) {
+    ConfigValidator validator(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
+    if (!validator.validateConfig()) {
         log_message(Logger::ERROR, "Configuration validation failed. Trying default configuration.");
     printConfigFile(server);
         if (server.loadDefaultConfig()) return false;
         printConfigFile(server);
-        server.setValidationFile(server.getValidationFile());
-        if (!server.getConfig().validateConfig()) return false;
+        ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
+        if (!!validatorDefault.validateConfig()) return false;
     }
     
     return true;

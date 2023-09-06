@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/30 17:50:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 13:16:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,6 @@ Server::~Server() {
 	stop();
 }
 
-IniParser* Server::getValidationFile(){
-	return &_validationFile;
-}
 
 /**
  * @brief Starts the server's operation by setting up sockets, epoll, and handling events.

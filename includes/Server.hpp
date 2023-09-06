@@ -75,10 +75,9 @@ public:
     int                 loadDefaultConfig(); // Load default configuration from config/default.conf;
     void                start();  // Start the server
     void                stop();  // Stop the server
-    Config              getConfig() {return this->_config;};
-    void                setValidationFile(IniParser* validationFile) {_config.setValidationFile(validationFile);};
-    IniParser*          getValidationFile();
+    Config&             getConfig() {return this->_config;};
     bool                loadValidationFile(const std::string& validationPath);
+    IniParser&          getValidationFile() {return this->_validationFile;};
 
 private:
     std::vector<std::string>    getPorts();

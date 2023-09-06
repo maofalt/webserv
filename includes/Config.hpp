@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 12:14:25 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 14:26:37 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ class Config {
 		std::vector< ServerConfig >							_servList;
 		std::map< std::string, std::vector< std::string > >	_confData;
 		t_globalConfig										_globalConfig;
-		IniParser*											_validationFile;
 
 	public:
 		// missing coplien !!!!;
@@ -78,19 +77,6 @@ class Config {
 		int		parseServConf2(std::vector<std::string>::iterator & it,
 				int & line, ServerConfig & newServ);
 
-		//validate the data struct for server and location blocks
-		bool	validateConfig();
-		void	validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
-        bool	validateGlobalConfig();
-        bool	validateVirtualServerConfig();
-        bool	validateLocationConfig(std::vector<location>& locations);
-		void	handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
-		std::map<std::string, std::string>	getFieldProperties(const std::string& context);
-
-		//Helper methdos for validating data and structure more the code 
-		bool	validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
-		bool	validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
-		bool 	validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType);
 
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);
@@ -101,9 +87,8 @@ class Config {
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< ServerConfig >	getServList() const;
 		std::map< std::string, std::vector< std::string > >	getConfData() const;
-
-		//dependency injection through setter
-		void	setValidationFile(IniParser* validationFile);
+		std::vector< ServerConfig >&	getServList();
+		std::map< std::string, std::vector< std::string > >&	getConfData();
 
 		// specific server getter
 		const ServerConfig	*findServer(std::string server_name, uint16_t port) const;

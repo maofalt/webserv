@@ -1,36 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   validateConfig.cpp                                 :+:      :+:    :+:   */
+/*   ConfigValidator.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/05 17:58:05 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 15:35:49 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Config.hpp"
+#include "ConfigValidator.hpp"
 
-std::map<std::string, std::string> Config::getFieldProperties(const std::string& context) {
+ConfigValidator::ConfigValidator(
+    IniParser&                                          validationFile, 
+    std::map<std::string, std::vector<std::string> >&   confData,
+    std::vector<ServerConfig>&                          servList
+) : _validationFile(validationFile), _confData(confData), _servList(servList) {
+}
+
+
+ConfigValidator::~ConfigValidator() {
+}
+
+std::map<std::string, std::string> ConfigValidator::getFieldProperties(const std::string& context) {
     std::map<std::string, std::string> sectionData;
 
     log_message(Logger::DEBUG, "Fetching data for context [%s]", context.c_str());
-    if (_validationFile->getSection(context, sectionData)) {
+    if (_validationFile.getSection(context, sectionData)) {
         return sectionData;
     }
     
     return std::map<std::string, std::string>();
 }
 
-bool Config::validateGlobalConfig() {
+bool ConfigValidator::validateGlobalConfig() {
     if (!validateConfigData(_confData, "global")) {
         return false;
     }
     return validateMandatoryKeys(_confData, "global");
 }
 
-bool Config::validateVirtualServerConfig() {
+bool ConfigValidator::validateVirtualServerConfig() {
     for (std::vector< ServerConfig >::iterator server_it = _servList.begin(); server_it != _servList.end(); ++server_it) {
         
         // Validate mandatory keys for virtual server
@@ -50,7 +61,7 @@ bool Config::validateVirtualServerConfig() {
     return true;
 }
 
-bool Config::validateLocationConfig(std::vector<location>& locations) {
+bool ConfigValidator::validateLocationConfig(std::vector<location>& locations) {
     for (std::vector<location>::iterator loc_it = locations.begin(); loc_it != locations.end(); ++loc_it) {
         if (!validateMandatoryKeys(loc_it->_locConfig, "location")) {
             return false;
@@ -63,7 +74,7 @@ bool Config::validateLocationConfig(std::vector<location>& locations) {
     return true;
 }
 
-void Config::handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
+void ConfigValidator::handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
     if (values.empty()) {
         throw std::runtime_error("No values found");
         return;
@@ -95,7 +106,7 @@ void Config::handleDuplicateValues(std::vector<std::string>& values, const std::
     }
 }
 
-bool Config::validateConfig() {
+bool ConfigValidator::validateConfig() {
     if (!validateGlobalConfig()) {
         return false;
     }
@@ -105,7 +116,7 @@ bool Config::validateConfig() {
     return true;
 }
 
-void Config::validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
+void ConfigValidator::validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
     validationFactory& factory = validationFactory::getInstance();
     ValidationStrategy* strategy = NULL;
     
@@ -140,7 +151,7 @@ void Config::validateValue(const std::string& fullContext, std::vector<std::stri
 }
 
 // Helper function to handle duplicate values and validate them
-bool Config::validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+bool ConfigValidator::validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
     for (std::map<std::string, std::vector<std::string> >::iterator it = confData.begin(); it != confData.end(); ++it) {
         try {
             const std::map<std::string, std::string>& fieldProperties = getFieldProperties(contextType + "." + it->first);
@@ -158,8 +169,8 @@ bool Config::validateConfigData(std::map<std::string, std::vector<std::string> >
 }
 
 // Helper function to ensure all mandatory contexts are present
-bool Config::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
-    const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
+bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+    const std::set<std::string>& _mandatorySections = _validationFile.getMandatorySections();
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find(contextType + ".") != std::string::npos) {
             std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
@@ -172,8 +183,8 @@ bool Config::validateMandatoryKeys(const std::map<std::string, std::vector<std::
     return true;
 }
 
-bool Config::validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType) {
-    const std::set<std::string>& _mandatorySections = _validationFile->getMandatorySections();
+bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType) {
+    const std::set<std::string>& _mandatorySections = _validationFile.getMandatorySections();
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find(contextType + ".") != std::string::npos) {
             std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
