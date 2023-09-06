@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/03 17:51:22 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 11:57:43 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@
 #include "validationFactory.hpp"
 #include "ValidationStrategy.hpp"
 
-struct GlobalConfig {
+typedef struct GlobalConfig {
     int clientBodyLimit;        // Maximum size of the body of a request.
     int clientHeaderLimit;      // Maximum size of the header of a request.
     int timeout;                // Maximum time to wait for a request.
     int maxConnections;         // Maximum number of connections.
     int maxRequests;            // Maximum number of requests.
     int maxRequestsPerIP;       // Maximum number of requests per IP.
-};
+}t_globalConfig;
 
 //
 typedef struct location {

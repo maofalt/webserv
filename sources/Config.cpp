@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/26 14:26:14 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/06 12:19:44 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 
-Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t"), _validationFile(NULL){
+Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t"), _validationFile(NULL)
+{
+	std::memset(&_globalConfig, -1, sizeof(t_globalConfig));
 }
 
 Config::~Config() {

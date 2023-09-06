@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/05 17:55:56 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 12:14:25 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <stdint.h>
 #include <iostream>
@@ -30,16 +31,17 @@
 
 class Config {
 	private:
-		int											_nbrLines;
-		int											_nbrErr;
-		std::string									_tokens;
-		std::string									_whiteSp;
-		std::string									_confFileName;
-		std::vector< std::string >					_rawContent;
-		std::vector< std::string >					_splitContent;
-		std::vector< ServerConfig >						_servList;
+		int													_nbrLines;
+		int													_nbrErr;
+		std::string											_tokens;
+		std::string											_whiteSp;
+		std::string											_confFileName;
+		std::vector< std::string >							_rawContent;
+		std::vector< std::string >							_splitContent;
+		std::vector< ServerConfig >							_servList;
 		std::map< std::string, std::vector< std::string > >	_confData;
-		IniParser*									_validationFile;
+		t_globalConfig										_globalConfig;
+		IniParser*											_validationFile;
 
 	public:
 		// missing coplien !!!!;
