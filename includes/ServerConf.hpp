@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 11:57:43 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 16:20:55 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,6 @@ typedef struct GlobalConfig {
 typedef struct location {
     std::vector<std::string> 						_paths;    
     std::map<std::string, std::vector<std::string> > _locConfig;
-
-    std::vector<std::string> 						httpMethods;
-    std::vector<std::string> 						redirectionTarget;
-    std::vector<std::string> 						directoryRoot;
-    std::vector<std::string> 						defaultFile;
-    std::vector<std::string> 						cgiExtensions;
-    std::vector<std::string> 						uploadDir;
-    std::vector<std::string> 						uploadSettings;
-    bool 											directoryListing;
 } t_location;
 
 
@@ -56,11 +47,6 @@ class ServerConfig {
     	int 												clientBodyLimit;                     // Limit on the client's request body.
 		bool												isListeningTo(uint16_t port) const;
 		bool												isNamed(const std::string &name) const;
-		bool												directoryListing;
-		std::vector<uint16_t> 								ports;
-    	std::vector<std::string> 							host;                        // Server's hostname.
-    	std::vector<std::string> 							serverNames;    // List of names the server should respond to.
-    	std::map<std::string, std::string>					errorPages;   // Map of error codes to error page file paths.
 };
 
 #endif
