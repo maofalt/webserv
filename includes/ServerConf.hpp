@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 16:20:55 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/06 16:29:06 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct GlobalConfig {
     int maxConnections;         // Maximum number of connections.
     int maxRequests;            // Maximum number of requests.
     int maxRequestsPerIP;       // Maximum number of requests per IP.
-}t_globalConfig;
+} t_globalConfig;
 
 //
 typedef struct location {
