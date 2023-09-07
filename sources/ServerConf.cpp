@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 14:03:46 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 16:50:56 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,41 @@ const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) c
 	return (defaultServer);
 }
 
-bool	ServerConfig::isListeningTo(uint16_t port) const
+bool ServerConfig::isListeningTo(uint16_t port) const
 {
-	if (_servConfig.count("listen"))
-		return (port == atoi(_servConfig.at("listen")[1].c_str()));
-	return (false);
+    char portStr[6];
+    std::sprintf(portStr, "%u", port);
+
+    if (_servConfig.count("listen"))
+    {
+        const std::vector<std::string>& ports = _servConfig.at("listen");
+        // Start the loop from index 1 because index 0 contains the "listen" key
+        for (std::vector<std::string>::const_iterator it = ports.begin() + 1; it != ports.end(); ++it)
+        {
+            if (*it == portStr)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
-bool	ServerConfig::isNamed(const std::string &name) const
+bool ServerConfig::isNamed(const std::string &name) const
 {
-	if (_servConfig.count("server_name"))
-		for (std::vector< std::string >::const_iterator it = _servConfig.at("server_name").begin(); it != _servConfig.at("server_name").end(); ++it)
-			if (name == *it)
-				return (true);
-	return (false);
+    if (_servConfig.count("server_name"))
+    {
+        const std::vector<std::string>& names = _servConfig.at("server_name");
+        // Start the loop from index 1 because index 0 contains the "server_name" key
+        for (std::vector<std::string>::const_iterator it = names.begin() + 1; it != names.end(); ++it)
+        {
+            if (*it == name)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 //Fetch and send back a list of unique ports to listen
