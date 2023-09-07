@@ -52,10 +52,10 @@ Methods:
 class Server {
 private:
     int                             epoll_fd;
-    std::vector<int>                sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     Config                          _config;
     IniParser                       _validationFile;
+    std::vector<int>                sock_listens;  // to list to multiple ports
+    std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
 
     static volatile sig_atomic_t	run;
@@ -71,16 +71,16 @@ private://This way they can't be used, since it doesn't make sense implementing 
     Server& operator=(const Server& other);
     
 public:
-    int                 loadConfig(const std::string& configPath);  // Load server configurations from a file;
-    int                 loadDefaultConfig(); // Load default configuration from config/default.conf;
-    void                start();  // Start the server
-    void                stop();  // Stop the server
-    Config&             getConfig() {return this->_config;};
-    bool                loadValidationFile(const std::string& validationPath);
-    IniParser&          getValidationFile() {return this->_validationFile;};
+    int                         loadConfig(const std::string& configPath);  // Load server configurations from a file;
+    int                         loadDefaultConfig(); // Load default configuration from config/default.conf;
+    void                        start();  // Start the server
+    void                        stop();  // Stop the server
+    Config&                     getConfig() {return this->_config;};
+    bool                        loadValidationFile(const std::string& validationPath);
+    IniParser&                  getValidationFile() {return this->_validationFile;};
 
 private:
-    std::set<std::string>    getPorts();
+    std::set<std::string>       getPorts();
     bool                        initializeSockets();
     int                         initializeSocket(const addrinfo* ad, int* sock_listen, const std::string& port);
     int                         setUpSocket(int* sock_listen, const std::string& port);
@@ -107,10 +107,6 @@ private:
     void                        process_client_socket(int epoll_fd, struct epoll_event& event);
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
-
-
-
-
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);
