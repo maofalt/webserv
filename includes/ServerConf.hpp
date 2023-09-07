@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 16:29:06 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 13:37:30 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class ServerConfig {
     	int 												clientBodyLimit;                     // Limit on the client's request body.
 		bool												isListeningTo(uint16_t port) const;
 		bool												isNamed(const std::string &name) const;
+        std::set<std::string>                               getPorts();
 };
 
 #endif

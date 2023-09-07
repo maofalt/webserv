@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/06 13:16:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 14:05:06 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,10 @@ void Server::start() {
  * @note This method is used internally and is not intended to be directly called by user code.
  */
 bool Server::initializeSockets() {
-	std::vector<std::string> ports = getPorts();
-	for (std::vector<std::string>::const_iterator it = ports.begin();
+	log_message(Logger::INFO, "Initializing sockets");
+	std::set<std::string> ports = getPorts();
+	log_message(Logger::INFO, "Ports to listen: %lu", ports.size());
+	for (std::set<std::string>::const_iterator it = ports.begin();
 			it != ports.end();
 			++it) {
 
@@ -103,7 +105,7 @@ bool Server::initializeSockets() {
 		}
 
 		sock_listens.push_back(socket);
-		if (listen(socket, BACKLOG) == -1) {
+		if (listen(socket, SOMAXCONN) == -1) {
 			perror("listen");
 			cleanup();
 			return false; 
@@ -259,12 +261,20 @@ void	Server::signal_handler(int sig)
 
 //This method will probably dissapear or change completely, just here to bootstrap 
 // multiple ports
-std::vector<std::string> Server::getPorts() {
-
-	std::vector<std::string> ports;
-	ports.push_back(PORTAL);
-	ports.push_back(PORT);
-
+std::set<std::string> Server::getPorts() {
+//Fetch all server configuration
+	Config& 					config		=	this->getConfig();
+	std::vector<ServerConfig>& 	servList	=	config.getServList();
+	
+//fetch all ports inside each server	
+	std::set<std::string>		ports;
+	for (std::vector<ServerConfig>::iterator it = servList.begin() ;
+		it != servList.end(); ++it) {
+		
+		std::set<std::string> tmp = it->getPorts();
+		ports.insert(tmp.begin(), tmp.end());
+	}
+	
 	return ports;
 }
 

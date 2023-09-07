@@ -80,7 +80,7 @@ public:
     IniParser&          getValidationFile() {return this->_validationFile;};
 
 private:
-    std::vector<std::string>    getPorts();
+    std::set<std::string>    getPorts();
     bool                        initializeSockets();
     int                         initializeSocket(const addrinfo* ad, int* sock_listen, const std::string& port);
     int                         setUpSocket(int* sock_listen, const std::string& port);
