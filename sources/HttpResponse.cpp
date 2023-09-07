@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 21:37:48 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 23:35:25 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ std::map<t_responseType, t_writeType>	HttpResponse::_getWriteType(void)
 
 	writeType[GET] = &HttpResponse::_writeGet;
 	writeType[DELETE] = &HttpResponse::_writeDelete;
+	writeType[UPLOAD] = &HttpResponse::_writeUpload;
 	writeType[DIRECTORY] = &HttpResponse::_writeDirectory;
 	writeType[REDIRECTION] = &HttpResponse::_writeRedirection;
+	writeType[ERROR] = &HttpResponse::_writeErrorBadRequest;
 	return (writeType);
 }
 std::map<std::string, std::string>	HttpResponse::_description = getDescription();
@@ -167,6 +169,15 @@ int	HttpResponse::_setServer(const Config &config)
 		return (_status = "500", -1);
 	return (0);
 }
+int	HttpResponse::_determineUpload(void)
+{
+	_uploadFileOn = _location->_locConfig.count("upload")
+		&& _method == "POST"
+		&& _request->_field.count("Content-Type")
+		&& _request->_field.at("Content-Type").find("multipart/form-data") == 0;
+	_uploadFileOnly = _uploadFileOn && !_location->_locConfig.count("cgi");
+	return (0);
+}
 
 int	HttpResponse::_stripUri(void)
 {
@@ -215,19 +226,13 @@ int	HttpResponse::_determineLocation(void)
 	return (0);
 }
 
-int	HttpResponse::_refineUri(void)
+int	HttpResponse::_checkPath(void)
 {
-	std::string::size_type	maxLen = 0;
-	struct stat				statbuf;
 	std::string				index;
+	struct stat				statbuf;
 
-	if (!_location->_locConfig.count("root"))
+	if (_uploadFileOnly)
 		return (0);
-	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
-		if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
-			maxLen = prefix->size();
-	_path = _uri;
-	_path.replace(0, maxLen, _location->_locConfig.at("root")[1]);
 	if (access(_path.c_str(), F_OK) == -1)
 		return (_status = "404", -1);
 	if (access(_path.c_str(), R_OK) == -1)
@@ -258,11 +263,26 @@ int	HttpResponse::_refineUri(void)
 	}
 	return (0);
 }
+int	HttpResponse::_refineUri(void)
+{
+	std::string::size_type	maxLen = 0;
+
+	if (!_location->_locConfig.count("root"))
+		return (0);
+	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
+		if (_uri.find(*prefix) == 0 && prefix->size() > maxLen)
+			maxLen = prefix->size();
+	_path = _uri;
+	_path.replace(0, maxLen, _location->_locConfig.at("root")[1]);
+	return (_checkPath());
+}
 
 int	HttpResponse::_setType(void)
 {
 	if (_method == "GET")
 		_type = GET;
+	if (_uploadFileOn)
+		_type = UPLOAD;
 	if (_location->_locConfig.count("cgi"))
 		_type = CGI;
 	if (_uriIsDirectory)
@@ -271,6 +291,113 @@ int	HttpResponse::_setType(void)
 		_type = DELETE;
 	if (_location->_locConfig.count("return"))
 		_type = REDIRECTION;
+	return (0);
+}
+
+// UploadFile
+int	HttpResponse::_skipLine(std::string::size_type &i)
+{
+	i = _request->_body.find("\n", i);
+	if (i == std::string::npos)
+		return (-1);
+	i++;
+	return (0);
+}
+int	HttpResponse::_readUploadContentHeader(
+	std::string &boundary,
+	std::string &filename,
+	std::string::size_type &i)
+{
+	std::string::size_type	j;
+	bool					filenameSet;
+
+	filenameSet = false;
+	i = _request->_body.find(boundary, i);
+	if (i == std::string::npos)
+		return (-1);
+	i += boundary.size();
+	while (1)
+	{
+		if (_skipLine(i) == -1
+			|| _request->_body.find(boundary, i) == i)
+			return (-1);
+		if (_request->_body.find("\r\n", i) == i
+			||  _request->_body.find("\n", i) == i)
+			break ;
+		if (filenameSet
+			|| _request->_body.find("Content-Disposition: form-data; ", i) != i
+			|| _request->_body.find("filename=\"", i) > _request->_body.find("\n", i))
+			continue ;
+		i = _request->_body.find("filename=\"", i);
+		if (i == std::string::npos)
+			return (-1);
+		i += 10;
+		j = _request->_body.find("\"", i);
+		if (j == std::string::npos)
+			return (-1);
+		filename = _request->_body.substr(i, j - i);
+		filenameSet = true;
+	}
+	return (_skipLine(i));
+}
+int	HttpResponse::_readUploadContentBody(
+	std::string &boundary,
+	std::string &file,
+	std::string::size_type &i)
+{
+	std::string::size_type	j;
+
+	j = _request->_body.find(boundary, i);
+	if (j >= i + 2
+		&& _request->_body.find("\r\n", j - 2) == j - 2)
+		j -= 2;
+	else if (j >= i + 1
+		&& _request->_body.find("\n", j - 1) == j - 1)
+		j--;
+	file = _request->_body.substr(i, j - i);
+	i = j;
+	return (0);
+}
+int	HttpResponse::_createFile(std::string &file, std::string &path)
+{
+	std::ofstream	fd;
+
+	fd.open(path.c_str());
+	if (!fd.is_open())
+		return (ERROR_LOG("File not created"), -1);
+	fd.write(file.c_str(), file.size());
+	fd.flush();
+	fd.close();
+	return (0);
+}
+int	HttpResponse::_uploadFile(void)
+{
+	std::string				prefix("multipart/form-data; boundary=----");
+	std::string				boundary("------");
+	std::string				rootUpload;
+	std::string				filename;
+	std::string				path;
+	std::string				file;
+	std::string::size_type	i;
+
+	if (_request->_field.at("Content-Type").find(prefix) != 0)
+		return (2);
+	boundary += _request->_field.at("Content-Type").substr(prefix.size(), std::string::npos);
+	rootUpload = _location->_locConfig.at("upload")[1];
+	if (*rootUpload.rbegin() != '/')
+		rootUpload.push_back('/');
+	i = 0;
+	while (i != std::string::npos)
+	{
+		if (_readUploadContentHeader(boundary, filename, i) == -1)
+			continue ;
+		path = rootUpload + filename;
+		if (access(path.c_str(), F_OK) != -1)
+			continue ;
+		if (_readUploadContentBody(boundary, file, i) == -1)
+			continue ;
+		_createFile(file, path);
+	}
 	return (0);
 }
 
@@ -336,6 +463,8 @@ int	HttpResponse::_launchCgi(void)
 	int		pipeFdIn[2];
 	int		pipeFdOut[2];
 
+	if (_uploadFileOn)
+		_uploadFile();
 	if (pipe(pipeFdIn) == -1)
 		return (_writeError("500"));
 	if (pipe(pipeFdOut) == -1)
@@ -464,10 +593,34 @@ int	HttpResponse::_writeDelete(void)
 	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
+int	HttpResponse::_writeErrorBadRequest(void)
+{
+	return (_writeError("400"));
+}
 int	HttpResponse::_writeError(std::string status)
 {
 	_status = status;
 	_content = _defaultErrorPages[status];
+	_fields["ContentType"] = "text/html";
+	return (_writeRaw());
+}
+int	HttpResponse::_writeUpload(void)
+{
+	std::ostringstream	content;
+
+	if (_uploadFile())
+		return (_writeError("500"));
+	content << "<!DOCTYPE html>\n"
+		<< "<html lang=\"en\">\n"
+		<< "<head>\n"
+		<< "	<meta charset=\"utf-8\" />\n"
+		<< "	<title>Uploaded</title>\n"
+		<< "</head>\n"
+		<< "<body>\n"
+		<< "	<p>File has been uploaded.</p>\n"
+		<< "</body>\n"
+		<< "</html>\n";
+	_content = content.str();
 	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
@@ -550,6 +703,7 @@ int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 		|| _limitClientBodySize()
 		|| _determineLocation()
 		|| _limitHttpMethod()
+		|| _determineUpload()
 		|| _refineUri()
 		|| _setType())
 		return (_writeError(_status));
