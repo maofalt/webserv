@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 00:52:43 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:28:00 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include <vector>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <stdint.h>
 #include <iostream>
@@ -24,21 +25,22 @@
 #include "Colors.hpp"
 #include "ServerConf.hpp"
 #include "Logger.hpp"
+#include "IniParser.hpp"
 
 # define DISPLAY_CONF 1
 
 class Config {
 	private:
-		int											_nbrLines;
-		int											_nbrErr;
-		std::string									_tokens;
-		std::string									_whiteSp;
-		std::string									_confFileName;
-		// size_t										_fileSize;
-		std::vector< std::string >					_rawContent;
-		std::vector< std::string >					_splitContent;
-		std::vector< ServerConfig >						_servList;
+		int													_nbrLines;
+		int													_nbrErr;
+		std::string											_tokens;
+		std::string											_whiteSp;
+		std::string											_confFileName;
+		std::vector< std::string >							_rawContent;
+		std::vector< std::string >							_splitContent;
+		std::vector< ServerConfig >							_servList;
 		std::map< std::string, std::vector< std::string > >	_confData;
+		t_globalConfig										_globalConfig;
 
 	public:
 		// missing coplien !!!!;
@@ -75,6 +77,7 @@ class Config {
 		int		parseServConf2(std::vector<std::string>::iterator & it,
 				int & line, ServerConfig & newServ);
 
+
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);
 		int		setupConf(std::ifstream & file, std::string fileName);
@@ -84,7 +87,13 @@ class Config {
 		std::vector<std::string>	getSplitContent() const;
 		std::vector< ServerConfig >	getServList() const;
 		std::map< std::string, std::vector< std::string > >	getConfData() const;
+		std::vector< ServerConfig >&	getServList();
+		std::map< std::string, std::vector< std::string > >&	getConfData();
 
+
+		// setter for global config
+		void	setGlobalConfig(t_globalConfig& globalConfig);
+		
 		// specific server getter
 		const ServerConfig	*findServer(std::string server_name, uint16_t port) const;
 };

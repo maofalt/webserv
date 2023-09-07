@@ -11,15 +11,17 @@ html, body {
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
+	/* border: 1px solid blue; */
 	background-color: #f0f0f0; /* Grey background color */
 }
 
 /* Style for the header section */
 header {
 	text-align: center;
+	/* border: 1px solid green; */
 	margin-top: 50px;
+	
 }
-
 
 h1 {
 	color: lightgray;
@@ -27,16 +29,37 @@ h1 {
 	font-family:'Courier New', Courier, monospace;
 }
 
+ul {
+	display: grid;
+	margin-top: 20px;
+	list-style: none;
+	grid-template-columns: repeat(3, 1fr);
+}
+
 /* Style for the h2 */
 h2 {
-	display: flex;
-	/* position: relative; */
 	align-items: center;
 	justify-content: center;
 
+	width: 235px;
 	height: 50px;
-	width: 200px;
-	margin: 10px;
+	margin: 70px 20px 20px 20px;
+	color: #090909;
+	border-radius: 0.7em;
+	transition: all 0.3s;
+	background: #e8e8e8;
+	border: 1px solid #e8e8e8;
+	box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+/* Style for the li */
+li {
+	align-items: center;
+	justify-content: center;
+
+	width: 50px;
+	height: 50px;
+	margin: 20px;
 	color: #090909;
 	border-radius: 0.7em;
 	transition: all 0.3s;
@@ -46,6 +69,22 @@ h2 {
 }
 
 /* Style for the links (buttons) */
+li a {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	font-size: 13px;
+	text-align: center;
+	align-items: center;
+	font-weight: lighter;
+	text-decoration: none;
+	color: gray;
+	justify-content: center;
+	/* border: 1px solid black; */
+	font-family:'Courier New', Courier, monospace;
+	/* padding: 10px 50px 10px 50px; */
+}
+
 h2 a {
 	width: 100%;
 	height: 100%;
@@ -56,7 +95,6 @@ h2 a {
 	font-weight: lighter;
 	text-decoration: none;
 	color: gray;
-	/* color: darkslategrey; */
 	justify-content: center;
 	/* border: 1px solid black; */
 	font-family:'Courier New', Courier, monospace;
@@ -64,15 +102,14 @@ h2 a {
 }
 
 /* Change button appearance on hover */
-h2 a:hover {
+/* h2 a:hover { */
     /* color: #666; */
     /* box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff; */
 
-}
-
+/* } */
 
 /* Change button appearance on active state (clicked) */
-h2:active {
+li:active {
 	color: #666;
 	box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
@@ -85,6 +122,6 @@ footer {
 	margin-top: auto;
 	text-align: center;
 	display: inline-block;
-	color: darkslategrey;
+	color: gray;
 	font-family:'Courier New', Courier, monospace;
 }

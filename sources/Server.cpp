@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 02:48:59 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 18:17:33 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Server::Server() :
 Server::~Server() {
 	stop();
 }
+
 
 /**
  * @brief Starts the server's operation by setting up sockets, epoll, and handling events.
@@ -89,8 +90,10 @@ void Server::start() {
  * @note This method is used internally and is not intended to be directly called by user code.
  */
 bool Server::initializeSockets() {
-	std::vector<std::string> ports = getPorts();
-	for (std::vector<std::string>::const_iterator it = ports.begin();
+	log_message(Logger::INFO, "Initializing sockets");
+	std::set<std::string> ports = getPorts();
+	log_message(Logger::INFO, "Ports to listen: %lu", ports.size());
+	for (std::set<std::string>::const_iterator it = ports.begin();
 			it != ports.end();
 			++it) {
 
@@ -102,7 +105,7 @@ bool Server::initializeSockets() {
 		}
 
 		sock_listens.push_back(socket);
-		if (listen(socket, BACKLOG) == -1) {
+		if (listen(socket, SOMAXCONN) == -1) {
 			perror("listen");
 			cleanup();
 			return false; 
@@ -172,6 +175,7 @@ int Server::initializeSocket(const addrinfo* ad,
 		close(*sock_listen);
 		return -1;
 	}
+	
 	ClientHandler::addPort(*sock_listen, ntohs(((struct sockaddr_in *)ad->ai_addr)->sin_port));
 
 	log_message(Logger::INFO, "Bind successful for port: %s", port.c_str());
@@ -237,7 +241,7 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
 
 int Server::calculate_dynamic_timeout() {
 	// Logic to determine appropriate timeout
-	int timeout_value = 1000;
+	int timeout_value = 10000;
 	return timeout_value;
 }
 
@@ -258,12 +262,20 @@ void	Server::signal_handler(int sig)
 
 //This method will probably dissapear or change completely, just here to bootstrap 
 // multiple ports
-std::vector<std::string> Server::getPorts() {
-
-	std::vector<std::string> ports;
-	ports.push_back(PORTAL);
-	ports.push_back(PORT);
-
+std::set<std::string> Server::getPorts() {
+//Fetch all server configuration
+	Config& 					config		=	this->getConfig();
+	std::vector<ServerConfig>& 	servList	=	config.getServList();
+	
+//fetch all ports inside each server	
+	std::set<std::string>		ports;
+	for (std::vector<ServerConfig>::iterator it = servList.begin() ;
+		it != servList.end(); ++it) {
+		
+		std::set<std::string> tmp = it->getPorts();
+		ports.insert(tmp.begin(), tmp.end());
+	}
+	
 	return ports;
 }
 
@@ -357,5 +369,16 @@ int Server::loadConfig(const std::string& configPath) {
 
 	return 0;
 }
+
+bool	Server::loadValidationFile(const std::string& validationPath) {
+	
+	DEBUG_LOG("Loading validation file");
+	_validationFile.loadConfig(validationPath);
+	DEBUG_LOG("Validation file loaded");
+	_validationFile.printAll();
+
+	return true;
+}
+
 
 std::ostream& operator<<(std::ostream& os, const Server & server);

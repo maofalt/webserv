@@ -90,7 +90,7 @@ public:
 
 #ifdef DEBUG_LEVEL
 
-#define DEBUG_LOG(msg) Logger::getInstance()->log(Logger::DEBUG, msg, ANSI_GREEN , __FILE__, __LINE__)
+#define DEBUG_LOG(msg) Logger::getInstance()->log(Logger::DEBUG, msg, ANSI_WHITE , __FILE__, __LINE__)
 
 #if DEBUG_LEVEL >= 2
 #define DEBUG_LOG_DETAILED(msg) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, "",__FILE__, __LINE__)
@@ -102,9 +102,9 @@ public:
 #define DEBUG_CONFIG(msg)
 #endif
 
-#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_GREEN, __FILE__, __LINE__)
-#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_GREEN , __FILE__, __LINE__)
-#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_GREEN , __FILE__, __LINE__)
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE , __FILE__, __LINE__)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE , __FILE__, __LINE__)
 
 #else
 
@@ -112,9 +112,9 @@ public:
 #define DEBUG_LOG_DETAILED(msg)
 #define DEBUG_CONFIG(msg)
 #define TRACE_LOG(msg)
-#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_GREEN, __FILE__, __LINE__)
-#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_GREEN, __FILE__, __LINE__)
-#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_GREEN, __FILE__, __LINE__)
+#define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE, __FILE__, __LINE__)
 
 #endif
 

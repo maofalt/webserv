@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 19:46:54 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/04 14:18:40 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,7 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     // 3. Format and write the message to the log file or std::cout based on log level
     std::ostringstream formattedMsg;
 
-    //formattedMsg << "[" << timestamp << "] ";
-    formattedMsg << formatSection("[" + timestamp + "]", "", TIMESTAMP_WIDTH);
+    formattedMsg << formatSection("[" + timestamp + "]", ANSI_CYAN, TIMESTAMP_WIDTH);
     
     switch (level) {
         case DEBUG:
@@ -285,10 +284,6 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     } else if (level == DEBUG_DETAILED) {
         formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
         std::cout << formattedMsg.str() << std::endl;}
-    // } else if (level == DEBUG_CONFIG) {
-    //     formattedMsg << formatSection(message, color, MESSAGE_WIDTH);
-    //     std::cout << formattedMsg.str() << std::endl;
-    // }
     #endif
     
     formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);

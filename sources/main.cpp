@@ -3,55 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/08/28 20:49:50 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:49:00 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
+#include "ConfigValidator.hpp"
 #include "Server.hpp"
 #include "Logger.hpp"
 
-
-int main(int ac, char **av) {
-
-    Server server;
-    Logger* logger;
-
-    try {
-        logger = Logger::getInstance(10 * 1024 * 1024);
-        logger->captureStdout();
-        logger->captureStderr();
-    } catch (const std::exception& e) {
-        ERROR_LOG(e.what());
-        return 1;
-    }
-    INFO_LOG("Logger initialized.");
-    
-    if (ac > 1) {
-        if (server.loadConfig(av[1])) // If you have a configuration file.
-            return 1;
-    }
-    else if (server.loadDefaultConfig())
-        return 1;
-
-    INFO_LOG("Configuration loaded.");
-    
+void printConfigFile(Server& server) {
     std::ostringstream oss;
     oss << server.getConfig();
     DEBUG_CONFIG(oss);
+    INFO_LOG("Configuration loaded.");
+}
 
+bool initializeLogger() {
     try {
-        server.start();  // Starts listening on all ports and enters event loop.    
+        Logger* logger = Logger::getInstance(10 * 1024 * 1024);
+        logger->captureStdout();
+        logger->captureStderr();
+        INFO_LOG("Logger initialized.");
+        return true;
     } catch (const std::exception& e) {
-        
-        std::cerr << e.what() << std::endl;
-        Logger::cleanup();
-        return 1;
+        ERROR_LOG(e.what());
+        return false;
+    }
+}
+
+bool loadServerValidationFile(Server& server) {
+    try {
+        server.loadValidationFile(PATH_INI);
+        return true;
+    } catch (const std::exception& e) {
+        ERROR_LOG(e.what());
+        return false;
+    }
+}
+
+
+//Some logic to be improved here : if we laod the default config, and it fails it will laod the default config again and revalidate it
+bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
+    if (configFile) {
+        if (server.loadConfig(configFile)) return false;
+    } else {
+        if (server.loadDefaultConfig()) return false;
     }
 
+    //Validate config, if it fails, load default config and validate it
+    printConfigFile(server);
+    ConfigValidator validator(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
+    if (!validator.validateConfig()) {
+        log_message(Logger::ERROR, "Configuration validation failed. Trying default configuration.");
+    printConfigFile(server);
+        if (server.loadDefaultConfig()) return false;
+        printConfigFile(server);
+        ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
+        if (!!validatorDefault.validateConfig()) return false;
+    }
+    
+    // if validate we set the global config
+    t_globalConfig globalConfig = validator.getGlobalConfig();
+    Config& config = server.getConfig();
+    config.setGlobalConfig(globalConfig);
+    
+    return true;
+}
+
+bool startServer(Server& server) {
+    try {
+        server.start();
+        return true;
+    } catch (const std::exception& e) {
+        ERROR_LOG(e.what());
+        return false;
+    }
+}
+
+int main(int ac, char **av) {
+    Server server;
+
+    if (!initializeLogger()) return 1;
+    if (!loadServerValidationFile(server)) return 1;
+    if (!loadAndValidateConfig(server, (ac > 1) ? av[1] : NULL)) return 1;
+    if (!startServer(server)) return 1;
+
+    Logger* logger = Logger::getInstance();
     logger->releaseStdout();
     logger->releaseStderr();
     Logger::cleanup();

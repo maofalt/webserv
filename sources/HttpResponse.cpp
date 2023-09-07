@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/07 23:35:25 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 23:39:19 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,9 @@ int	HttpResponse::_setRequest(const HttpRequest *request)
 
 int	HttpResponse::_setServer(const Config &config)
 {
+	log_message(Logger::DEBUG, "Setting server in the response...");
+	log_message(Logger::DEBUG, "Host: %s", _request->getHost().c_str());
+	log_message(Logger::DEBUG, "Port: %d", _port);
 	_server = config.findServer(_request->getHost(), _port);
 	if (_server == 0)
 		return (_status = "500", -1);
@@ -707,6 +710,7 @@ int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 		|| _refineUri()
 		|| _setType())
 		return (_writeError(_status));
+	log_message(Logger::DEBUG, "Response: _method = %s, no error detected!", _method.c_str());
 	if (_type == CGI)
 		return (_launchCgi());
 	return ((this->*_writeType[_type])());

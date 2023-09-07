@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/08/29 17:22:11 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 18:16:58 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool Server::cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it) {
 int Server::handle_epoll_events(int epoll_fd) {
 
 	struct epoll_event	events[MAX_EVENTS];
-	HttpRequest		request;
+	HttpRequest			request;
 	int					num_fds;
 
 	int timeout = calculate_dynamic_timeout();

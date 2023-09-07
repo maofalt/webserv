@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 21:25:18 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 18:22:56 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # define CONTENT_LENGTH "Content-Length"
 # define TRANSFER_ENCODING "Transfer-Encoding"
 
-# define BUFFER_SIZE_REQUEST 4096
+# define BUFFER_SIZE_REQUEST 1
 # define SIZE_MAX_REQUEST 32768
 
 /*

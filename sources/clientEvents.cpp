@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/01 22:50:09 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 18:27:46 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,19 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 		return -1;
 	}
 
+	//fcntl(sock_server, F_SETFL, O_NONBLOCK);
 	log_message(Logger::DEBUG, "New client connected on fd: %d", sock_server);
 
 	//add to Epoll
-	event.events = EPOLLIN;
+	event.events = EPOLLIN | EPOLLET;
 	event.data.fd = sock_server;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
 		perror("epoll_ctl: sock_server");
 		close(sock_server);
 		return -1;
 	}
-
+	
+	log_message(Logger::DEBUG, "Added new client on fd: %d to epoll", sock_server);
 	//add to clientHandlers
 	clientHandlers[sock_server] = ClientHandler(sock_listen, sock_server);
 	return sock_server;
@@ -132,7 +134,7 @@ int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 
 	struct epoll_event ev;
-	ev.events = mode;
+	ev.events = mode | EPOLLET;
 	ev.data.fd = client_fd;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, client_fd, &ev) == -1) {
 		perror("epoll_ctl: EPOLL_CTL_MOD");
@@ -164,7 +166,11 @@ void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
 
 	if (client.isRequestComplete()) {
 		handleCompleteRequest(epoll_fd, client);
+		return;
 	}
+	log_message(Logger::WARN, "Request not complete for client %d", client.getClientFd());
+	//DO NOT REMVOE THIS LINE PLEASE !! BLACK MAGIC
+	changeClientEpollMode(epoll_fd, client.getClientFd(), EPOLLIN);
 }
 
 /**
@@ -205,6 +211,8 @@ void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd
 		log_message(Logger::DEBUG, "Writing response to client %d", client_fd);
 		client.writeResponse();
 		log_message(Logger::DEBUG, "Response written to client %d", client_fd);
+		//maha for keep alive
+		//changeClientEpollMode(epoll_fd, client_fd, EPOLLIN);
 		close_and_cleanup(epoll_fd, client_fd);
 		clientHandlers.erase(client_fd);
 	} catch (const std::exception& e) {
