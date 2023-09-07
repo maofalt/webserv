@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/07 14:05:06 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 15:30:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ int Server::initializeSocket(const addrinfo* ad,
 		close(*sock_listen);
 		return -1;
 	}
+	
 	ClientHandler::addPort(*sock_listen, ntohs(((struct sockaddr_in *)ad->ai_addr)->sin_port));
 
 	log_message(Logger::INFO, "Bind successful for port: %s", port.c_str());
