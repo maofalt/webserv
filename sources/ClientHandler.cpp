@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientHandler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 21:37:30 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 18:15:08 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,6 @@ bool	ClientHandler::isRequestComplete(void)
 int	ClientHandler::readData(void)
 {
 	_request.recv(_client_fd);
-	while (!_request.isComplete())
-		_request.recv(_client_fd);
 	_request.log();
 	return (0);
 }

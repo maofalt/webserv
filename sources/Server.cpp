@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/07 15:30:05 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 18:17:33 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ int Server::setUpSocket(int* sock_listen, const std::string& port) {
 
 int Server::calculate_dynamic_timeout() {
 	// Logic to determine appropriate timeout
-	int timeout_value = 1000;
+	int timeout_value = 10000;
 	return timeout_value;
 }
 
