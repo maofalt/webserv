@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 18:16:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/07 18:27:46 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,8 @@ void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
 		return;
 	}
 	log_message(Logger::WARN, "Request not complete for client %d", client.getClientFd());
+	//DO NOT REMVOE THIS LINE PLEASE !! BLACK MAGIC
+	changeClientEpollMode(epoll_fd, client.getClientFd(), EPOLLIN);
 }
 
 /**
