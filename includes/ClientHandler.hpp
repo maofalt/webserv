@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 21:35:10 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/07 23:59:47 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ Methods:
 
 class ClientHandler {
 	private:
-		int								_client_fd;
-		HttpRequest						_request;
-		HttpResponse					_response;
-		static Config					_config;
-		static std::map<int, uint16_t>	_port;
+		int																	_client_fd;
+		HttpRequest															_request;
+		HttpResponse														_response;
+		static Config														_config;
+		static std::map<int, uint16_t>										_port;
 
 	public:
 		ClientHandler();

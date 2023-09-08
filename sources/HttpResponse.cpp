@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/07 23:39:19 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/08 03:22:45 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 #include "HttpResponse.hpp"
 
 // Static member variables
+#include <ctime>
 static std::map<std::string, std::string>	getDescription(void)
 {
 	std::map<std::string, std::string>	description;
 
+	std::srand(std::time(0));
 	description["200"] = "OK";
+	description["201"] = "Created";
 	description["400"] = "Bad request";
 	description["403"] = "Forbidden";
 	description["404"] = "Not found";
@@ -50,6 +53,7 @@ std::map<t_responseType, t_writeType>	HttpResponse::_getWriteType(void)
 	writeType[UPLOAD] = &HttpResponse::_writeUpload;
 	writeType[DIRECTORY] = &HttpResponse::_writeDirectory;
 	writeType[REDIRECTION] = &HttpResponse::_writeRedirection;
+	writeType[AUTHENTIFICATION] = &HttpResponse::_writeAuthentification;
 	writeType[ERROR] = &HttpResponse::_writeErrorBadRequest;
 	return (writeType);
 }
@@ -162,7 +166,7 @@ int	HttpResponse::_setRequest(const HttpRequest *request)
 	return (0);
 }
 
-int	HttpResponse::_setServer(const Config &config)
+int	HttpResponse::_setServer(Config &config)
 {
 	log_message(Logger::DEBUG, "Setting server in the response...");
 	log_message(Logger::DEBUG, "Host: %s", _request->getHost().c_str());
@@ -172,13 +176,14 @@ int	HttpResponse::_setServer(const Config &config)
 		return (_status = "500", -1);
 	return (0);
 }
-int	HttpResponse::_determineUpload(void)
+int	HttpResponse::_determinePost(void)
 {
 	_uploadFileOn = _location->_locConfig.count("upload")
 		&& _method == "POST"
 		&& _request->_field.count("Content-Type")
 		&& _request->_field.at("Content-Type").find("multipart/form-data") == 0;
-	_uploadFileOnly = _uploadFileOn && !_location->_locConfig.count("cgi");
+	_uploadOnly = (_uploadFileOn && !_location->_locConfig.count("cgi"))
+		|| (_method == "POST" && _uri == "/login");
 	return (0);
 }
 
@@ -209,6 +214,34 @@ int	HttpResponse::_limitHttpMethod(void)
 	return (_status = "405", -1);
 }
 
+bool	HttpResponse::_locationAllowed(void)
+{
+	std::string				cookie;
+	std::string::size_type	i;
+	std::string::size_type	j;
+
+	if (!_location->_locConfig.count("allow"))
+		return (true);
+	if (!_request->_field.count("Cookie"))
+		return (false);
+	i = 0;
+	while (_request->_field.at("Cookie").find("authentification=", i) != i)
+	{
+		i = _request->_field.at("Cookie").find("; ", i);
+		if (i == std::string::npos)
+			return (false);
+		i += 2;
+	}
+	i += 17;
+	j = _request->_field.at("Cookie").find(";", i);
+	cookie = _request->_field.at("Cookie").substr(i, j);
+	if (!_server->_sessionCookie.count(cookie))
+		return (false);
+	for (std::vector<std::string>::const_iterator role = ++_location->_locConfig.at("allow").begin(); role != _location->_locConfig.at("allow").end(); ++role)
+		if (_server->_sessionCookie.at(cookie).count(*role))
+			return (true);
+	return (false);
+}
 int	HttpResponse::_determineLocation(void)
 {
 	std::string::size_type	maxLen = 0;
@@ -226,16 +259,16 @@ int	HttpResponse::_determineLocation(void)
 	}
 	if (maxLen == 0)
 		return (_status = "404", -1);
+	if (!_locationAllowed())
+		return (_status = "401", -1);
 	return (0);
 }
 
 int	HttpResponse::_checkPath(void)
 {
-	std::string				index;
-	struct stat				statbuf;
+	std::string	index;
+	struct stat	statbuf;
 
-	if (_uploadFileOnly)
-		return (0);
 	if (access(_path.c_str(), F_OK) == -1)
 		return (_status = "404", -1);
 	if (access(_path.c_str(), R_OK) == -1)
@@ -270,6 +303,8 @@ int	HttpResponse::_refineUri(void)
 {
 	std::string::size_type	maxLen = 0;
 
+	if (_uploadOnly)
+		return (0);
 	if (!_location->_locConfig.count("root"))
 		return (0);
 	for (std::vector<std::string>::const_iterator prefix = _location->_paths.begin(); prefix != _location->_paths.end(); ++prefix)
@@ -284,6 +319,8 @@ int	HttpResponse::_setType(void)
 {
 	if (_method == "GET")
 		_type = GET;
+	if (_uploadOnly)
+		_type = AUTHENTIFICATION;
 	if (_uploadFileOn)
 		_type = UPLOAD;
 	if (_location->_locConfig.count("cgi"))
@@ -401,6 +438,75 @@ int	HttpResponse::_uploadFile(void)
 			continue ;
 		_createFile(file, path);
 	}
+	return (0);
+}
+
+std::string	HttpResponse::_generateCookie(void)
+{
+	std::string	allowedCharacters(
+		"0123456789"
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz"
+		"_-");
+	std::string	cookie;
+
+	for (int i = 0; i < 30; ++i)
+		cookie.push_back(allowedCharacters[std::rand() % allowedCharacters.size()]);
+	return (cookie);
+}
+int	HttpResponse::_authentificate(void)
+{
+	std::istringstream			ss(_request->_body);
+	std::string					name;
+	std::string					value;
+	std::string					role;
+	std::string					user;
+	std::string					password;
+	std::vector<std::string>	rolesRequested;
+	std::vector<std::string>	rolesAccepted;
+
+	if (!_request->_field.count("Content-Type")
+		|| _request->_field.at("Content-Type") != "application/x-www-form-urlencoded")
+		return (2);
+	while (!ss.eof())
+	{
+		std::getline(ss, name, '=');
+		std::getline(ss, value, '&');
+		if (name == "user" && user == "")
+			user = value;
+		if (name == "password" && password == "")
+			password = value;
+		if (name == "role")
+		{
+			std::istringstream			ssValue(value);
+
+			while (!ssValue.eof())
+			{
+				std::getline(ssValue, role, ',');
+				rolesRequested.push_back(role);
+			}
+		}
+	}
+	if (user == ""
+		|| password == ""
+		|| rolesRequested.size() == 0)
+		return (2);
+	_server->_credentials["brogarow"]["admin"] = "password";
+	if (!_server->_credentials.count(user))
+		return (3);
+	for (std::vector<std::string>::const_iterator role = rolesRequested.begin(); role != rolesRequested.end(); ++role)
+	{
+		if (!_server->_credentials.at(user).count(*role))
+			continue ;
+		if (_server->_credentials.at(user).at(*role) == password)
+			rolesAccepted.push_back(*role);
+	}
+	if (rolesAccepted.size() == 0)
+		return (3);
+	_cookie = _generateCookie();
+	_server->_sessionCookie[_cookie]["user"] = user;
+	for (std::vector<std::string>::const_iterator role = rolesAccepted.begin(); role != rolesAccepted.end(); ++role)
+		_server->_sessionCookie[_cookie][*role] = "on";
 	return (0);
 }
 
@@ -612,7 +718,8 @@ int	HttpResponse::_writeUpload(void)
 	std::ostringstream	content;
 
 	if (_uploadFile())
-		return (_writeError("500"));
+		return (_writeError("400"));
+	_status = "201";
 	content << "<!DOCTYPE html>\n"
 		<< "<html lang=\"en\">\n"
 		<< "<head>\n"
@@ -621,6 +728,33 @@ int	HttpResponse::_writeUpload(void)
 		<< "</head>\n"
 		<< "<body>\n"
 		<< "	<p>File has been uploaded.</p>\n"
+		<< "</body>\n"
+		<< "</html>\n";
+	_content = content.str();
+	_fields["ContentType"] = "text/html";
+	return (_writeRaw());
+}
+int	HttpResponse::_writeAuthentification(void)
+{
+	std::ostringstream	content;
+	int					status;
+
+	status = _authentificate();
+	if (status == 2)
+		return (_writeError("400"));
+	if (status == 3)
+		return (_writeError("401"));
+	_status = "201";
+	_fields["Set-Cookie"] = "authentification=";
+	_fields["Set-Cookie"] += _cookie;
+	content << "<!DOCTYPE html>\n"
+		<< "<html lang=\"en\">\n"
+		<< "<head>\n"
+		<< "	<meta charset=\"utf-8\" />\n"
+		<< "	<title>Authentification success</title>\n"
+		<< "</head>\n"
+		<< "<body>\n"
+		<< "	<p>Authentification success.</p>\n"
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
@@ -696,7 +830,7 @@ int	HttpResponse::readCgi(bool timeout)
 	return (bytesRead);
 }
 
-int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
+int	HttpResponse::setUp(HttpRequest const *request, Config &config)
 {
 	_setRequest(request);
 	if (_status != "200")
@@ -706,7 +840,7 @@ int	HttpResponse::setUp(HttpRequest const *request, const Config &config)
 		|| _limitClientBodySize()
 		|| _determineLocation()
 		|| _limitHttpMethod()
-		|| _determineUpload()
+		|| _determinePost()
 		|| _refineUri()
 		|| _setType())
 		return (_writeError(_status));

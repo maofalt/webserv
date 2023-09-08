@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 16:28:00 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/08 02:09:45 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ class Config {
 		void	setGlobalConfig(t_globalConfig& globalConfig);
 		
 		// specific server getter
-		const ServerConfig	*findServer(std::string server_name, uint16_t port) const;
+		ServerConfig	*findServer(std::string server_name, uint16_t port);
 };
 
 std::ostream& operator<<(std::ostream& os, const Config & conf);

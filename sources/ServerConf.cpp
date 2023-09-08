@@ -6,19 +6,19 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 16:50:56 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/08 02:10:35 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "ServerConf.hpp"
 
-const ServerConfig	*Config::findServer(std::string server_name, uint16_t port) const
+ServerConfig	*Config::findServer(std::string server_name, uint16_t port)
 {
-	const ServerConfig	*defaultServer;
+	ServerConfig	*defaultServer;
 
 	defaultServer = 0;
-	for (std::vector< ServerConfig >::const_iterator it = _servList.begin(); it != _servList.end(); ++it)
+	for (std::vector< ServerConfig >::iterator it = _servList.begin(); it != _servList.end(); ++it)
 	{
 		if (!it->isListeningTo(port))
 			continue ;
