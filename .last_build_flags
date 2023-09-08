@@ -1,1 +1,0 @@
--MMD -MP -Wall -Wextra -Werror -std=c++98 -DDEBUG_LEVEL=2 -g3

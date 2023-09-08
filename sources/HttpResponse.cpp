@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/08 03:22:45 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/08 03:42:13 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -597,6 +597,12 @@ int	HttpResponse::_launchCgi(void)
 
 		pathExec = _location->_locConfig.at("cgi")[1];
 		argv[0] = &pathExec[0];
+		if (_path.find("./", 0) == 0)
+		{
+			_path.erase(0, 2);
+			_path.insert(0, "/");
+			_path.insert(0, std::getenv("PWD"));
+		}
 		argv[1] = &_path[0];
 		argv[2] = NULL;
 		_setEnvCgi();
