@@ -117,7 +117,6 @@ int Server::handle_epoll_events(int epoll_fd) {
 	log_message(Logger::DEBUG, "Epoll returned with %d events.", num_fds);
 
 	for (int i = 0; i < num_fds; i++) {
-		inspect_epoll_event(events[i].events);
 
 		if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
 			process_listen_socket(epoll_fd, events[i]);

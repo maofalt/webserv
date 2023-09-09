@@ -336,9 +336,7 @@ int	HttpRequest::recv(int fd)
 	int		count;
 
 	std::memset(buffer, 0, BUFFER_SIZE_REQUEST + 1);
-	log_message(Logger::DEBUG, "before recv");
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
-	log_message(Logger::DEBUG_DETAILED, "after recv");
 	if (count == 0)
 		return (_status = "Closed", -1);
 	if (count < 0)

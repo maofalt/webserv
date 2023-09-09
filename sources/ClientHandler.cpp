@@ -123,6 +123,8 @@ int	ClientHandler::_send(void)
 		return (_clean(), -1);
 	if (status == 1)
 		return (_addSwitch(_fdClient, IN, TIMEOUT_SEND), 1);
+	if (status == 0)
+		return (_addSwitch(_fdClient, IN_OUT, TIMEOUT_SEND), 0);
 	return (0);
 }
 int	ClientHandler::_writeCgi(void)

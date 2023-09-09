@@ -98,11 +98,11 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int client_fd = event.data.fd;
 
-	//validateClient(client_fd);
+	validateClient(client_fd);
 
 	ClientHandler& client = clientHandlers[client_fd];
 	log_message(Logger::INFO, "Handling event on client fd: %d", client_fd);
-	inspect_epoll_event(event.events);
+	//inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client
 	if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
@@ -124,15 +124,11 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 	int op;
 	int mode;
 	
-	log_message(Logger::WARN, "Updating epoll");
-	log_message(Logger::WARN, "epoll switch size %lu", epollSwitch.size());
 	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
 		it != epollSwitch.end(); ++it ) {
 		//Set op depending on if fd is already in trackFds
-		//log_message(Logger::WARN, "epoll switch mode %d",it->mode);
-		log_message(Logger::WARN, "epoll switch fd %d", it->fd);
+
 		if (trackFds.find(it->fd) != trackFds.end()) {
-			log_message(Logger::WARN, "existing fd %d", it->fd);
 			op = EPOLL_CTL_MOD;
 			if (it->mode ==  DEL)
 				op = EPOLL_CTL_DEL;
@@ -142,7 +138,6 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 				close(it->fd);
 			continue;
 		} else {
-			log_message(Logger::WARN, "epoll switch adding fd %d", it->fd);
 			op = EPOLL_CTL_ADD;
 			trackFds.insert(it->fd);
 		}
@@ -151,22 +146,17 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 		{
 		case IN:
 			mode = EPOLLIN;
-			log_message(Logger::WARN, "epoll switch to IN");
 			break;
 		case OUT:
 			mode = EPOLLOUT;
-			log_message(Logger::WARN, "epoll switch to OUT");
 			break;
 		case IN_OUT:
 			mode = EPOLLIN | EPOLLOUT;
-			log_message(Logger::WARN, "epoll switch to IN_OUT");
 			break;
 		case DEL:
-			log_message(Logger::WARN, "epoll switch to 0 because DEL");
 			mode = 0;
 			break;
 		default:
-			log_message(Logger::WARN, "epoll switch to 0 because default");
 			mode = 0;
 			break;
 		}
@@ -224,7 +214,6 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 		if (fstat(client_fd, &buf) == 0)
 			close(client_fd);
 	}
-
 	return 0;
 }
 
