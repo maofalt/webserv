@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 21:48:07 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 19:02:34 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,23 +341,24 @@ int	HttpRequest::recv(int fd)
 	if (count == 0)
 		return (_status = "Closed", -1);
 	if (count < 0)
-		return (_status = "500", -1);
+		return (_status = "500", 0);
 	_raw += buffer;
 	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
 		if (_parseHeader() == -1)
-			return (-1);
+			return (0);
 		_headerComplete = true;
 	}
 	// Request entity too large
 	if (_headerComplete && _raw.size() > SIZE_MAX_REQUEST)
-		return (_status = "413", -1);
+		return (_status = "413", 0);
 	//as long as the body is not complete, we parse it
 	if (_headerComplete && !_bodyComplete && _rawBodyComplete())
 	{
 		_parseBody();
 		_bodyComplete = true;
+		return (0);
 	}
 	return (count);
 }
