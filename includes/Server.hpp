@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <queue>
 #include <string>
 #include <stdio.h>
 #include <netdb.h>  // getaddrinfo
@@ -32,6 +33,18 @@
 #define BUFFER_SIZE 2048
 #define MAX_EVENTS 10
 #define PATH_INI "config/validation/contextFields.ini"
+#define TIMEOUT 10
+
+typedef struct s_timeOutEvent {
+    std::time_t timeOut;
+    int         event_fd;
+
+    bool operator<(const s_timeOutEvent& other) const {
+        return timeOut < other.timeOut;
+    }
+} t_timeOutEvent;
+
+
 /*
 Server Class:
 
@@ -51,13 +64,14 @@ Methods:
 
 class Server {
 private:
-    int                             epoll_fd;
-    Config                          _config;
-    IniParser                       _validationFile;
-    std::vector<int>                sock_listens;  // to list to multiple ports
-    std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
-    std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
-    std::set<int>                   trackFds;  // to track fds for cleanup         
+    int                                         epoll_fd;
+    Config                                      _config;
+    IniParser                                   _validationFile;
+    std::vector<int>                            sock_listens;  // to list to multiple ports
+    std::map<int, HttpRequest>                  ongoingRequests;  // ongoing requests for each client_fd
+    std::map<int, ClientHandler>                clientHandlers;  // ongoing requests for each client_fd
+    std::set<int>                               trackFds;  // to track fds for cleanup 
+    std::priority_queue<t_timeOutEvent>         _timeOutEvents;  // to track fds for cleanup       
 
     static volatile sig_atomic_t	run;
     std::string                     defaultConf;
@@ -92,12 +106,14 @@ private:
     //handle client Methods
     int                         accept_new_client(int epoll_fd, int sock_listen);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
-    int                         handleClientEvent(int epoll_fd, struct epoll_event& event);
+    int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode, int op);
+    int                         handleFdEvent(int epoll_fd, struct epoll_event& event);
     void                        validateClient(int client_fd);
     void                        handleReadEvent(int epoll_fd, ClientHandler& client);
     void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
     void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
     void                        handleEpollError(int client_fd);
+    int                         updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch);
     
     //Multiplexing methods
     int                         setUpEpoll();
@@ -105,8 +121,9 @@ private:
     int                         handle_epoll_events(int epoll_fd);
     int                         handle_epoll_error();
     void                        process_listen_socket(int epoll_fd, struct epoll_event& event);
-    void                        process_client_socket(int epoll_fd, struct epoll_event& event);
+    void                        processEvent(int epoll_fd, struct epoll_event& event);
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
+    bool                        cleanupClientPackage(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
 
 public:

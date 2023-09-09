@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 18:12:44 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/09 19:31:13 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,25 +94,78 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
  *          event, and then directs the appropriate handling procedure based on the event.
  * @return Returns 0 on successful event handling.
  */
-int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
+int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int client_fd = event.data.fd;
 
-	validateClient(client_fd);
+	//validateClient(client_fd);
 
 	ClientHandler& client = clientHandlers[client_fd];
 	log_message(Logger::INFO, "Handling event on client fd: %d", client_fd);
 	inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client
-;
 	if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
 		handleEpollError(client_fd);
 	}
 
-	
+	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(client_fd, event);
+
+	if (updateEpoll(epoll_fd, epollSwitch)) {
+		
+		return -1;	
+	}
 	return 0;
 }
 
+//method to be cleaned ! separed in two different methods
+int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
+
+	int op;
+	int mode;
+	
+	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
+		it != epollSwitch.end(); ++it ) {
+		//Set op depending on if fd is already in trackFds
+		if (trackFds.find(it->fd) != trackFds.end()) {
+			op = EPOLL_CTL_MOD;
+			if (it->mode ==  DEL)
+				op = EPOLL_CTL_DEL;
+		} else if (it->mode == DEL){
+			struct stat buf;
+			if (fstat(it->fd, &buf) == 0)
+				close(it->fd);
+			continue;
+		} else {
+			op = EPOLL_CTL_ADD;
+			trackFds.insert(it->fd);
+		}
+		// create mode depending ine_epollMode struct received
+		switch (it->mode)
+		{
+		case IN:
+			mode = EPOLLIN;
+			break;
+		case OUT:
+			mode = EPOLLOUT;
+			break;
+		case IN_OUT:
+			mode = EPOLLIN | EPOLLOUT;
+			break;
+		case DEL:
+			mode = 0;
+			break;
+		default:
+			mode = 0;
+			break;
+		}
+
+		if (changeClientEpollMode(epoll_fd, it->fd, it->mode, op)) {
+			return -1;
+		}
+	}
+	
+	return 0;
+}
 
 /**
  * @brief Changes the epoll mode of a client socket.
@@ -136,11 +189,30 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 	ev.events = mode | EPOLLET;
 	ev.data.fd = client_fd;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_MOD, client_fd, &ev) == -1) {
-		perror("epoll_ctl: EPOLL_CTL_MOD");
+		log_message(Logger::ERROR, "epoll_ctl: EPOLL_CTL_MOD");
 		return -1;
 	}
 	return 0;
 }
+
+int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode, int op) {
+
+	struct epoll_event ev;
+	ev.events = mode | EPOLLET;
+	ev.data.fd = client_fd;
+	if (epoll_ctl(epoll_fd, op, client_fd, &ev) == -1) {
+		log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
+		return -1;
+	}
+	if (op == EPOLL_CTL_DEL)
+		trackFds.erase(client_fd);
+	//check with stat fi fd is openif yes closeis
+	struct stat buf;
+	if (fstat(client_fd, &buf) == 0)
+		close(client_fd);
+	return 0;
+}
+
 
 /**
  * @brief Handles read events on a client socket.
@@ -154,23 +226,23 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
  *          request to the 'handleCompleteRequest' method. If there's an error while reading data from
  *          the client, a 'std::runtime_error' exception is thrown.
  */
-void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
-	try {
-		log_message(Logger::DEBUG, "Reading data from client %d", client.getClientFd());
-		client.readData();
-		log_message(Logger::DEBUG, "Data read from client %d", client.getClientFd());
-	} catch (const std::exception& e) {
-		throw std::runtime_error("Error reading data from client");
-	}
+// void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
+// 	try {
+// 		log_message(Logger::DEBUG, "Reading data from client %d", client.getClientFd());
+// 		client.readData();
+// 		log_message(Logger::DEBUG, "Data read from client %d", client.getClientFd());
+// 	} catch (const std::exception& e) {
+// 		throw std::runtime_error("Error reading data from client");
+// 	}
 
-	if (client.isRequestComplete()) {
-		handleCompleteRequest(epoll_fd, client);
-		return;
-	}
-	log_message(Logger::WARN, "Request not complete for client %d", client.getClientFd());
-	//DO NOT REMVOE THIS LINE PLEASE !! BLACK MAGIC
-	changeClientEpollMode(epoll_fd, client.getClientFd(), EPOLLIN);
-}
+// 	if (client.isRequestComplete()) {
+// 		handleCompleteRequest(epoll_fd, client);
+// 		return;
+// 	}
+// 	log_message(Logger::WARN, "Request not complete for client %d", client.getClientFd());
+// 	//DO NOT REMVOE THIS LINE PLEASE !! BLACK MAGIC
+// 	changeClientEpollMode(epoll_fd, client.getClientFd(), EPOLLIN);
+// }
 
 /**
  * @brief Handles a completed client request.
@@ -183,13 +255,13 @@ void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
  *          the client socket to EPOLLOUT to prepare for sending a response back to the client. If
  *          changing the epoll mode fails, a 'std::runtime_error' exception is thrown.
  */
-void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
-	log_message(Logger::INFO, "Request complete for client %d", client.getClientFd());
-	if (changeClientEpollMode(epoll_fd, client.getClientFd() , EPOLLOUT) != 0) {
-		throw std::runtime_error("Failed to change client epoll mode to EPOLLOUT");
-	}
-	log_message(Logger::DEBUG, "Changed epoll mode to EPOLLOUT for client %d", client.getClientFd());
-}
+// void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
+// 	log_message(Logger::INFO, "Request complete for client %d", client.getClientFd());
+// 	if (changeClientEpollMode(epoll_fd, client.getClientFd() , EPOLLOUT) != 0) {
+// 		throw std::runtime_error("Failed to change client epoll mode to EPOLLOUT");
+// 	}
+// 	log_message(Logger::DEBUG, "Changed epoll mode to EPOLLOUT for client %d", client.getClientFd());
+// }
 
 /**
  * @brief Handles writing a response to the client.
@@ -205,19 +277,19 @@ void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
  *          the client socket and performs cleanup operations associated with the client.
  *          If an error occurs during writing or cleanup, a 'std::runtime_error' exception is thrown.
  */
-void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd) {
-	try {
-		log_message(Logger::DEBUG, "Writing response to client %d", client_fd);
-		client.writeResponse();
-		log_message(Logger::DEBUG, "Response written to client %d", client_fd);
-		//maha for keep alive
-		//changeClientEpollMode(epoll_fd, client_fd, EPOLLIN);
-		close_and_cleanup(epoll_fd, client_fd);
-		clientHandlers.erase(client_fd);
-	} catch (const std::exception& e) {
-		throw std::runtime_error("Error writing response to client");
-	}
-}
+// void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd) {
+// 	try {
+// 		log_message(Logger::DEBUG, "Writing response to client %d", client_fd);
+// 		client.writeResponse();
+// 		log_message(Logger::DEBUG, "Response written to client %d", client_fd);
+// 		//maha for keep alive
+// 		//changeClientEpollMode(epoll_fd, client_fd, EPOLLIN);
+// 		close_and_cleanup(epoll_fd, client_fd);
+// 		clientHandlers.erase(client_fd);
+// 	} catch (const std::exception& e) {
+// 		throw std::runtime_error("Error writing response to client");
+// 	}
+// }
 
 /**
  * @brief Handles an EPOLL error event on a client socket.

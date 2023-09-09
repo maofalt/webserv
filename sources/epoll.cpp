@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 18:16:58 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/09 18:58:46 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int Server::handle_epoll_events(int epoll_fd) {
 		if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
 			process_listen_socket(epoll_fd, events[i]);
 		} else {
-			process_client_socket(epoll_fd, events[i]);
+			processEvent(epoll_fd, events[i]);
 		}
 	}
 	return 0;
@@ -157,15 +157,14 @@ void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
  *          socket event and attempts to handle the client's event using the 'handleClientEvent'
  *          method. If an exception is thrown during event handling, the error message is logged.
  */
-void Server::process_client_socket(int epoll_fd, struct epoll_event& event) {
+void Server::processEvent(int epoll_fd, struct epoll_event& event) {
 
 	log_message(Logger::INFO, "Handling client %d event", event.data.fd);
 	try {
-		handleClientEvent(epoll_fd, event);
+		handleFdEvent(epoll_fd, event);
 	} catch (const std::exception& e) {
 		//erase the clent from the epoll_fd and the clientHandlers
 		close_and_cleanup(epoll_fd, event.data.fd);
-		//std::cerr << "Error handling client event: " << e.what() << std::endl;
 		log_message(Logger::DEBUG_DETAILED, "Error handling client event: %s", e.what());
 	}
 }
