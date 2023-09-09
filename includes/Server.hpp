@@ -57,6 +57,7 @@ private:
     std::vector<int>                sock_listens;  // to list to multiple ports
     std::map<int, HttpRequest>      ongoingRequests;  // ongoing requests for each client_fd
     std::map<int, ClientHandler>    clientHandlers;  // ongoing requests for each client_fd
+    std::set<int>                   trackFds;  // to track fds for cleanup         
 
     static volatile sig_atomic_t	run;
     std::string                     defaultConf;

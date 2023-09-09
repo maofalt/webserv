@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 18:27:46 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/09 18:12:44 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,16 +104,15 @@ int Server::handleClientEvent(int epoll_fd, struct epoll_event& event) {
 	inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client
-	if (event.events & EPOLLIN) {
-		handleReadEvent(epoll_fd, client);
-	} else if (event.events & EPOLLOUT) {
-		handleWriteEvent(epoll_fd, client, client_fd);
-	} else if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
+;
+	if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
 		handleEpollError(client_fd);
 	}
 
+	
 	return 0;
 }
+
 
 /**
  * @brief Changes the epoll mode of a client socket.
