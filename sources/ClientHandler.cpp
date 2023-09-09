@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:27:54 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 19:56:20 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ ClientHandler::ClientHandler(void)
 {
 }
 ClientHandler::ClientHandler(const ClientHandler& other) : 
-	_client_fd(other._client_fd),
+	_fdClient(other._fdClient),
 	_request(other._request),
 	_response(other._response)
 {
@@ -31,7 +31,7 @@ ClientHandler::ClientHandler(const ClientHandler& other) :
 ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 {
 	if (this != &other) {
-		_client_fd = other._client_fd;
+		_fdClient = other._fdClient;
 		_request = other._request;
 		_response = other._response;
 	}
@@ -40,7 +40,7 @@ ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 
 // Constructor
 ClientHandler::ClientHandler(int fdSock, int fd) :
-	_client_fd(fd),
+	_fdClient(fd),
 	_request(),
 	_response(_port[fdSock])
 {
@@ -62,11 +62,11 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 	t_epollSwitch	newSwitch;
 
 	newSwitch.fd = fd;
-	newSitch.mode = mode;
+	newSwitch.mode = mode;
 	if (timeout == 0)
 		newSwitch.timeout = 0;
 	else
-		newSwitch.timeout = std::time() + timeout;
+		newSwitch.timeout = std::time(NULL) + timeout;
 	_epollSwitches.push_back(newSwitch);
 	return (0);
 }
@@ -75,14 +75,14 @@ int	ClientHandler::_readClient(void)
 {
 	int	status;
 
-	status = _response.recv();
+	status = _request.recv(_fdClient);
 	if (status == -1)
-		return (_addSwitch(_clientFd, DEL, 0), -1)
+		return (_addSwitch(_fdClient, DEL, 0), -1);
 	if (status > 0)
-		return (_addSwitch(_clientFd, IN, TIMEOUT_RECV), 0);
+		return (_addSwitch(_fdClient, IN, TIMEOUT_RECV), 0);
 	_response.setUp(&_request, _config);
 	if (status != CGI_LAUNCHED)
-		return (_response.log(), _addSwitch(_clientFd, OUT, TIMEOUT_SEND), 0);
+		return (_response.log(), _addSwitch(_fdClient, OUT, TIMEOUT_SEND), 0);
 	_fdCgiIn = _response.getFdCgiIn();
 	_fdCgiOut = _response.getFdCgiOut();
 	_fdCgiInOpened = true;
@@ -135,7 +135,7 @@ int	ClientHandler::_writeCgi(void)
 	_fdCgiInOpened = false;
 	return (0);
 }
-int	ClientHandler::_writeData(void)
+int	ClientHandler::_writeData(int fd)
 {
 	if (fd == _fdClient)
 		return (_send());
@@ -161,7 +161,7 @@ std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event
 		_readData(fd);
 	if (event.events & EPOLLOUT)
 		_writeData(fd);
-	return (_epollSwicthes);
+	return (_epollSwitches);
 }
 
 std::vector<int>	ClientHandler::getOpenedFd(void) const

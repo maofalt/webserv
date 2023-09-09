@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:04:01 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 19:51:15 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ HttpResponse::HttpResponse(void):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
-	_isSetUp(false);
+	_isSetUp(false),
 	_iWriteToCgi(0),
 	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
@@ -88,7 +88,7 @@ HttpResponse::HttpResponse(uint16_t port):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
-	_isSetUp(false);
+	_isSetUp(false),
 	_iWriteToCgi(0),
 	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
@@ -106,7 +106,7 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_server(rhs._server),
 	_location(rhs._location),
 	_type(rhs._type),
-	_isSetUp(rhs._isSetUp);
+	_isSetUp(rhs._isSetUp),
 	_fdCgiIn(rhs._fdCgiIn),
 	_iWriteToCgi(rhs._iWriteToCgi),
 	_fdCgiOut(rhs._fdCgiOut),
@@ -128,7 +128,7 @@ HttpResponse::HttpResponse(HttpRequest const *request):
 HttpResponse::~HttpResponse(void)
 {
 	if (_pidCgi != 0)
-		kill(_pid);
+		kill(_pidCgi, SIGKILL);
 }
 
 // Operators
@@ -159,15 +159,15 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 }
 
 // Getters
-int	getFdCgiIn(void) const
+int	HttpResponse::getFdCgiIn(void) const
 {
 	return (_fdCgiIn);
 }
-int	getFdCgiOut(void) const
+int	HttpResponse::getFdCgiOut(void) const
 {
 	return (_fdCgiOut);
 }
-bool	isSetUp(void) const
+bool	HttpResponse::isSetUp(void) const
 {
 	return (_isSetUp);
 }

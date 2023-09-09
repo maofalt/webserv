@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:36:37 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/09 19:56:01 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ class ClientHandler {
 		int		_readData(int fd);
 		int		_send(void);
 		int		_writeCgi(void);
-		int		_writeData(void);
+		int		_writeData(int fd);
 		void	_clean(void);
 
 	public:
@@ -82,7 +82,7 @@ class ClientHandler {
 
 	//Methods
 		std::vector<t_epollSwitch>	handleEvent(int fd, struct epoll_event &event);
-		std::vector<int>	ClientHandler::getOpenedFd(void) const;
+		std::vector<int>			getOpenedFd(void) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const ClientHandler & other);

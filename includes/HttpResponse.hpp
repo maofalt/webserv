@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 18:15:42 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 19:48:31 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <cstdlib>
 # include <dirent.h>
 # include <map>
+# include <signal.h>
 # include <stdint.h>
 # include <string>
 # include <sys/types.h>
