@@ -217,12 +217,14 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 		log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
 		return -1;
 	}
-	if (op == EPOLL_CTL_DEL)
+	if (op == EPOLL_CTL_DEL) {
 		trackFds.erase(client_fd);
-	//check with stat fi fd is openif yes closeis
-	struct stat buf;
-	if (fstat(client_fd, &buf) == 0)
-		close(client_fd);
+		//check with stat fi fd is openif yes closeis
+		struct stat buf;
+		if (fstat(client_fd, &buf) == 0)
+			close(client_fd);
+	}
+
 	return 0;
 }
 
