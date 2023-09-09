@@ -106,7 +106,7 @@ private:
     //handle client Methods
     int                         accept_new_client(int epoll_fd, int sock_listen);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
-    int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode, int op);
+    int                         changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op);
     int                         handleFdEvent(int epoll_fd, struct epoll_event& event);
     void                        validateClient(int client_fd);
     void                        handleReadEvent(int epoll_fd, ClientHandler& client);

@@ -87,8 +87,9 @@ HttpRequest	&HttpRequest::operator=(HttpRequest const &rhs)
 // _verifyHeader
 int	HttpRequest::_verifyHeader(void)
 {
-	volatile int	i;
+	volatile int	i = 0;
 
+	(void)i;
 	if (_field.count(CONTENT_LENGTH))
 	{
 		try

@@ -80,6 +80,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	log_message(Logger::DEBUG, "Added new client on fd: %d to epoll", sock_server);
 	//add to clientHandlers
 	clientHandlers[sock_server] = ClientHandler(sock_listen, sock_server);
+	trackFds.insert(sock_server);
 	return sock_server;
 }
 
@@ -123,10 +124,15 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 	int op;
 	int mode;
 	
+	log_message(Logger::WARN, "Updating epoll");
+	log_message(Logger::WARN, "epoll switch size %lu", epollSwitch.size());
 	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
 		it != epollSwitch.end(); ++it ) {
 		//Set op depending on if fd is already in trackFds
+		//log_message(Logger::WARN, "epoll switch mode %d",it->mode);
+		log_message(Logger::WARN, "epoll switch fd %d", it->fd);
 		if (trackFds.find(it->fd) != trackFds.end()) {
+			log_message(Logger::WARN, "existing fd %d", it->fd);
 			op = EPOLL_CTL_MOD;
 			if (it->mode ==  DEL)
 				op = EPOLL_CTL_DEL;
@@ -136,6 +142,7 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 				close(it->fd);
 			continue;
 		} else {
+			log_message(Logger::WARN, "epoll switch adding fd %d", it->fd);
 			op = EPOLL_CTL_ADD;
 			trackFds.insert(it->fd);
 		}
@@ -144,21 +151,25 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 		{
 		case IN:
 			mode = EPOLLIN;
+			log_message(Logger::WARN, "epoll switch to IN");
 			break;
 		case OUT:
 			mode = EPOLLOUT;
+			log_message(Logger::WARN, "epoll switch to OUT");
 			break;
 		case IN_OUT:
 			mode = EPOLLIN | EPOLLOUT;
+			log_message(Logger::WARN, "epoll switch to IN_OUT");
 			break;
 		case DEL:
+			log_message(Logger::WARN, "epoll switch to 0 because DEL");
 			mode = 0;
 			break;
 		default:
+			log_message(Logger::WARN, "epoll switch to 0 because default");
 			mode = 0;
 			break;
 		}
-
 		if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
 			return -1;
 		}
@@ -195,7 +206,7 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 	return 0;
 }
 
-int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode, int op) {
+int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op) {
 
 	struct epoll_event ev;
 	if (mode) {
