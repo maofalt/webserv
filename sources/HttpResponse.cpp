@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/08 03:42:13 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 19:04:01 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,9 @@ HttpResponse::HttpResponse(void):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
+	_isSetUp(false);
 	_iWriteToCgi(0),
+	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
 	_raw(""),
 	_iRaw(0)
@@ -86,7 +88,9 @@ HttpResponse::HttpResponse(uint16_t port):
 	_path(""),
 	_uriIsDirectory(false),
 	_type(ERROR),
+	_isSetUp(false);
 	_iWriteToCgi(0),
+	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
 	_raw(""),
 	_iRaw(0)
@@ -102,9 +106,11 @@ HttpResponse::HttpResponse(HttpResponse const &rhs):
 	_server(rhs._server),
 	_location(rhs._location),
 	_type(rhs._type),
+	_isSetUp(rhs._isSetUp);
 	_fdCgiIn(rhs._fdCgiIn),
 	_iWriteToCgi(rhs._iWriteToCgi),
 	_fdCgiOut(rhs._fdCgiOut),
+	_pidCgi(rhs._pidCgi),
 	_protocol(rhs._protocol),
 	_status(rhs._status),
 	_fields(rhs._fields),
@@ -121,6 +127,8 @@ HttpResponse::HttpResponse(HttpRequest const *request):
 // Destructor
 HttpResponse::~HttpResponse(void)
 {
+	if (_pidCgi != 0)
+		kill(_pid);
 }
 
 // Operators
@@ -135,9 +143,11 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_server = rhs._server;
 	_location = rhs._location;
 	_type = rhs._type;
+	_isSetUp = rhs._isSetUp;
 	_fdCgiIn = rhs._fdCgiIn;
 	_iWriteToCgi = rhs._iWriteToCgi;
 	_fdCgiOut = rhs._fdCgiOut;
+	_pidCgi = rhs._pidCgi;
 	_protocol = rhs._protocol;
 	_status = rhs._status;
 	_fields = rhs._fields;
@@ -146,6 +156,20 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	_iRaw = rhs._iRaw;
 
 	return (*this);
+}
+
+// Getters
+int	getFdCgiIn(void) const
+{
+	return (_fdCgiIn);
+}
+int	getFdCgiOut(void) const
+{
+	return (_fdCgiOut);
+}
+bool	isSetUp(void) const
+{
+	return (_isSetUp);
 }
 
 // Utils

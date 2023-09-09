@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/08 02:12:02 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/09 18:15:42 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ class HttpResponse
 
 	// Internal
 		t_responseType						_type;
+		bool								_isSetUp;
 		int									_fdCgiIn;
 		std::string::size_type				_iWriteToCgi;
 		int									_fdCgiOut;
@@ -149,7 +150,9 @@ class HttpResponse
 		HttpResponse	&operator=(HttpResponse const &rhs);
 
 	// Getters
-		int		getFdCgi(void) const;
+		int		getFdCgiIn(void) const;
+		int		getFdCgiOut(void) const;
+		bool	isSetUp(void) const;
 
 	// Methods
 		void	log(void) const;
