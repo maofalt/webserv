@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 19:31:13 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/09 20:00:39 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 			break;
 		}
 
-		if (changeClientEpollMode(epoll_fd, it->fd, it->mode, op)) {
+		if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
 			return -1;
 		}
 	}
@@ -198,8 +198,10 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode, int op) {
 
 	struct epoll_event ev;
-	ev.events = mode | EPOLLET;
-	ev.data.fd = client_fd;
+	if (mode) {
+		ev.events = mode | EPOLLET;
+		ev.data.fd = client_fd;
+	}
 	if (epoll_ctl(epoll_fd, op, client_fd, &ev) == -1) {
 		log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
 		return -1;
