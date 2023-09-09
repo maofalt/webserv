@@ -12,7 +12,7 @@
 		{
 			echo '<p>Tell me your name by appending the url with: "?firstname=*yourFirstName*&lastname=*yourSurname*"</p>';
 			echo '<p>Or use the following form which uses GET method:</p>';
-			echo '<form action="myNameIs.php" method="GET">';
+			echo '<form action="get.php" method="GET">';
 			echo '<p>	Firstname: <input name="firstname"/></p>';
 			echo '<p>	Lastname: <input name="lastname"/></p>';
 			echo '<p>	<button>GO!</button></p>';

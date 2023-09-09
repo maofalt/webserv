@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 17:21:24 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/08 02:34:12 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void validationFactory::registerStrategies() {
         strategyMap["isValidOnOff"] = new isValidOnOff();
         strategyMap["isValidCgiExtension"] = new isValidCgiExtension();
         strategyMap["isValidFileUploadTypes"] = new isValidFileUploadTypes();
+        strategyMap["isValidAllow"] = new isValidAllow();
     } catch (const std::exception& e) {
         cleanupStrategies();
         throw("Memory allocation failed while registering strategies: " + std::string(e.what()));

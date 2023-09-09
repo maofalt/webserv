@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PHP test</title>
+</head>
+
+<body>
+	<h1>Authentificate yourself!</h1>
+	<p>Pour le moment, le combo:</p>
+	<p>	User: brogarow</br>
+		Password: password</br>
+		Role: admin</p>
+	<p>	Vous renvoie un cookie d'authentification pour le role admin</br>
+		Le role admin vous donne acces a /secret</br>
+		N'oubliez pas de delete le cookie si vous voulez retenter la manoeuvre!</p>
+	<form action="/login" method="post">
+		User: <input type="text" name="user"><br>
+		Password: <input type="text" name="password"><br>
+		Role: <input type="text" name="role"><br>
+	<input type="submit">
+	</form>
+</body>
+</html> 

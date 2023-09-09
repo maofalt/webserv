@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 00:09:15 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/02 00:29:46 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/08 03:02:50 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,32 @@ std::map<std::string, std::string>	HttpResponse::getDefaultErrorPages(void)
 		"<body>\r\n"
 		"	<h1>Error 400 - Bad request</h1>\r\n"
 		"	<img src=\"../images/400.jpg\" alt=\"Error 400 - Bad request\" id=\"bad request\"/>\r\n"
+		"</body>\r\n"
+		"</html>\r\n");
+
+	defaultErrorPages["401"] = std::string(
+		"<!DOCTYPE html>\r\n"
+		"<html lang=\"en\">\r\n"
+		"<head>\r\n"
+		"	<meta charset=\"utf-8\" />\r\n"
+		"	<title>401 - Unauthorized</title>\r\n"
+		"</head>\r\n"
+		"<body>\r\n"
+		"	<h1>Error 401 - Unauthorized</h1>\r\n"
+		"	<img src=\"../images/401.jpg\" alt=\"Error 401 - Unauthorized\" id=\"unauthorized\"/>\r\n"
+		"</body>\r\n"
+		"</html>\r\n");
+
+	defaultErrorPages["403"] = std::string(
+		"<!DOCTYPE html>\r\n"
+		"<html lang=\"en\">\r\n"
+		"<head>\r\n"
+		"	<meta charset=\"utf-8\" />\r\n"
+		"	<title>403 - Forbidden</title>\r\n"
+		"</head>\r\n"
+		"<body>\r\n"
+		"	<h1>Error 403 - Forbidden</h1>\r\n"
+		"	<img src=\"../images/403.jpg\" alt=\"Error 403 - Forbidden\" id=\"forbidden\"/>\r\n"
 		"</body>\r\n"
 		"</html>\r\n");
 

@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/03 08:10:02 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/08 02:12:02 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define HTTPRESPOND_HPP
 
 # include <cstdio>
+# include <cstdlib>
 # include <dirent.h>
 # include <map>
 # include <stdint.h>
@@ -29,7 +30,7 @@
 
 # define READ_BUFFER_SIZE 16384
 # define SEND_BUFFER_SIZE 16384
-# define WRITE_CGI_BUFFER_SIZE 16384
+# define WRITE_CGI_BUFFER_SIZE 2048
 
 # define RESPONSE_SET 0
 # define CGI_LAUNCHED 1
@@ -41,9 +42,11 @@ typedef	enum e_response_type
 {
 	GET,
 	DELETE,
+	UPLOAD,
 	DIRECTORY,
 	REDIRECTION,
 	CGI,
+	AUTHENTIFICATION,
 	ERROR
 }	t_responseType;
 
@@ -62,16 +65,19 @@ class HttpResponse
 		std::string							_path;
 		bool								_uriIsDirectory;
 		std::string							_queryString;
-		const ServerConfig					*_server;
+		ServerConfig						*_server;
 		const t_location					*_location;
 
-	// Temp
+	// Internal
 		t_responseType						_type;
 		int									_fdCgiIn;
 		std::string::size_type				_iWriteToCgi;
 		int									_fdCgiOut;
 		int									_pidCgi;
 		std::vector<std::string>			_envCgi;
+		bool								_uploadFileOn;
+		bool								_uploadOnly;
+		std::string							_cookie;
 
 	// Content
 		std::string							_protocol;
@@ -82,28 +88,49 @@ class HttpResponse
 		std::string::size_type				_iRaw;
 
 	// Static
-		static std::map<std::string, std::string>		_description;
-		static std::map<std::string, std::string>		_mapContentType;
-		static std::map<t_responseType, t_writeType>	_writeType;
-		static std::map<std::string, std::string>		_defaultErrorPages;
+		static std::map<std::string, std::string>							_description;
+		static std::map<std::string, std::string>							_mapContentType;
+		static std::map<t_responseType, t_writeType>						_writeType;
+		static std::map<std::string, std::string>							_defaultErrorPages;
+
+	// UploadFile
+		int	_skipLine(std::string::size_type &i);
+		int	_readUploadContentHeader(
+			std::string &boundary,
+			std::string &filename,
+			std::string::size_type &i);
+		int	_readUploadContentBody(
+			std::string &boundary,
+			std::string &file,
+			std::string::size_type &i);
+		int	_createFile(std::string &file, std::string &path);
+		int	_uploadFile(void);
 
 	// Utils
-		int	_determineLocation(void);
-		int	_launchCgi(void);
-		int	_limitClientBodySize(void);
-		int	_limitHttpMethod(void);
-		int	_refineUri(void);
-		int	_setEnvCgi(void);
-		int	_setRequest(const HttpRequest *request);
-		int	_setServer(const Config &config);
-		int	_setType(void);
-		int	_stripUri(void);
-		int	_writeRedirection(void);
-		int	_writeDirectory(void);
-		int	_writeGet(void);
-		int	_writeDelete(void);
-		int	_writeError(std::string status);
-		int	_writeRaw(void);
+		int			_authentificate(void);
+		int			_checkPath(void);
+		int			_determineLocation(void);
+		int			_determinePost(void);
+		std::string	_generateCookie(void);
+		int			_launchCgi(void);
+		int			_limitClientBodySize(void);
+		int			_limitHttpMethod(void);
+		bool		_locationAllowed(void);
+		int			_refineUri(void);
+		int			_setEnvCgi(void);
+		int			_setRequest(const HttpRequest *request);
+		int			_setServer(Config &config);
+		int			_setType(void);
+		int			_stripUri(void);
+		int			_writeAuthentification(void);
+		int			_writeDelete(void);
+		int			_writeDirectory(void);
+		int			_writeErrorBadRequest(void);
+		int			_writeGet(void);
+		int			_writeRedirection(void);
+		int			_writeUpload(void);
+		int			_writeError(std::string status);
+		int			_writeRaw(void);
 
 	// Utils types
 		static std::map<t_responseType, t_writeType>	_getWriteType(void);
@@ -129,7 +156,7 @@ class HttpResponse
 		int		readCgi(bool timeout);
 		int		writeToCgi(void);
 		int		send(int fd);
-		int		setUp(HttpRequest const *request, const Config &config);
+		int		setUp(HttpRequest const *request, Config &config);
 
 	// Static
 		static std::map<std::string, std::string>	getDefaultErrorPages(void);
