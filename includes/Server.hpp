@@ -71,7 +71,8 @@ private:
     std::map<int, HttpRequest>                  ongoingRequests;  // ongoing requests for each client_fd
     std::map<int, ClientHandler>                clientHandlers;  // ongoing requests for each client_fd
     std::set<int>                               trackFds;  // to track fds for cleanup 
-    std::priority_queue<t_timeOutEvent>         _timeOutEvents;  // to track fds for cleanup       
+    std::priority_queue<t_timeOutEvent>         _timeOutEvents;  // to track fds for cleanup 
+    std::map<int, int>                          _cgiFdsToClientFd;  // to track fds for cleanup     
 
     static volatile sig_atomic_t	run;
     std::string                     defaultConf;
@@ -108,12 +109,12 @@ private:
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op);
     int                         handleFdEvent(int epoll_fd, struct epoll_event& event);
-    void                        validateClient(int client_fd);
+    bool                        validateClient(int client_fd);
     void                        handleReadEvent(int epoll_fd, ClientHandler& client);
     void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
     void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
     void                        handleEpollError(int client_fd);
-    int                         updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch);
+    int                         updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& epollSwitch);
     
     //Multiplexing methods
     int                         setUpEpoll();

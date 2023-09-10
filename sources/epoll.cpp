@@ -164,7 +164,7 @@ void Server::processEvent(int epoll_fd, struct epoll_event& event) {
 	} catch (const std::exception& e) {
 		//erase the clent from the epoll_fd and the clientHandlers
 		close_and_cleanup(epoll_fd, event.data.fd);
-		log_message(Logger::DEBUG_DETAILED, "Error handling client event: %s", e.what());
+		log_message(Logger::ERROR, "Error handling client event: %s", e.what());
 	}
 }
 
@@ -206,8 +206,9 @@ if (events & EPOLLHUP) log_message(Logger::DEBUG, "EPOLLHUP event");
 void Server::close_and_cleanup(int epoll_fd, int client_fd) {
 	struct epoll_event ev;
 	if(epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_fd, &ev) == -1) {
-		perror("epoll_ctl: EPOLL_CTL_DEL");
+		log_message(Logger::ERROR, "Error removing client %d from epoll set: %s", client_fd, strerror(errno));
 		// Handle error
 	}
+	log_message(Logger::WARN, "Closing client %d connection", client_fd);
 	close(client_fd);
 }

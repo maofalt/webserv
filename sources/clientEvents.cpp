@@ -22,11 +22,12 @@
  *          descriptor is not found, an error message is logged, and a 'std::runtime_error'
  *          exception is thrown, indicating the presence of an unknown client socket descriptor.
  */
-void Server::validateClient(int client_fd) {
+bool Server::validateClient(int client_fd) {
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
 		std::cerr << "Unknown client fd: " << client_fd << std::endl;
-		throw std::runtime_error("Unknown client fd encountered");
+		return 1;
 	}
+	return 0;
 }
 
 /**
@@ -72,7 +73,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	event.events = EPOLLIN | EPOLLET;
 	event.data.fd = sock_server;
 	if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, sock_server, &event) == -1) {
-		perror("epoll_ctl: sock_server");
+		log_message(Logger::ERROR, "epoll_ctl: EPOLL_CTL_ADD");
 		close(sock_server);
 		return -1;
 	}
@@ -96,22 +97,26 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
  * @return Returns 0 on successful event handling.
  */
 int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
-	int client_fd = event.data.fd;
+	int eventFd = event.data.fd;
+	int clientFd =  eventFd;
 
-	validateClient(client_fd);
+	if(validateClient(eventFd)) {
+		log_message(Logger::ERROR, "%d fd is not a client but cgi", eventFd);
+		clientFd = _cgiFdsToClientFd[eventFd];	
+	}
 
-	ClientHandler& client = clientHandlers[client_fd];
-	log_message(Logger::INFO, "Handling event on client fd: %d", client_fd);
+	ClientHandler& client = clientHandlers[clientFd];
+	log_message(Logger::INFO, "Handling event on event fd: %d", eventFd);
 	//inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client
 	if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
-		handleEpollError(client_fd);
+		handleEpollError(eventFd);
 	}
 
-	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(client_fd, event);
+	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event);
 
-	if (updateEpoll(epoll_fd, epollSwitch)) {
+	if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
 		
 		return -1;	
 	}
@@ -119,7 +124,7 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 }
 
 //method to be cleaned ! separed in two different methods
-int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
+int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& epollSwitch) {
 
 	int op;
 	int mode;
@@ -128,11 +133,13 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 		it != epollSwitch.end(); ++it ) {
 		//Set op depending on if fd is already in trackFds
 
+		log_message(Logger::DEBUG, "fd %d is going to be %s", it->fd, it->mode == DEL ? "deleted" : "added");
 		if (trackFds.find(it->fd) != trackFds.end()) {
 			op = EPOLL_CTL_MOD;
 			if (it->mode ==  DEL)
 				op = EPOLL_CTL_DEL;
 		} else if (it->mode == DEL){
+			log_message(Logger::WARN, "fd %d is going to be deleted", it->fd);
 			struct stat buf;
 			if (fstat(it->fd, &buf) == 0)
 				close(it->fd);
@@ -140,6 +147,8 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 		} else {
 			op = EPOLL_CTL_ADD;
 			trackFds.insert(it->fd);
+			if (it->fd != clientFd)
+				_cgiFdsToClientFd[it->fd] = clientFd;
 		}
 		// create mode depending ine_epollMode struct received
 		switch (it->mode)
@@ -161,7 +170,7 @@ int	Server::updateEpoll(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch) {
 			break;
 		}
 		if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
-			return -1;
+			log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
 		}
 	}
 	
@@ -209,7 +218,9 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 	}
 	if (op == EPOLL_CTL_DEL) {
 		trackFds.erase(client_fd);
+		_cgiFdsToClientFd.erase(client_fd);
 		//check with stat fi fd is openif yes closeis
+		log_message(Logger::DEBUG, "fd %d is going to be deleted", client_fd);
 		struct stat buf;
 		if (fstat(client_fd, &buf) == 0)
 			close(client_fd);
