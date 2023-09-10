@@ -106,7 +106,7 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	}
 
 	ClientHandler& client = clientHandlers[clientFd];
-	log_message(Logger::INFO, "Handling event on event fd: %d", eventFd);
+	//log_message(Logger::INFO, "Handling event on event fd: %d", eventFd);
 	//inspect_epoll_event(event.events);
 
 	// Depending on the epoll event, decide the action on the client

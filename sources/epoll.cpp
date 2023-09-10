@@ -158,7 +158,7 @@ void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
  */
 void Server::processEvent(int epoll_fd, struct epoll_event& event) {
 
-	log_message(Logger::INFO, "Handling client %d event", event.data.fd);
+	//log_message(Logger::INFO, "Handling client %d event", event.data.fd);
 	try {
 		handleFdEvent(epoll_fd, event);
 	} catch (const std::exception& e) {
