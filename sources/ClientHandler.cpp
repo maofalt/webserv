@@ -74,7 +74,7 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 int	ClientHandler::_readClient(void)
 {
 	int	status;
-
+	//log_message(Logger::WARN, "Reading request from client...");
 	status = _request.recv(_fdClient);
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
@@ -94,7 +94,7 @@ int	ClientHandler::_readClient(void)
 int	ClientHandler::_readCgi(void)
 {
 	int	status;
-
+	//log_message(Logger::WARN, "Reading response from CGI...");
 	status = _response.readCgi(false);
 	if (status > 0)
 		return (_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT), 0);
@@ -111,26 +111,27 @@ int	ClientHandler::_readData(int fd)
 		return (_readClient());
 	if (fd == _fdCgiOut)
 		return (_readCgi());
+	log_message(Logger::ERROR, "Unknown fd to read from: %d", fd);
 	return (0);
 }
 
 int	ClientHandler::_send(void)
 {
 	int	status;
-
+	//log_message(Logger::WARN, "Sending response to client...");
 	status = _response.send(_fdClient);
 	if (status == -1)
 		return (_clean(), -1);
 	if (status == 1)
 		return (_addSwitch(_fdClient, IN, TIMEOUT_SEND), 1);
 	if (status == 0)
-		return (_addSwitch(_fdClient, IN_OUT, TIMEOUT_SEND), 0);
+		return (_addSwitch(_fdClient, DEL, TIMEOUT_SEND), 0);
 	return (0);
 }
 int	ClientHandler::_writeCgi(void)
 {
 	int	status;
-
+	//log_message(Logger::WARN, "Sending request to CGI...");
 	status = _response.writeToCgi();
 	if (status > 0)
 		_addSwitch(_fdCgiIn, OUT, TIMEOUT_CGI_IN);
@@ -143,6 +144,7 @@ int	ClientHandler::_writeData(int fd)
 		return (_send());
 	if (fd == _fdCgiIn)
 		return (_writeCgi());
+	log_message(Logger::ERROR, "Unknown fd to write to: %d", fd);
 	return (0);
 }
 

@@ -211,4 +211,5 @@ void Server::close_and_cleanup(int epoll_fd, int client_fd) {
 	}
 	log_message(Logger::WARN, "Closing client %d connection", client_fd);
 	close(client_fd);
+	trackFds.erase(client_fd);
 }
