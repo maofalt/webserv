@@ -80,7 +80,7 @@ int	ClientHandler::_readClient(void)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
 	if (status > 0)
 		return (_addSwitch(_fdClient, IN, TIMEOUT_RECV), 0);
-	_response.setUp(&_request, _config);
+	status = _response.setUp(&_request, _config);
 	if (status != CGI_LAUNCHED)
 		return (_response.log(), _addSwitch(_fdClient, OUT, TIMEOUT_SEND), 0);
 	_fdCgiIn = _response.getFdCgiIn();
@@ -123,9 +123,9 @@ int	ClientHandler::_send(void)
 	if (status == -1)
 		return (_clean(), -1);
 	if (status == 1)
-		return (_addSwitch(_fdClient, IN, TIMEOUT_SEND), 1);
+		return (_addSwitch(_fdClient, OUT, TIMEOUT_SEND), 1);
 	if (status == 0)
-		return (_addSwitch(_fdClient, DEL, TIMEOUT_SEND), 0);
+		return (close(_fdClient), 0);
 	return (0);
 }
 int	ClientHandler::_writeCgi(void)
