@@ -124,6 +124,12 @@ void Server::cleanup() {
 			++it) {
 		close(*it);
 	}
+	for(std::map<int, int>::iterator it2 = _cgiFdsToClientFd.begin(); it2 != _cgiFdsToClientFd.end(); ++it2) {
+		close(it2->first);
+	}
+	for (std::set<int>::iterator it = trackFds.begin(); it != trackFds.end(); ++it) {
+		close(*it);
+	}
 }
 
 /**
