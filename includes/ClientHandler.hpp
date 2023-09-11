@@ -60,10 +60,12 @@ class ClientHandler {
 
 	// Utils
 		int		_addSwitch(int fd, t_epollMode mode, std::time_t timeout);
+		int		_manageTimeout(int fd, struct epoll_event &event);
 		int		_readClient(void);
-		int		_readCgi(void);
+		int		_readCgi(bool timeout);
 		int		_readData(int fd);
 		int		_send(void);
+		int		_setUpResponse(const HttpRequest *request);
 		int		_writeCgi(void);
 		int		_writeData(int fd);
 		void	_clean(void);
