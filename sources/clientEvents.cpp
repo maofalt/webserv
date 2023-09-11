@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 20:00:39 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 20:58:37 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
 	//add to clientHandlers
 	clientHandlers[sock_server] = ClientHandler(sock_listen, sock_server);
 	trackFds.insert(sock_server);
+
+	addTimeoutEvent(sock_server, "client");
 	return sock_server;
 }
 
@@ -98,6 +100,29 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
  */
 int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int eventFd = event.data.fd;
+	
+	if (handleEvent(epoll_fd, event, eventFd, false)) {
+		return -1;
+	}
+	// int clientFd =  eventFd;
+
+	// if(validateClient(eventFd)) {
+	// 	log_message(Logger::ERROR, "%d fd is not a client but cgi", eventFd);
+	// 	clientFd = _cgiFdsToClientFd[eventFd];	
+	// }
+
+	// ClientHandler& client = clientHandlers[clientFd];
+
+	// std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, false);
+
+	// if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
+		
+	// 	return -1;	
+	// }
+	return 0;
+}
+
+int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bool timeout) {
 	int clientFd =  eventFd;
 
 	if(validateClient(eventFd)) {
@@ -106,22 +131,8 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	}
 
 	ClientHandler& client = clientHandlers[clientFd];
-	//log_message(Logger::INFO, "Handling event on event fd: %d", eventFd);
-	//inspect_epoll_event(event.events);
 
-	// Depending on the epoll event, decide the action on the client
-
-//	if (event.events & EPOLLHUP) { 
-//		log_message(Logger::ERROR, "EPOLLHUP for fd %d", eventFd);
-//		close_and_cleanup(epoll_fd, clientFd);
-//		return -1;
-//	}
-	// if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
-	// 	log_message(Logger::ERROR, "EPOLLERR | EPOLLHUP | EPOLLRDHUP for fd %d", eventFd);
-	// 	handleEpollError(eventFd);
-	// }
-
-	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event);
+	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, timeout);
 
 	if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
 		

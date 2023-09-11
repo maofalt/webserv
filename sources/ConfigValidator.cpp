@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/06 17:46:06 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 16:48:18 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ ConfigValidator::ConfigValidator(
     // Setting the setter functions for globalconfig
     _setterMap["clientBodyLimit"]      =   &ConfigValidator::setClientBodyLimit;
     _setterMap["clientHeaderLimit"]    =   &ConfigValidator::setClientHeaderLimit;
-    _setterMap["timeout"]              =   &ConfigValidator::setTimeout;
+    _setterMap["timeoutClient"]        =   &ConfigValidator::setTimeoutClient;
+    _setterMap["timeoutCGi"]           =   &ConfigValidator::setTimeoutCgi;
     _setterMap["maxConnections"]       =   &ConfigValidator::setMaxConnections;
     _setterMap["maxRequests"]          =   &ConfigValidator::setMaxRequests;
     _setterMap["maxRequestsPerIP"]     =   &ConfigValidator::setMaxRequestsPerIP;
@@ -237,9 +238,14 @@ void ConfigValidator::setClientHeaderLimit(const std::string& value) {
     ss >> _globalConfig.clientHeaderLimit;
 }
 
-void ConfigValidator::setTimeout(const std::string& value) {
+void ConfigValidator::setTimeoutClient(const std::string& value) {
     std::stringstream ss(value);
-    ss >> _globalConfig.timeout;
+    ss >> _globalConfig.timeoutClient;
+}
+
+void ConfigValidator::setTimeoutCgi(const std::string& value) {
+    std::stringstream ss(value);
+    ss >> _globalConfig.timeoutCgi;
 }
 
 void ConfigValidator::setMaxConnections(const std::string& value) {

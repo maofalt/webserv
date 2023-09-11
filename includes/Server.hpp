@@ -18,6 +18,7 @@
 #include <sys/types.h>  // Required for sockets
 #include <sys/socket.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "Config.hpp"
 #include "ClientHandler.hpp"
@@ -36,11 +37,15 @@
 #define TIMEOUT 10
 
 typedef struct s_timeOutEvent {
-    std::time_t timeOut;
+    time_t      expirationTimeSec;
+    long        expirationTimeMsec;
     int         event_fd;
 
     bool operator<(const s_timeOutEvent& other) const {
-        return timeOut < other.timeOut;
+        if (expirationTimeSec == other.expirationTimeSec)
+            return expirationTimeMsec > other.expirationTimeMsec;
+        else 
+            return expirationTimeSec > other.expirationTimeSec;
     }
 } t_timeOutEvent;
 
@@ -65,6 +70,8 @@ Methods:
 class Server {
 private:
     int                                         epoll_fd;
+    int                                         selfPipeReadFd;
+    int                                         selfPipeWriteFd;
     Config                                      _config;
     IniParser                                   _validationFile;
     std::vector<int>                            sock_listens;  // to list to multiple ports
@@ -109,8 +116,10 @@ private:
     int                         changeClientEpollMode(int epoll_fd, int client_fd, int mode);
     int                         changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op);
     int                         handleFdEvent(int epoll_fd, struct epoll_event& event);
+    int	                        handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bool timeout);
     bool                        validateClient(int client_fd);
     void                        handleReadEvent(int epoll_fd, ClientHandler& client);
+    void                        handleTimeoutEvent(int epoll_fd);
     void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
     void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
     void                        handleEpollError(int client_fd);
@@ -126,6 +135,12 @@ private:
     bool                        cleanupEpoll(int epoll_fd, std::vector<int>::iterator failed_it);
     bool                        cleanupClientPackage(int epoll_fd, std::vector<t_epollSwitch>& epollSwitch);
     void                        close_and_cleanup(int epoll_fd, int client_fd);
+
+    //Timeout methods
+    void                        addTimeoutEvent(int clientFd, const std::string& typedefName);
+    int                         initializeSelfPipe(void);
+    void                        checkAndHandleTimeouts(void);
+    std::vector<int>            getTimedOutFds();
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);

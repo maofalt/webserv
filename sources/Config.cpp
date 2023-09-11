@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 16:28:29 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 16:54:20 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,8 @@ std::map< std::string, std::vector< std::string > >&	Config::getConfData() {
 //Setter for global config
 void	Config::setGlobalConfig(t_globalConfig& globalConfig) {
 	this->_globalConfig = globalConfig;
+}
+
+void 	Config::getGlobalConfig(t_globalConfig& globalConfig) const {
+	globalConfig = this->_globalConfig;
 }
