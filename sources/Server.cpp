@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/11 17:53:22 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 21:37:35 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void Server::start() {
 
 	// Set up epoll
 	epoll_fd = setUpEpoll();
+	initializeSelfPipe();
 	if (epoll_fd == -1) {
 		std::cerr << "Failed to set up epoll" << std::endl;
 		cleanup();
@@ -59,6 +60,7 @@ void Server::start() {
 	while (run) {
 		if (handle_epoll_events(epoll_fd) == -1)
 			break;
+		checkAndHandleTimeouts();
 	}
 
 	cleanup();
@@ -306,10 +308,10 @@ void Server::stop() {
 		close(epoll_fd);
 	}
 
-	if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, selfPipeReadFd, NULL) == -1) {
-		log_message(Logger::ERROR, "epoll_ctl %d", errno);
-		throw std::exception();
-	}
+	// if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, selfPipeReadFd, NULL) == -1) {
+	// 	log_message(Logger::ERROR, "epoll_ctl %d", errno);
+	// 	throw std::exception();
+	// }
 
 	close(selfPipeReadFd);
 	close(selfPipeWriteFd);
