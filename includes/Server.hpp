@@ -142,6 +142,7 @@ private:
     void                        checkAndHandleTimeouts(void);
     std::vector<int>            getTimedOutFds();
     int                         updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch);
+    void                        removeTimeoutEvent(int fdToRemove);
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);

@@ -119,3 +119,17 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
         _timeOutEvents.pop();
     }
 }
+
+void Server::removeTimeoutEvent(int fdToRemove) {
+    std::priority_queue<t_timeOutEvent> newQueue;
+
+    while (!_timeOutEvents.empty()) {
+        t_timeOutEvent topEvent = _timeOutEvents.top();
+        _timeOutEvents.pop();
+        if (topEvent.event_fd != fdToRemove) {
+            newQueue.push(topEvent);
+        }
+    }
+
+    _timeOutEvents.swap(newQueue);
+}

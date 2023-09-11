@@ -267,6 +267,7 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 	if (op == EPOLL_CTL_DEL) {
 		trackFds.erase(client_fd);
 		_cgiFdsToClientFd.erase(client_fd);
+		removeTimeoutEvent(client_fd);
 		//check with stat fi fd is openif yes closeis
 		log_message(Logger::DEBUG, "fd %d is going to be deleted", client_fd);
 		struct stat buf;
@@ -275,6 +276,8 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 	}
 	return 0;
 }
+
+
 
 /**
  * @brief Handles an EPOLL error event on a client socket.
