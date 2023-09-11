@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/08 01:36:21 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/11 16:49:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 typedef struct GlobalConfig {
     int clientBodyLimit;        // Maximum size of the body of a request.
     int clientHeaderLimit;      // Maximum size of the header of a request.
-    int timeout;                // Maximum time to wait for a request.
+    int timeoutClient;                // Maximum time to wait for a request.
+    int timeoutCgi;                // Maximum time to wait for a request.
     int maxConnections;         // Maximum number of connections.
     int maxRequests;            // Maximum number of requests.
     int maxRequestsPerIP;       // Maximum number of requests per IP.
