@@ -46,7 +46,8 @@ private:
     /* =============== Setter Functions for globalconfig =============== */
     void setClientBodyLimit(const std::string& value);
     void setClientHeaderLimit(const std::string& value);
-    void setTimeout(const std::string& value);
+    void setTimeoutClient(const std::string& value);
+    void setTimeoutCgi(const std::string& value);
     void setMaxConnections(const std::string& value);
     void setMaxRequests(const std::string& value);
     void setMaxRequestsPerIP(const std::string& value);
