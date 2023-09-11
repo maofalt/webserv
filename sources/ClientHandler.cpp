@@ -74,7 +74,7 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 int	ClientHandler::_readClient(void)
 {
 	int	status;
-	//log_message(Logger::WARN, "Reading request from client...");
+
 	status = _request.recv(_fdClient);
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
@@ -94,13 +94,17 @@ int	ClientHandler::_readClient(void)
 int	ClientHandler::_readCgi(void)
 {
 	int	status;
-	//log_message(Logger::WARN, "Reading response from CGI...");
+
 	status = _response.readCgi(false);
 	if (status > 0)
 		return (_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT), 0);
+	_addSwitch(_fdCgiOut, DEL, 0);
 	_fdCgiOutOpened = false;
 	if (_fdCgiInOpened)
+	{
 		_addSwitch(_fdCgiIn, DEL, 0);
+		_fdCgiInOpened = false;
+	}
 	_response.log();
 	_addSwitch(_fdClient, OUT, TIMEOUT_SEND);
 	return (0);
@@ -118,23 +122,24 @@ int	ClientHandler::_readData(int fd)
 int	ClientHandler::_send(void)
 {
 	int	status;
-	//log_message(Logger::WARN, "Sending response to client...");
+
 	status = _response.send(_fdClient);
 	if (status == -1)
 		return (_clean(), -1);
 	if (status == 1)
 		return (_addSwitch(_fdClient, OUT, TIMEOUT_SEND), 1);
 	if (status == 0)
-		return (close(_fdClient), 0);
+		return (_addSwitch(_fdClient, DEL, 0), 0);
 	return (0);
 }
 int	ClientHandler::_writeCgi(void)
 {
 	int	status;
-	//log_message(Logger::WARN, "Sending request to CGI...");
+
 	status = _response.writeToCgi();
 	if (status > 0)
 		_addSwitch(_fdCgiIn, OUT, TIMEOUT_CGI_IN);
+	_addSwitch(_fdCgiIn, DEL, 0);
 	_fdCgiInOpened = false;
 	return (0);
 }
@@ -151,10 +156,16 @@ int	ClientHandler::_writeData(int fd)
 void	ClientHandler::_clean(void)
 {
 	if (_fdCgiInOpened)
+	{
 		_addSwitch(_fdCgiIn, DEL, 0);
+		_fdCgiInOpened = false;
+	}
 	if (_fdCgiOutOpened)
+	{
 		_addSwitch(_fdCgiOut, DEL, 0);
-	close(_fdClient);
+		_fdCgiOutOpened = false;
+	}
+	_addSwitch(_fdClient, DEL, 0);
 }
 
 // Methods
@@ -165,6 +176,15 @@ std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event
 		_readData(fd);
 	if (event.events & EPOLLOUT)
 		_writeData(fd);
+	if (event.events & EPOLLHUP)
+	{
+		if (fd == _fdClient)
+			_clean();
+		if (fd == _fdCgiIn)
+			_addSwitch(_fdCgiIn, DEL, 0);
+		if (fd == _fdCgiOut)
+			_readData(fd);
+	}
 	return (_epollSwitches);
 }
 

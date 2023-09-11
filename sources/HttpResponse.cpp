@@ -635,7 +635,8 @@ int	HttpResponse::_launchCgi(void)
 			env[i++] = &((*it)[0]);
 		env[i] = NULL;
 		chdir(_path.substr(0, _path.find_last_of("/")).c_str());
-		execve(argv[0], argv, env);
+		if (execve(argv[0], argv, env) == -1)
+			std::exit(1);
 	}
 	_pidCgi = pid;
 	close(pipeFdIn[0]);
@@ -841,7 +842,7 @@ int	HttpResponse::writeToCgi(void)
 		return (-1);
 	_iWriteToCgi += bytesWritten;
 	if (_iWriteToCgi >= _request->_body.size())
-		return (close(_fdCgiIn), 0);
+		return (0);
 	return (1);
 }
 int	HttpResponse::readCgi(bool timeout)
@@ -850,13 +851,13 @@ int	HttpResponse::readCgi(bool timeout)
 	int		bytesRead;
 
 	if (timeout)
-		return (close(_fdCgiIn), close(_fdCgiOut), _writeError("504"));
+		return (_writeError("504"));
 	bytesRead = read(_fdCgiOut, buffer, READ_BUFFER_SIZE);
+	if (bytesRead == 0)
+		return (waitpid(_pidCgi, NULL, 0), _writeRaw());
 	if (bytesRead == -1)
-		return (close(_fdCgiOut), waitpid(_pidCgi, NULL, 0), _writeError("500"));
+		return (waitpid(_pidCgi, NULL, 0), _writeError("500"));
 	_content.append(buffer, bytesRead);
-	if (bytesRead < READ_BUFFER_SIZE)
-		return (close(_fdCgiOut), waitpid(_pidCgi, NULL, 0),  _writeRaw());
 	return (bytesRead);
 }
 

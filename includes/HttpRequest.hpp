@@ -37,7 +37,7 @@
 # define CONTENT_LENGTH "Content-Length"
 # define TRANSFER_ENCODING "Transfer-Encoding"
 
-# define BUFFER_SIZE_REQUEST 1
+# define BUFFER_SIZE_REQUEST 4096
 # define SIZE_MAX_REQUEST 32768
 
 /*

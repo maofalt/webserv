@@ -111,11 +111,11 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 
 	// Depending on the epoll event, decide the action on the client
 
-	if (event.events & EPOLLHUP) { 
-		log_message(Logger::ERROR, "EPOLLHUP for fd %d", eventFd);
-		close_and_cleanup(epoll_fd, clientFd);
-		return -1;
-	}
+//	if (event.events & EPOLLHUP) { 
+//		log_message(Logger::ERROR, "EPOLLHUP for fd %d", eventFd);
+//		close_and_cleanup(epoll_fd, clientFd);
+//		return -1;
+//	}
 	// if (event.events & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
 	// 	log_message(Logger::ERROR, "EPOLLERR | EPOLLHUP | EPOLLRDHUP for fd %d", eventFd);
 	// 	handleEpollError(eventFd);
