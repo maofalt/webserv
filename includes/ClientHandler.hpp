@@ -81,7 +81,7 @@ class ClientHandler {
 		static void	addPort(int fdSock, uint16_t port);
 
 	//Methods
-		std::vector<t_epollSwitch>	handleEvent(int fd, struct epoll_event &event);
+		std::vector<t_epollSwitch>	handleEvent(int fd, struct epoll_event &event, bool timeout);
 		std::vector<int>			getOpenedFd(void) const;
 };
 
