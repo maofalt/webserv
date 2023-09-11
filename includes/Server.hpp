@@ -141,6 +141,7 @@ private:
     int                         initializeSelfPipe(void);
     void                        checkAndHandleTimeouts(void);
     std::vector<int>            getTimedOutFds();
+    int                         updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch);
 
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);

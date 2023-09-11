@@ -104,21 +104,6 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	if (handleEvent(epoll_fd, event, eventFd, false)) {
 		return -1;
 	}
-	// int clientFd =  eventFd;
-
-	// if(validateClient(eventFd)) {
-	// 	log_message(Logger::ERROR, "%d fd is not a client but cgi", eventFd);
-	// 	clientFd = _cgiFdsToClientFd[eventFd];	
-	// }
-
-	// ClientHandler& client = clientHandlers[clientFd];
-
-	// std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, false);
-
-	// if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
-		
-	// 	return -1;	
-	// }
 	return 0;
 }
 
@@ -138,6 +123,9 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 		
 		return -1;	
 	}
+	// if (updateTimeoutEvents(epollSwitch)) {
+	// 	return -1;
+	// }
 	return 0;
 }
 
@@ -195,6 +183,48 @@ int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& 
 	return 0;
 }
 
+int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
+    
+    std::priority_queue<t_timeOutEvent> newTimeoutEvents;
+    std::map<int, std::time_t> timeoutUpdates;
+
+    // Create a map of fd to new timeout values from the epollSwitch vector
+    for (size_t i = 0; i < epollSwitch.size(); ++i) {
+        timeoutUpdates[epollSwitch[i].fd] = epollSwitch[i].timeout;
+    }
+
+    // Go through the existing timeout events and update them based on the timeoutUpdates map
+    while (!_timeOutEvents.empty()) {
+        t_timeOutEvent topEvent = _timeOutEvents.top();
+        _timeOutEvents.pop();
+
+        std::map<int, std::time_t>::iterator it = timeoutUpdates.find(topEvent.event_fd);
+        if (it != timeoutUpdates.end()) {
+            // Update the timeout value for this fd
+            topEvent.expirationTimeSec = it->second;
+        }
+
+        // Whether updated or not, add the event to the new priority queue
+        newTimeoutEvents.push(topEvent);
+    }
+
+    // Now add new timeout events for any fds left in the timeoutUpdates map
+    for (std::map<int, std::time_t>::iterator it = timeoutUpdates.begin(); it != timeoutUpdates.end(); ++it) {
+        t_timeOutEvent newEvent;
+        newEvent.event_fd = it->first;
+        newEvent.expirationTimeSec = it->second;
+		newEvent.expirationTimeMsec;
+
+        newTimeoutEvents.push(newEvent);
+    }
+
+    // Replace the old priority queue with the new one
+    _timeOutEvents.swap(newTimeoutEvents);
+    
+    return 0;
+}
+
+
 /**
  * @brief Changes the epoll mode of a client socket.
  *
@@ -245,84 +275,6 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 	}
 	return 0;
 }
-
-
-/**
- * @brief Handles read events on a client socket.
- *
- * @param epoll_fd The file descriptor of the epoll instance.
- * @param client A reference to the ClientHandler associated with the client socket.
- *
- * @details This method is responsible for handling read events on a client socket. It reads data
- *          from the client using the associated 'ClientHandler' and checks if the client's request
- *          is complete. If the request is complete, the method delegates the handling of the complete
- *          request to the 'handleCompleteRequest' method. If there's an error while reading data from
- *          the client, a 'std::runtime_error' exception is thrown.
- */
-// void Server::handleReadEvent(int epoll_fd, ClientHandler& client) {
-// 	try {
-// 		log_message(Logger::DEBUG, "Reading data from client %d", client.getClientFd());
-// 		client.readData();
-// 		log_message(Logger::DEBUG, "Data read from client %d", client.getClientFd());
-// 	} catch (const std::exception& e) {
-// 		throw std::runtime_error("Error reading data from client");
-// 	}
-
-// 	if (client.isRequestComplete()) {
-// 		handleCompleteRequest(epoll_fd, client);
-// 		return;
-// 	}
-// 	log_message(Logger::WARN, "Request not complete for client %d", client.getClientFd());
-// 	//DO NOT REMVOE THIS LINE PLEASE !! BLACK MAGIC
-// 	changeClientEpollMode(epoll_fd, client.getClientFd(), EPOLLIN);
-// }
-
-/**
- * @brief Handles a completed client request.
- *
- * @param epoll_fd The file descriptor of the epoll instance.
- * @param client A reference to the ClientHandler associated with the client socket.
- *
- * @details This method is responsible for handling a completed client request. It is called when
- *          the client's request is fully received and parsed. The method changes the epoll mode of
- *          the client socket to EPOLLOUT to prepare for sending a response back to the client. If
- *          changing the epoll mode fails, a 'std::runtime_error' exception is thrown.
- */
-// void Server::handleCompleteRequest(int epoll_fd, ClientHandler& client) {
-// 	log_message(Logger::INFO, "Request complete for client %d", client.getClientFd());
-// 	if (changeClientEpollMode(epoll_fd, client.getClientFd() , EPOLLOUT) != 0) {
-// 		throw std::runtime_error("Failed to change client epoll mode to EPOLLOUT");
-// 	}
-// 	log_message(Logger::DEBUG, "Changed epoll mode to EPOLLOUT for client %d", client.getClientFd());
-// }
-
-/**
- * @brief Handles writing a response to the client.
- *
- * @param epoll_fd The file descriptor of the epoll instance.
- * @param client A reference to the ClientHandler associated with the client socket.
- * @param client_fd The file descriptor of the client socket.
- *
- * @details This method is responsible for handling the writing of a response to the client.
- *          It is called when the server is ready to send a response back to the client.
- *          The method invokes the 'writeResponse' method of the 'ClientHandler' to write
- *          the response data to the client socket. After writing the response, it closes
- *          the client socket and performs cleanup operations associated with the client.
- *          If an error occurs during writing or cleanup, a 'std::runtime_error' exception is thrown.
- */
-// void Server::handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd) {
-// 	try {
-// 		log_message(Logger::DEBUG, "Writing response to client %d", client_fd);
-// 		client.writeResponse();
-// 		log_message(Logger::DEBUG, "Response written to client %d", client_fd);
-// 		//maha for keep alive
-// 		//changeClientEpollMode(epoll_fd, client_fd, EPOLLIN);
-// 		close_and_cleanup(epoll_fd, client_fd);
-// 		clientHandlers.erase(client_fd);
-// 	} catch (const std::exception& e) {
-// 		throw std::runtime_error("Error writing response to client");
-// 	}
-// }
 
 /**
  * @brief Handles an EPOLL error event on a client socket.
