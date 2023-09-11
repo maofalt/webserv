@@ -34,6 +34,10 @@ ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 		_fdClient = other._fdClient;
 		_request = other._request;
 		_response = other._response;
+		_fdCgiIn = other._fdCgiIn;
+		_fdCgiInOpened = other._fdCgiInOpened;
+		_fdCgiOut = other._fdCgiOut;
+		_fdCgiOutOpened = other._fdCgiOutOpened;
 	}
 	return *this;
 }
@@ -41,6 +45,10 @@ ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 // Constructor
 ClientHandler::ClientHandler(int fdSock, int fd) :
 	_fdClient(fd),
+	_fdCgiIn(-1),
+	_fdCgiInOpened(false),
+	_fdCgiOut(-1),
+	_fdCgiOutOpened(false),
 	_request(),
 	_response(_port[fdSock])
 {
@@ -161,6 +169,8 @@ int	ClientHandler::_writeData(int fd)
 
 int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
 {
+	if (fd == _fdClient)
+		return (_clean(), 0);
 	if (fd == _fdClient && (event.events & EPOLLOUT))
 		return (_clean(), 0);
 	if (fd == _fdClient && (event.events & EPOLLIN))
