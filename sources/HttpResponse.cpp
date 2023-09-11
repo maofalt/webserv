@@ -792,6 +792,26 @@ int	HttpResponse::_writeAuthentification(void)
 	_fields["ContentType"] = "text/html";
 	return (_writeRaw());
 }
+int	HttpResponse::_writeCgi(void)
+{
+	std::istringstream	ss(_outputCgi);
+	std::string			field;
+
+	std::getline(ss, field, '\n');
+	while (field != "" && field != "\r")
+	{
+		std::istringstream	ssLine(field);
+		std::string			name;
+		std::string			value;
+
+		std::getline(ssLine, name, ':');
+		std::getline(ssLine, value, '\0');
+		_fields[name] = value;
+		std::getline(ss, field, '\n');
+	}
+	std::getline(ss, _content, '\0');
+	return (_writeRaw());
+}
 int	HttpResponse::_writeRaw(void)
 {
 	std::ostringstream	response;
@@ -809,8 +829,7 @@ int	HttpResponse::_writeRaw(void)
 	response << "Accept-Ranges: " << "bytes" << "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
-	if (_type != CGI)
-		response << "\r\n";
+	response << "\r\n";
 	response << _content;
 
 	_raw = response.str();
@@ -854,10 +873,10 @@ int	HttpResponse::readCgi(bool timeout)
 		return (_writeError("504"));
 	bytesRead = read(_fdCgiOut, buffer, READ_BUFFER_SIZE);
 	if (bytesRead == 0)
-		return (waitpid(_pidCgi, NULL, 0), _writeRaw());
+		return (waitpid(_pidCgi, NULL, 0), _writeCgi());
 	if (bytesRead == -1)
 		return (waitpid(_pidCgi, NULL, 0), _writeError("500"));
-	_content.append(buffer, bytesRead);
+	_outputCgi.append(buffer, bytesRead);
 	return (bytesRead);
 }
 

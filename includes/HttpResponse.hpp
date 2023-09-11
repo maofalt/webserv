@@ -74,6 +74,7 @@ class HttpResponse
 		bool								_isSetUp;
 		int									_fdCgiIn;
 		std::string::size_type				_iWriteToCgi;
+		std::string							_outputCgi;
 		int									_fdCgiOut;
 		int									_pidCgi;
 		std::vector<std::string>			_envCgi;
@@ -125,6 +126,7 @@ class HttpResponse
 		int			_setType(void);
 		int			_stripUri(void);
 		int			_writeAuthentification(void);
+		int			_writeCgi(void);
 		int			_writeDelete(void);
 		int			_writeDirectory(void);
 		int			_writeErrorBadRequest(void);
