@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 14:11:17 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 15:48:02 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,9 +123,6 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 		
 		return -1;	
 	}
-	// if (updateTimeoutEvents(epollSwitch)) {
-	// 	return -1;
-	// }
 	return 0;
 }
 
@@ -134,7 +131,8 @@ int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& 
 
 	int op;
 	int mode;
-	
+	log_message(Logger::DEBUG, "updateEpoll");
+	log_message(Logger::DEBUG, "epollSwitch size %lu", epollSwitch.size());
 	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
 		it != epollSwitch.end(); ++it ) {
 		//Set op depending on if fd is already in trackFds
@@ -266,6 +264,8 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
 		trackFds.erase(client_fd);
 		_cgiFdsToClientFd.erase(client_fd);
 		removeTimeoutEvent(client_fd);
+		clientHandlers.erase(client_fd);
+		
 		//check with stat fi fd is openif yes closeis
 		log_message(Logger::DEBUG, "fd %d is going to be deleted", client_fd);
 		struct stat buf;
