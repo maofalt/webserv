@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clientEvents.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 20:00:39 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 16:12:15 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	// 	handleEpollError(eventFd);
 	// }
 
-	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event);
+	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, false);
 
 	if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
 		

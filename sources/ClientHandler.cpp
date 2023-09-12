@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientHandler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:56:20 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 16:13:55 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,9 @@ void	ClientHandler::_clean(void)
 }
 
 // Methods
-std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event &event)
+std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event &event, bool timeout)
 {
+	(void)timeout;
 	_epollSwitches.clear();
 	if (event.events & EPOLLIN)
 		_readData(fd);
