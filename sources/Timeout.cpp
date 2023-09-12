@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 16:39:05 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 16:54:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,6 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
 
     std::time_t currentTime;
     time(&currentTime);
-
-    log_message(Logger::WARN, "Handling timeout events");
-    log_message(Logger::WARN, "\t\t_timeOutEvents.size() = %d", _timeOutEvents.size());
     while (!_timeOutEvents.empty()) {
         const t_timeOutEvent& topEvent = _timeOutEvents.top();
 
@@ -105,13 +102,9 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
         }
         struct epoll_event ev;
         memset(&ev, 0, sizeof(ev));
-        ev.events = EPOLLIN;
         if (handleEvent(epoll_fd, ev, topEvent.event_fd, true)) {
             close_and_cleanup(epoll_fd, topEvent.event_fd);
         }
-        log_message(Logger::DEBUG, "Timeout event for fd %d", topEvent.event_fd);
-        //_timeOutEvents.pop();
-        log_message(Logger::WARN, "\t\t_timeOutEvents.size() = %d", _timeOutEvents.size());
     }
 }
 
