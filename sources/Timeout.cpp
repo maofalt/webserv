@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 16:54:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:21:15 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void    Server::addTimeoutEvent(int clientFd, const std::string& typedefName) {
     
     //Create a timeout_event instamnce
     t_timeOutEvent  newEvent;
-    newEvent.expirationTime = currentTime + timeout / 1000;
+    newEvent.expirationTime = currentTime + timeout;
     newEvent.event_fd = clientFd;
 
     // Add the new event to your priority queue
