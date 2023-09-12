@@ -75,6 +75,7 @@ HttpResponse::HttpResponse(void):
 	_iWriteToCgi(0),
 	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
+	_content(""),
 	_raw(""),
 	_iRaw(0)
 {
@@ -92,6 +93,7 @@ HttpResponse::HttpResponse(uint16_t port):
 	_iWriteToCgi(0),
 	_pidCgi(0),
 	_protocol(DEFAULT_PROTOCOL),
+	_content(""),
 	_raw(""),
 	_iRaw(0)
 {
@@ -742,6 +744,8 @@ int	HttpResponse::_writeError(std::string status)
 	_status = status;
 	_content = _defaultErrorPages[status];
 	_fields["ContentType"] = "text/html";
+	if (_status == "408")
+		_fields["Connection"] = "close";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeUpload(void)
@@ -825,7 +829,8 @@ int	HttpResponse::_writeRaw(void)
 	response << "Date: " << time_buffer << "\r\n";
 	response << "Server: " << "webserv" << "\r\n";
 	response << "Content-Length: " << numberToString(_content.size()) << "\r\n";
-	response << "Connection: " << "keep-alive" << "\r\n";
+	if (_fields.count("Connection") == 0)
+		response << "Connection: " << "keep-alive" << "\r\n";
 	response << "Accept-Ranges: " << "bytes" << "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
@@ -882,6 +887,8 @@ int	HttpResponse::readCgi(bool timeout)
 
 int	HttpResponse::setUp(HttpRequest const *request, Config &config)
 {
+	if (!request)
+		return (_writeError("408"));
 	_setRequest(request);
 	if (_status != "200")
 		return (_writeError(_status));

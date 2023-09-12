@@ -34,6 +34,10 @@ ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 		_fdClient = other._fdClient;
 		_request = other._request;
 		_response = other._response;
+		_fdCgiIn = other._fdCgiIn;
+		_fdCgiInOpened = other._fdCgiInOpened;
+		_fdCgiOut = other._fdCgiOut;
+		_fdCgiOutOpened = other._fdCgiOutOpened;
 	}
 	return *this;
 }
@@ -41,6 +45,10 @@ ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 // Constructor
 ClientHandler::ClientHandler(int fdSock, int fd) :
 	_fdClient(fd),
+	_fdCgiIn(-1),
+	_fdCgiInOpened(false),
+	_fdCgiOut(-1),
+	_fdCgiOutOpened(false),
 	_request(),
 	_response(_port[fdSock])
 {
@@ -71,16 +79,11 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 	return (0);
 }
 
-int	ClientHandler::_readClient(void)
+int	ClientHandler::_setUpResponse(const HttpRequest *request)
 {
 	int	status;
 
-	status = _request.recv(_fdClient);
-	if (status == -1)
-		return (_addSwitch(_fdClient, DEL, 0), -1);
-	if (status > 0)
-		return (_addSwitch(_fdClient, IN, TIMEOUT_RECV), 0);
-	status = _response.setUp(&_request, _config);
+	status = _response.setUp(request, _config);
 	if (status != CGI_LAUNCHED)
 		return (_response.log(), _addSwitch(_fdClient, OUT, TIMEOUT_SEND), 0);
 	_fdCgiIn = _response.getFdCgiIn();
@@ -91,11 +94,22 @@ int	ClientHandler::_readClient(void)
 	_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT);
 	return (0);
 }
-int	ClientHandler::_readCgi(void)
+int	ClientHandler::_readClient(void)
 {
 	int	status;
 
-	status = _response.readCgi(false);
+	status = _request.recv(_fdClient);
+	if (status == -1)
+		return (_addSwitch(_fdClient, DEL, 0), -1);
+	if (status > 0)
+		return (_addSwitch(_fdClient, IN, TIMEOUT_RECV), 0);
+	return (_setUpResponse(&_request));
+}
+int	ClientHandler::_readCgi(bool timeout)
+{
+	int	status;
+
+	status = _response.readCgi(timeout);
 	if (status > 0)
 		return (_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT), 0);
 	_addSwitch(_fdCgiOut, DEL, 0);
@@ -114,7 +128,7 @@ int	ClientHandler::_readData(int fd)
 	if (fd == _fdClient)
 		return (_readClient());
 	if (fd == _fdCgiOut)
-		return (_readCgi());
+		return (_readCgi(false));
 	log_message(Logger::ERROR, "Unknown fd to read from: %d", fd);
 	return (0);
 }
@@ -153,6 +167,21 @@ int	ClientHandler::_writeData(int fd)
 	return (0);
 }
 
+int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
+{
+	if (fd == _fdClient)
+		return (_clean(), 0);
+	if (fd == _fdClient && (event.events & EPOLLOUT))
+		return (_clean(), 0);
+	if (fd == _fdClient && (event.events & EPOLLIN))
+		return (_setUpResponse(NULL));
+	if (fd == _fdCgiIn)
+		return (_addSwitch(_fdCgiIn, DEL, 0), 0);
+	if (fd == _fdCgiOut)
+		return (_readCgi(true));
+	return (0);
+}
+
 void	ClientHandler::_clean(void)
 {
 	if (_fdCgiInOpened)
@@ -173,6 +202,8 @@ std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event
 {
 	(void)timeout;
 	_epollSwitches.clear();
+	if (timeout)
+		_manageTimeout(fd, event);
 	if (event.events & EPOLLIN)
 		_readData(fd);
 	if (event.events & EPOLLOUT)

@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 18:58:46 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/11 20:46:23 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,10 @@ int Server::handle_epoll_events(int epoll_fd) {
 
 	for (int i = 0; i < num_fds; i++) {
 
-		if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
+		if (events[i].data.fd == selfPipeReadFd) {
+			handleTimeoutEvent(epoll_fd);
+		}
+		else if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
 			process_listen_socket(epoll_fd, events[i]);
 		} else {
 			processEvent(epoll_fd, events[i]);
@@ -212,4 +215,5 @@ void Server::close_and_cleanup(int epoll_fd, int client_fd) {
 	log_message(Logger::WARN, "Closing client %d connection", client_fd);
 	close(client_fd);
 	trackFds.erase(client_fd);
+	removeTimeoutEvent(client_fd);
 }
