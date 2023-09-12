@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 16:12:48 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 16:39:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
         }
         struct epoll_event ev;
         memset(&ev, 0, sizeof(ev));
+        ev.events = EPOLLIN;
         if (handleEvent(epoll_fd, ev, topEvent.event_fd, true)) {
             close_and_cleanup(epoll_fd, topEvent.event_fd);
         }
