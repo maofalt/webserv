@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:42 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 14:16:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 18:26:13 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,12 @@ void	printServStruct(std::ostream& os, ServerConfig & serv) {
 		printLocStruct(os, serv._locations[i]);
 		os << std::endl;
 	}
+	os << std::endl << "	Location(s) :" << std::endl;
+	for (size_t i=0; i<serv._locations.size(); i++) {
+		os << "		location " << i + 1 << " :" << std::endl;
+		printLocStruct(os, serv._locations[i]);
+		os << std::endl;
+	}
 }
 
 std::ostream& operator<<(std::ostream& os, const Config & conf) {
@@ -97,9 +103,4 @@ std::ostream& operator<<(std::ostream& os, const Config & conf) {
 		os << std::endl;
 	}
 
-	os << std::endl;
-	os << "==========================================================================" << std::endl;
-	os << std::endl;
-
-	return os;
-}
+	os

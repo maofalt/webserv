@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:02:45 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 01:20:56 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:59:11 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,15 +106,21 @@ in server block (expected 'location').", line), ++_nbrErr;
 	return parseServConf2(++it, line, newServ), 0;
 }
 
+int	ServerConfig::fill_credentials(int & start) {
+	if (_servConfig.at("credentials").empty())
+		return 1;
+	std::ifstream	file;
+
+	file.open(configPath.c_str(), std::fstream::in);
+	if (!file) {
+		std::cerr << BOLD << configPath + ": "<< RED << "error: " << RESET;
+		std::cerr << "failed to open config file, using default config instead." << std::endl;
+		return loadDefaultConfig();
+	}
+}
+
 int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	ServerConfig	newServ;
+	int	start = line;
 
-	newServ._maxSize = 0;
-	it += 2;
-	while (it != _splitContent.end() && *it == "\n") {
-		line++;
-		it++;
-	}
-	int ret = parseServConf2(it, line, newServ);
-	return _servList.push_back(newServ), ret;
-}
+	newServ.
