@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 14:36:41 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/12 14:39:20 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 
 	ClientHandler& client = clientHandlers[clientFd];
 
-	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, timeout, false);
+	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, timeout);
 
 	if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
 		
@@ -201,7 +201,7 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
         std::map<int, std::time_t>::iterator it = timeoutUpdates.find(topEvent.event_fd);
         if (it != timeoutUpdates.end()) {
             // Update the timeout value for this fd
-            topEvent.expirationTimeSec = it->second;
+            topEvent.expirationTime = it->second;
         }
 
         // Whether updated or not, add the event to the new priority queue
@@ -212,14 +212,12 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
     for (std::map<int, std::time_t>::iterator it = timeoutUpdates.begin(); it != timeoutUpdates.end(); ++it) {
         t_timeOutEvent newEvent;
         newEvent.event_fd = it->first;
-        newEvent.expirationTimeSec = it->second;
-		newEvent.expirationTimeMsec;
+        newEvent.expirationTime = it->second;
 
         newTimeoutEvents.push(newEvent);
     }
 
-    // Replace the old priority queue with the new one
-    _timeOutEvents.swap(newTimeoutEvents);
+	_timeOutEvents = newTimeoutEvents;
     
     return 0;
 }
