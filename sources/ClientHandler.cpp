@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 17:13:34 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:35:42 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,8 +175,6 @@ int	ClientHandler::_writeData(int fd)
 
 int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
 {
-	if (fd == _fdClient)
-		return (_clean(), 0);
 	if (fd == _fdClient && (event.events & EPOLLOUT))
 		return (_clean(), 0);
 	if (fd == _fdClient && (event.events & EPOLLIN))
@@ -206,7 +204,6 @@ void	ClientHandler::_clean(void)
 // Methods
 std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event &event, bool timeout)
 {
-	(void)timeout;
 	_epollSwitches.clear();
 	if (timeout)
 		_manageTimeout(fd, event);
@@ -224,12 +221,4 @@ std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event
 			_readData(fd);
 	}
 	return (_epollSwitches);
-}
-
-std::vector<int>	ClientHandler::getOpenedFd(void) const
-{
-	std::vector <int>	fd;
-
-	fd.push_back(_fdClient);
-	return (fd);
 }

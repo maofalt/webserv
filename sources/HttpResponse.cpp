@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:51:15 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:39:16 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -875,12 +875,12 @@ int	HttpResponse::readCgi(bool timeout)
 	int		bytesRead;
 
 	if (timeout)
-		return (_writeError("504"));
+		return (kill(_pidCgi, SIGKILL), _pidCgi = 0, _writeError("504"));
 	bytesRead = read(_fdCgiOut, buffer, READ_BUFFER_SIZE);
 	if (bytesRead == 0)
-		return (waitpid(_pidCgi, NULL, 0), _writeCgi());
+		return (waitpid(_pidCgi, NULL, 0), _pidCgi = 0, _writeCgi());
 	if (bytesRead == -1)
-		return (waitpid(_pidCgi, NULL, 0), _writeError("500"));
+		return (waitpid(_pidCgi, NULL, 0), _pidCgi = 0, _writeError("500"));
 	_outputCgi.append(buffer, bytesRead);
 	return (bytesRead);
 }

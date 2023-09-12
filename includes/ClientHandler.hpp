@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 17:13:53 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:34:50 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,6 @@ class ClientHandler {
 
 	//Methods
 		std::vector<t_epollSwitch>	handleEvent(int fd, struct epoll_event &event, bool timeout);
-		std::vector<int>			getOpenedFd(void) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const ClientHandler & other);
