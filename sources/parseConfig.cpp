@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parseConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:31 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/04 19:43:54 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 19:55:59 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	Config::setupConf(std::ifstream & file, std::string fileName) {
 
 	if (stat(_confFileName.c_str(), &fileStat) != 0)
 		return printErr("could not check file status.", -1), 1;
-	if (fileStat.st_size > 5000 || fileStat.st_size == 0)
+	if (fileStat.st_size > 20000 || fileStat.st_size == 0)
 		return printErr("file is too big or empty.", -1), 1;
 
 	_nbrErr = 0;
