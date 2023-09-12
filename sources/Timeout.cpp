@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/11 21:30:12 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 14:31:04 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,13 @@ void    Server::addTimeoutEvent(int clientFd, const std::string& typedefName) {
         return ;
     
     //Get current time
-    struct timeval  tv;
-    gettimeofday(&tv, NULL);
+    std::time_t currentTime;
+    time(&currentTime);
     
     //Create a timeout_event instamnce
     t_timeOutEvent  newEvent;
-    newEvent.expirationTimeSec = tv.tv_sec + timeout / 1000; // Timeout value in seconds
-    newEvent.expirationTimeMsec = (tv.tv_usec / 1000) + (timeout % 1000); // Additional milliseconds
+    newEvent.expirationTime = currentTime + timeout / 1000;
     newEvent.event_fd = clientFd;
-
-    // Normalize the milliseconds and seconds
-    if (newEvent.expirationTimeMsec >= 1000) {
-        newEvent.expirationTimeSec += newEvent.expirationTimeMsec / 1000;
-        newEvent.expirationTimeMsec = newEvent.expirationTimeMsec % 1000;
-    }
 
     // Add the new event to your priority queue
     _timeOutEvents.push(newEvent);
@@ -82,12 +75,11 @@ void    Server::checkAndHandleTimeouts() {
         // Get the top event from the priority queue
         t_timeOutEvent topEvent = _timeOutEvents.top();
 
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
+        std::time_t currentTime;
+        time(&currentTime);
         
         // If the top event has not expired, break
-        if  (topEvent.expirationTimeSec > tv.tv_sec || 
-            (topEvent.expirationTimeSec == tv.tv_sec && topEvent.expirationTimeMsec > tv.tv_usec / 1000)) {
+        if  (topEvent.expirationTime > currentTime) {
             break;
         }
         write(selfPipeWriteFd, "x", 1);
@@ -99,16 +91,15 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
     char    buf;
     read(selfPipeReadFd, &buf, 1);
 
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+    std::time_t currentTime;
+    time(&currentTime);
 
     // Now handle the file descriptors from the top of the timeout queue
     while (!_timeOutEvents.empty()) {
         const t_timeOutEvent& topEvent = _timeOutEvents.top();
 
         // If the top event has not expired, break
-        if  (topEvent.expirationTimeSec > tv.tv_sec || 
-            (topEvent.expirationTimeSec == tv.tv_sec && topEvent.expirationTimeMsec > tv.tv_usec / 1000)) {
+        if  (topEvent.expirationTime > currentTime) {
             break;
         }
         struct epoll_event ev;
@@ -131,5 +122,5 @@ void Server::removeTimeoutEvent(int fdToRemove) {
         }
     }
 
-    _timeOutEvents.swap(newQueue);
+    _timeOutEvents = newQueue;
 }

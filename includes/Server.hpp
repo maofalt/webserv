@@ -18,7 +18,6 @@
 #include <sys/types.h>  // Required for sockets
 #include <sys/socket.h>
 #include <stdlib.h>
-#include <sys/time.h>
 
 #include "Config.hpp"
 #include "ClientHandler.hpp"
@@ -37,15 +36,11 @@
 #define TIMEOUT 10
 
 typedef struct s_timeOutEvent {
-    time_t      expirationTimeSec;
-    long        expirationTimeMsec;
+    std::time_t expirationTime;
     int         event_fd;
 
     bool operator<(const s_timeOutEvent& other) const {
-        if (expirationTimeSec == other.expirationTimeSec)
-            return expirationTimeMsec > other.expirationTimeMsec;
-        else 
-            return expirationTimeSec > other.expirationTimeSec;
+        return expirationTime > other.expirationTime;
     }
 } t_timeOutEvent;
 
