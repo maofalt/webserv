@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:56:01 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:13:53 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,6 @@ typedef struct s_epollSwitch
 	t_epollMode	mode;
 	std::time_t	timeout;
 }	t_epollSwitch;
-
-# define TIMEOUT_CGI_IN 180
-# define TIMEOUT_CGI_OUT 180
-# define TIMEOUT_RECV 180
-# define TIMEOUT_SEND 180
 
 class ClientHandler {
 	private:

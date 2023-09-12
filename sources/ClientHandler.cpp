@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 16:40:07 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 17:13:34 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,36 +82,39 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 int	ClientHandler::_setUpResponse(const HttpRequest *request)
 {
 	int	status;
-
+	const GlobalConfig& globalConfig = _config.getGlobalConfig();
+	
 	status = _response.setUp(request, _config);
 	if (status != CGI_LAUNCHED)
-		return (_response.log(), _addSwitch(_fdClient, OUT, TIMEOUT_SEND), 0);
+		return (_response.log(), _addSwitch(_fdClient, OUT, globalConfig.timeoutClient), 0);
 	_fdCgiIn = _response.getFdCgiIn();
 	_fdCgiOut = _response.getFdCgiOut();
 	_fdCgiInOpened = true;
 	_fdCgiOutOpened = true;
-	_addSwitch(_fdCgiIn, OUT, TIMEOUT_CGI_IN);
-	_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT);
+	_addSwitch(_fdCgiIn, OUT, globalConfig.timeoutCgi);
+	_addSwitch(_fdCgiOut, IN, globalConfig.timeoutCgi);
 	return (0);
 }
 int	ClientHandler::_readClient(void)
 {
 	int	status;
+	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
 	status = _request.recv(_fdClient);
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
 	if (status > 0)
-		return (_addSwitch(_fdClient, IN, TIMEOUT_RECV), 0);
+		return (_addSwitch(_fdClient, IN, globalConfig.timeoutClient), 0);
 	return (_setUpResponse(&_request));
 }
 int	ClientHandler::_readCgi(bool timeout)
 {
 	int	status;
+	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
 	status = _response.readCgi(timeout);
 	if (status > 0)
-		return (_addSwitch(_fdCgiOut, IN, TIMEOUT_CGI_OUT), 0);
+		return (_addSwitch(_fdCgiOut, IN, globalConfig.timeoutCgi), 0);
 	_addSwitch(_fdCgiOut, DEL, 0);
 	_fdCgiOutOpened = false;
 	if (_fdCgiInOpened)
@@ -120,7 +123,8 @@ int	ClientHandler::_readCgi(bool timeout)
 		_fdCgiInOpened = false;
 	}
 	_response.log();
-	_addSwitch(_fdClient, OUT, TIMEOUT_SEND);
+	int timeOutSend = _config.getGlobalConfig().timeoutClient;
+	_addSwitch(_fdClient, OUT, timeOutSend);
 	return (0);
 }
 int	ClientHandler::_readData(int fd)
@@ -136,12 +140,13 @@ int	ClientHandler::_readData(int fd)
 int	ClientHandler::_send(void)
 {
 	int	status;
+	const t_globalConfig&  globalConfig = _config.getGlobalConfig();
 
 	status = _response.send(_fdClient);
 	if (status == -1)
 		return (_clean(), -1);
 	if (status == 1)
-		return (_addSwitch(_fdClient, OUT, TIMEOUT_SEND), 1);
+		return (_addSwitch(_fdClient, OUT, globalConfig.timeoutClient), 1);
 	if (status == 0)
 		return (_addSwitch(_fdClient, DEL, 0), 0);
 	return (0);
@@ -149,10 +154,11 @@ int	ClientHandler::_send(void)
 int	ClientHandler::_writeCgi(void)
 {
 	int	status;
+	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
 	status = _response.writeToCgi();
 	if (status > 0)
-		_addSwitch(_fdCgiIn, OUT, TIMEOUT_CGI_IN);
+		_addSwitch(_fdCgiIn, OUT, globalConfig.timeoutCgi);
 	_addSwitch(_fdCgiIn, DEL, 0);
 	_fdCgiInOpened = false;
 	return (0);
