@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 16:03:43 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 16:49:21 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,6 @@ void Server::process_listen_socket(int epoll_fd, struct epoll_event& event) {
  */
 void Server::processEvent(int epoll_fd, struct epoll_event& event) {
 
-	//log_message(Logger::INFO, "Handling client %d event", event.data.fd);
 	try {
 		handleFdEvent(epoll_fd, event);
 	} catch (const std::exception& e) {
