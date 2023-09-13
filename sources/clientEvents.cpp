@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/13 20:13:07 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 21:06:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
  */
 int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int eventFd = event.data.fd;
-	
+	log_message(Logger::DEBUG, "handlefdEvent call fo ahdnleEvent: %d", eventFd);
 	if (handleEvent(epoll_fd, event, eventFd, false)) {
 		return -1;
 	}
@@ -122,7 +122,7 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 		
 		return -1;	
 	}
-
+	log_message(Logger::DEBUG, "HandleEvent call for updateTimeoutEvents");
 	if(updateTimeoutEvents(epollSwitch)) {
 		return -1;
 	}
@@ -190,14 +190,19 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
     std::map<int, std::time_t>			timeoutUpdates;
 
     // Create a map of fd to new timeout values from the epollSwitch vector
+	log_message(Logger::WARN, "epolSwitch size %d", epollSwitch.size());
     for (size_t i = 0; i < epollSwitch.size(); ++i) {
         timeoutUpdates[epollSwitch[i].fd] = epollSwitch[i].timeout;
     }
-	
+	log_message(Logger::WARN, "epolSwitch size %d", epollSwitch.size());
+
     // Go through the existing timeout events and update them based on the timeoutUpdates map
-    while (!_timeOutEvents.empty()) {
+	log_message(Logger::DEBUG, "updateTimeoutEvents");
+	log_message(Logger::DEBUG, "timeoutEvents size %d", _timeOutEvents.size());
+    while (!_timeOutEvents.empty() && !timeoutUpdates.empty()) {
         t_timeOutEvent topEvent = _timeOutEvents.top();
         _timeOutEvents.pop();
+		log_message(Logger::DEBUG, "timeoutEvents size %d after kind of pop MichaelJackson", _timeOutEvents.size());
 		log_message(Logger::DEBUG, "topEvent.event_fd %d", topEvent.event_fd);
         std::map<int, std::time_t>::iterator it = timeoutUpdates.find(topEvent.event_fd);
         if (it != timeoutUpdates.end()) {

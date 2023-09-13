@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:22:17 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/13 16:49:21 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 20:42:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ int Server::handle_epoll_events(int epoll_fd) {
 
 	for (int i = 0; i < num_fds; i++) {
 
+		log_message(Logger::INFO, "\t\t\tProcessing event on fd %d", events[i].data.fd);
 		if (events[i].data.fd == selfPipeReadFd) {
 			handleTimeoutEvent(epoll_fd);
 		} else if (std::find(sock_listens.begin(), sock_listens.end(), events[i].data.fd) != sock_listens.end()) {
