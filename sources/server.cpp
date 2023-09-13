@@ -342,7 +342,7 @@ int Server::loadDefaultConfig() {
 		std::cerr << ": could not setup default config, aborting." << std::endl;
 		return 1;
 	}
-	ClientHandler::setConfig(_config);
+	//ClientHandler::setConfig(_config);
 	INFO_LOG("Config = " + defaultConf);
 	return 0;
 }
@@ -380,7 +380,7 @@ int Server::loadConfig(const std::string& configPath) {
 		std::cerr << ": could not setup this config, using default config instead." << std::endl;
 		return loadDefaultConfig();
 	}
-	ClientHandler::setConfig(_config);
+	//ClientHandler::setConfig(_config);
 	INFO_LOG("Config = " + configPath);
 
 	return 0;

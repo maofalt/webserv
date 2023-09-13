@@ -70,7 +70,7 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
     t_globalConfig globalConfig = validator.getGlobalConfig();
     Config& config = server.getConfig();
     config.setGlobalConfig(globalConfig);
-    
+    ClientHandler::setConfig(server.getConfig());
     return true;
 }
 

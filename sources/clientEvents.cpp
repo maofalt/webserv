@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/13 16:46:56 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 20:13:07 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,12 +193,12 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
     for (size_t i = 0; i < epollSwitch.size(); ++i) {
         timeoutUpdates[epollSwitch[i].fd] = epollSwitch[i].timeout;
     }
-
+	
     // Go through the existing timeout events and update them based on the timeoutUpdates map
     while (!_timeOutEvents.empty()) {
         t_timeOutEvent topEvent = _timeOutEvents.top();
         _timeOutEvents.pop();
-
+		log_message(Logger::DEBUG, "topEvent.event_fd %d", topEvent.event_fd);
         std::map<int, std::time_t>::iterator it = timeoutUpdates.find(topEvent.event_fd);
         if (it != timeoutUpdates.end()) {
             // Update the timeout value for this fd

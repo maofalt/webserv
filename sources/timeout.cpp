@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Timeout.cpp                                        :+:      :+:    :+:   */
+/*   timeout.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 17:21:15 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 20:13:35 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
     char    buf;
     read(selfPipeReadFd, &buf, 1);
 
+    log_message(Logger::DEBUG, "Handling timeout event");
     std::time_t currentTime;
     time(&currentTime);
     while (!_timeOutEvents.empty()) {
