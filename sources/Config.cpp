@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 17:07:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 16:34:35 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Config::Config() : _tokens(" \t\n;{}"), _whiteSp(" \t")
 {
-	std::memset(&_globalConfig, -1, sizeof(t_globalConfig));
+	//std::memset(&_globalConfig, -1, sizeof(t_globalConfig));
 }
 
 Config::~Config() {
