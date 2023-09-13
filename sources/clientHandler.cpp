@@ -190,6 +190,8 @@ int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
 		return (_clean(), 0);
 	if (fd == _fdClient && (event.events & EPOLLIN))
 		return (_setUpResponse(NULL));
+	if (fd == _fdClient && event.events == 0)
+		return (_clean(), 0);
 	if (fd == _fdCgiIn)
 		return (_addSwitch(_fdCgiIn, DEL, 0), 0);
 	if (fd == _fdCgiOut)
