@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:02:45 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/02 01:20:56 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/12 20:11:01 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	Config::pushToStructMap(
 	else {
 		it2 += (*it2 == "\n");
 		std::string	key = *it2;
+		// it2++;
 		while (it2 != _splitContent.end() && *it2 != ";") {
 			sMap[key].push_back(*it2);
 			it2++;
@@ -106,8 +107,55 @@ in server block (expected 'location').", line), ++_nbrErr;
 	return parseServConf2(++it, line, newServ), 0;
 }
 
+int	Config::fill_credentials(ServerConfig & newServ, int & start) {
+	std::cout << "FILLING CREDS !!" << std::endl;
+	if (newServ._servConfig.find("credentials") == newServ._servConfig.end())
+		return std::cerr << "MISSING CREDENTIALS FILE !" << std::endl, 1;
+
+	std::ifstream	file;
+	std::string		line;
+	std::string		login;
+	std::string		role;
+	std::string		password;
+	std::size_t		pos;
+	std::string		fileName;
+
+	fileName = newServ._servConfig.at("credentials")[1];
+	std::cout << "FILENAME : " + fileName << std::endl;
+	file.open(fileName.c_str(), std::fstream::in);
+	if (!file) {
+		std::cerr << BOLD << _confFileName + ": "<< RED << "error: " << RESET;
+		std::cerr << "failed to open credentials file in server block line " << start << "." << std::endl;
+		return 1;
+	}
+	while (file) {
+		std::getline(file, line);
+		if (line.empty())
+			continue;
+		pos = line.find_first_of(';');
+		if (pos == std::string::npos)
+			return 1;
+		login = line.substr(0, pos);
+		std::cout << "LOGIN : " + login << std::endl;
+		line.erase(0, pos + 1);
+		pos = line.find_first_of(';');
+		if (pos == std::string::npos)
+			return 1;
+		password = line.substr(0, pos);
+		std::cout << "PASSWORD : " + password << std::endl;
+		line.erase(0, pos + 1);
+		role = line;
+		std::cout << "ROLE : " + role << std::endl;
+		newServ._credentials[login][role] = password;
+		std::cerr << "PROUT" << std::endl;
+	}
+	file.close();
+	return 0;
+}
+
 int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	ServerConfig	newServ;
+	int	start = line;
 
 	newServ._maxSize = 0;
 	it += 2;
@@ -116,5 +164,6 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 		it++;
 	}
 	int ret = parseServConf2(it, line, newServ);
+	ret += fill_credentials(newServ, start);
 	return _servList.push_back(newServ), ret;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printConfig.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:42 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/06 14:16:23 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 20:14:38 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,16 @@ void	printServStruct(std::ostream& os, ServerConfig & serv) {
 	for (size_t i=0; i<serv._locations.size(); i++) {
 		os << "		location " << i + 1 << " :" << std::endl;
 		printLocStruct(os, serv._locations[i]);
+		os << std::endl;
+	}
+	os << std::endl << "	Credentials :" << std::endl;
+	for (std::map< std::string, std::map< std::string, std::string > >::iterator \
+		it = serv._credentials.begin(); it != serv._credentials.end(); it++) {
+		os << "		" + it->first + " : " << std::endl;
+		for (std::map< std::string, std::string >::iterator \
+			it2 = it->second.begin(); it2 != it->second.end(); it2++) {
+			os << "			" + it2->first + "; " + it2->second << std::endl;
+		}
 		os << std::endl;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 17:07:25 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/12 19:31:17 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ class Config {
 
 		// main functions
 		int		fillStruct(int line, std::vector<std::string>::iterator & it);
+		int		fill_credentials(ServerConfig & newServ, int & start);
 		int		setupConf(std::ifstream & file, std::string fileName);
 
 		// getters
