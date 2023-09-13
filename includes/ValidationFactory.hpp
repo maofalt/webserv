@@ -5,10 +5,10 @@
 #include <map>
 #include "ValidationStrategy.hpp"
 
-class validationFactory {
+class ValidationFactory {
 public:
     // Singleton access method
-    static validationFactory& getInstance();
+    static ValidationFactory& getInstance();
 
     // Fetch the corresponding validation strategy. Returns null if no such strategy is defined.
     ValidationStrategy* getStrategy(const std::string& validationType);
@@ -16,11 +16,11 @@ public:
     // Prevent copying and assignment
 
 private:
-    validationFactory();
-    ~validationFactory();
+    ValidationFactory();
+    ~ValidationFactory();
 
-    validationFactory(const validationFactory&);
-    validationFactory& operator=(const validationFactory&);
+    ValidationFactory(const ValidationFactory&);
+    ValidationFactory& operator=(const ValidationFactory&);
 
     // Populates the map with the available strategies.
     void registerStrategies();

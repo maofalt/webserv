@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/13 16:33:47 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 17:01:34 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ bool ConfigValidator::validateConfig() {
 }
 
 void ConfigValidator::validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) {
-    validationFactory& factory = validationFactory::getInstance();
+    ValidationFactory& factory = ValidationFactory::getInstance();
     ValidationStrategy* strategy = NULL;
     
     try {

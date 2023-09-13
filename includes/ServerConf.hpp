@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerConf.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 19:37:44 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/13 17:01:34 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <map>
 #include <vector>
 #include <iostream>
-#include "validationFactory.hpp"
+#include "ValidationFactory.hpp"
 #include "ValidationStrategy.hpp"
 
 typedef struct GlobalConfig {
