@@ -118,7 +118,11 @@ private:
     void                        handleCompleteRequest(int epoll_fd, ClientHandler& client);
     void                        handleWriteEvent(int epoll_fd, ClientHandler& client, int client_fd);
     void                        handleEpollError(int client_fd);
+
+    //upaate epoll methods thorugh epollSwitch
     int                         updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& epollSwitch);
+    int                         determineOperation(std::vector<t_epollSwitch>::iterator it, int clientFd);
+    int                         determineMode(std::vector<t_epollSwitch>::iterator it) ;
     
     //Multiplexing methods
     int                         setUpEpoll();
@@ -139,6 +143,13 @@ private:
     int                         updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch);
     void                        removeTimeoutEvent(int fdToRemove);
 
+    //Update Timeout methods
+    void                        createTimeoutUpdatesMap(const std::vector<t_epollSwitch>& epollSwitch, 
+                                     std::map<int, std::time_t>& timeoutUpdates);
+    void                        updateExistingTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
+                                         std::map<int, std::time_t>& timeoutUpdates); 
+    void                        addNewTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
+                                 const std::map<int, std::time_t>& timeoutUpdates);                          
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);
 };

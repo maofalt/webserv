@@ -19,15 +19,18 @@ std::map<int, uint16_t>	ClientHandler::_port;
 ClientHandler::~ClientHandler() 
 {
 }
+
 ClientHandler::ClientHandler(void)
 {
 }
+
 ClientHandler::ClientHandler(const ClientHandler& other) : 
 	_fdClient(other._fdClient),
 	_request(other._request),
 	_response(other._response)
 {
 }
+
 ClientHandler&	ClientHandler::operator=(const ClientHandler& other)
 {
 	if (this != &other) {
@@ -81,20 +84,24 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 
 int	ClientHandler::_setUpResponse(const HttpRequest *request)
 {
-	int	status;
-	int timeout;
+	int					status;
+	int 				timeout;
 	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 	
 	timeout = globalConfig.timeoutCgi;
 	status = _response.setUp(request, _config);
 	if (status != CGI_LAUNCHED)
 		return (_response.log(), _addSwitch(_fdClient, OUT, timeout), 0);
+
 	_fdCgiIn = _response.getFdCgiIn();
 	_fdCgiOut = _response.getFdCgiOut();
+
 	_fdCgiInOpened = true;
 	_fdCgiOutOpened = true;
+
 	_addSwitch(_fdCgiIn, OUT, globalConfig.timeoutCgi);
 	_addSwitch(_fdCgiOut, IN, globalConfig.timeoutCgi);
+
 	return (0);
 }
 int	ClientHandler::_readClient(void)
@@ -107,10 +114,13 @@ int	ClientHandler::_readClient(void)
 	status = _request.recv(_fdClient);
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
+
 	if (status > 0)
 		return (_addSwitch(_fdClient, IN, timeout), 0);
+
 	return (_setUpResponse(&_request));
 }
+
 int	ClientHandler::_readCgi(bool timeout)
 {
 	int	status;
@@ -121,6 +131,7 @@ int	ClientHandler::_readCgi(bool timeout)
 	status = _response.readCgi(timeout);
 	if (status > 0)
 		return (_addSwitch(_fdCgiOut, IN, timeoutCgi), 0);
+
 	_addSwitch(_fdCgiOut, DEL, 0);
 	_fdCgiOutOpened = false;
 	if (_fdCgiInOpened)
@@ -134,12 +145,15 @@ int	ClientHandler::_readCgi(bool timeout)
 	_addSwitch(_fdClient, OUT, timeOutSend);
 	return (0);
 }
+
 int	ClientHandler::_readData(int fd)
 {
 	if (fd == _fdClient)
 		return (_readClient());
+
 	if (fd == _fdCgiOut)
 		return (_readCgi(false));
+		
 	log_message(Logger::ERROR, "Unknown fd to read from: %d", fd);
 	return (0);
 }
@@ -160,6 +174,7 @@ int	ClientHandler::_send(void)
 		return (_addSwitch(_fdClient, DEL, 0), 0);
 	return (0);
 }
+
 int	ClientHandler::_writeCgi(void)
 {
 	int	status;
@@ -174,6 +189,7 @@ int	ClientHandler::_writeCgi(void)
 	_fdCgiInOpened = false;
 	return (0);
 }
+
 int	ClientHandler::_writeData(int fd)
 {
 	if (fd == _fdClient)

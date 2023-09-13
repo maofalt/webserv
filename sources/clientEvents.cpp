@@ -22,7 +22,7 @@
  *          descriptor is not found, an error message is logged, and a 'std::runtime_error'
  *          exception is thrown, indicating the presence of an unknown client socket descriptor.
  */
-bool Server::validateClient(int client_fd) {
+bool	Server::validateClient(int client_fd) {
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
 		std::cerr << "Unknown client fd: " << client_fd << std::endl;
 		return 1;
@@ -52,7 +52,7 @@ bool Server::validateClient(int client_fd) {
  * @note If the new client connection or the addition to epoll fails, corresponding error
  *       messages are printed, and -1 is returned to indicate failure.
  */
-int Server::accept_new_client(int epoll_fd, int sock_listen) {
+int		Server::accept_new_client(int epoll_fd, int sock_listen) {
 
 	struct sockaddr_storage	client_addr;
 	struct epoll_event 		event;
@@ -98,8 +98,9 @@ int Server::accept_new_client(int epoll_fd, int sock_listen) {
  *          event, and then directs the appropriate handling procedure based on the event.
  * @return Returns 0 on successful event handling.
  */
-int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
+int		Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int eventFd = event.data.fd;
+	
 	log_message(Logger::DEBUG, "handlefdEvent call fo ahdnleEvent: %d", eventFd);
 	if (handleEvent(epoll_fd, event, eventFd, false)) {
 		return -1;
@@ -107,22 +108,22 @@ int Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	return 0;
 }
 
-int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bool timeout) {
+int		Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bool timeout) {
 	int clientFd =  eventFd;
-
+	//if eventFd is a cgiFd, get the clientFd
 	if(validateClient(eventFd)) {
 		clientFd = _cgiFdsToClientFd[eventFd];	
 	}
 
+	//Get the clientHandler corresponding to the fd and requesting a vector of changes to  client handler
 	ClientHandler& client = clientHandlers[clientFd];
-
 	std::vector<t_epollSwitch> epollSwitch = client.handleEvent(eventFd, event, timeout);
 
+	//update epoll (ADD, MOD, DEL)
 	if (updateEpoll(epoll_fd, clientFd, epollSwitch)) {
-		
 		return -1;	
 	}
-	log_message(Logger::DEBUG, "HandleEvent call for updateTimeoutEvents");
+	//update timeout events
 	if(updateTimeoutEvents(epollSwitch)) {
 		return -1;
 	}
@@ -130,103 +131,123 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 }
 
 //method to be cleaned ! separed in two different methods
-int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& epollSwitch) {
+int Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& epollSwitch) {
+    std::vector<t_epollSwitch>::iterator it = epollSwitch.begin();
+    
+    while (it != epollSwitch.end()) {
+        int op = determineOperation(it, clientFd);
+        int mode = determineMode(it);
 
-	int op;
-	int mode;
-	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
-		it != epollSwitch.end(); ) {
-		//Set op depending on if fd is already in trackFds
+        if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
+            log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
+        }
 
-		if (trackFds.find(it->fd) != trackFds.end()) {
-			op = EPOLL_CTL_MOD;
-			if (it->mode ==  DEL)
-				op = EPOLL_CTL_DEL;
-		} else if (it->mode == DEL){
-			struct stat buf;
-			if (fstat(it->fd, &buf) == 0)
-				close(it->fd);
-			continue;
-		} else {
-			op = EPOLL_CTL_ADD;
-			trackFds.insert(it->fd);
-			if (it->fd != clientFd)
-				_cgiFdsToClientFd[it->fd] = clientFd;
-		}
-		// create mode depending ine_epollMode struct received
-		switch (it->mode)
-		{
-		case IN:
-			mode = EPOLLIN;
-			break;
-		case OUT:
-			mode = EPOLLOUT;
-			break;
-		case IN_OUT:
-			mode = EPOLLIN | EPOLLOUT;
-			break;
-		case DEL:
-			mode = 0;
-			break;
-		default:
-			mode = 0;
-			break;
-		}
-		if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
-		}
-		if (it->mode == DEL) {
-			epollSwitch.erase(it);
-		} else {
-			++it;
-		}
-	}
-	
-	return 0;
+        if (it->mode == DEL) {
+            it = epollSwitch.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    
+    return 0;
 }
 
-int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
-    
-    std::priority_queue<t_timeOutEvent> newTimeoutEvents;
-    std::map<int, std::time_t>			timeoutUpdates;
+int Server::determineOperation(std::vector<t_epollSwitch>::iterator it, int clientFd) {
+    int op;
 
-    // Create a map of fd to new timeout values from the epollSwitch vector
-	log_message(Logger::WARN, "epolSwitch size %d", epollSwitch.size());
+    if (trackFds.find(it->fd) != trackFds.end()) {
+        op = EPOLL_CTL_MOD;
+        if (it->mode == DEL) {
+            op = EPOLL_CTL_DEL;
+        }
+    } else if (it->mode == DEL) {
+        struct stat buf;
+        if (fstat(it->fd, &buf) == 0) {
+            close(it->fd);
+        }
+        // Skipping the current iteration as the fd is to be deleted
+        return -1;
+    } else {
+        op = EPOLL_CTL_ADD;
+        trackFds.insert(it->fd);
+        if (it->fd != clientFd) {
+            _cgiFdsToClientFd[it->fd] = clientFd;
+        }
+    }
+
+    return op;
+}
+
+int Server::determineMode(std::vector<t_epollSwitch>::iterator it) {
+    int mode;
+
+    switch (it->mode) {
+        case IN:
+            mode = EPOLLIN;
+            break;
+        case OUT:
+            mode = EPOLLOUT;
+            break;
+        case IN_OUT:
+            mode = EPOLLIN | EPOLLOUT;
+            break;
+        case DEL:
+        default:
+            mode = 0;
+            break;
+    }
+
+    return mode;
+}
+
+
+int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
+    std::priority_queue<t_timeOutEvent> newTimeoutEvents;
+    std::map<int, std::time_t> timeoutUpdates;
+
+    createTimeoutUpdatesMap(epollSwitch, timeoutUpdates);
+    updateExistingTimeoutEvents(newTimeoutEvents, timeoutUpdates);
+    addNewTimeoutEvents(newTimeoutEvents, timeoutUpdates);
+    
+    _timeOutEvents = newTimeoutEvents;
+    
+    return 0;
+}
+
+void Server::createTimeoutUpdatesMap(const std::vector<t_epollSwitch>& epollSwitch, 
+                                     std::map<int, std::time_t>& timeoutUpdates) {
     for (size_t i = 0; i < epollSwitch.size(); ++i) {
         timeoutUpdates[epollSwitch[i].fd] = epollSwitch[i].timeout;
     }
-	log_message(Logger::WARN, "epolSwitch size %d", epollSwitch.size());
+}
 
-    // Go through the existing timeout events and update them based on the timeoutUpdates map
-	log_message(Logger::DEBUG, "updateTimeoutEvents");
-	log_message(Logger::DEBUG, "timeoutEvents size %d", _timeOutEvents.size());
+void Server::updateExistingTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
+                                         std::map<int, std::time_t>& timeoutUpdates) {
     while (!_timeOutEvents.empty() && !timeoutUpdates.empty()) {
         t_timeOutEvent topEvent = _timeOutEvents.top();
         _timeOutEvents.pop();
-		log_message(Logger::DEBUG, "timeoutEvents size %d after kind of pop MichaelJackson", _timeOutEvents.size());
-		log_message(Logger::DEBUG, "topEvent.event_fd %d", topEvent.event_fd);
         std::map<int, std::time_t>::iterator it = timeoutUpdates.find(topEvent.event_fd);
+
         if (it != timeoutUpdates.end()) {
-            // Update the timeout value for this fd
             topEvent.expirationTime = it->second;
-			timeoutUpdates.erase(it);
+            timeoutUpdates.erase(it);
         }
-        // Whether updated or not, add the event to the new priority queue
+
         newTimeoutEvents.push(topEvent);
     }
+}
 
-    // Now add new timeout events for any fds left in the timeoutUpdates map
-    for (std::map<int, std::time_t>::iterator it = timeoutUpdates.begin(); it != timeoutUpdates.end(); ++it) {
+void Server::addNewTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
+                                 const std::map<int, std::time_t>& timeoutUpdates) {
+    for (std::map<int, std::time_t>::const_iterator it = timeoutUpdates.begin(); it != timeoutUpdates.end(); ++it) {
         t_timeOutEvent newEvent;
         newEvent.event_fd = it->first;
         newEvent.expirationTime = it->second;
 
         newTimeoutEvents.push(newEvent);
     }
-
-	_timeOutEvents = newTimeoutEvents;
-    
-    return 0;
 }
+
 
 
 /**
@@ -245,7 +266,7 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
  *          uses the 'epoll_ctl' function to modify the epoll event associated with the
  *          client socket to the desired mode.
  */
-int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
+int		Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 
 	struct epoll_event ev;
 	ev.events = mode | EPOLLET;
@@ -257,7 +278,7 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, int mode) {
 	return 0;
 }
 
-int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op) {
+int		Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, int op) {
 
 	struct epoll_event ev;
 	if (mode) {
@@ -295,7 +316,7 @@ int	Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, i
  *          this method is invoked to handle the error. It logs an error message and throws a
  *          'std::runtime_error' exception to indicate that an EPOLL error has occurred on the client socket.
  */
-void Server::handleEpollError(int client_fd) {
+void	Server::handleEpollError(int client_fd) {
 	std::cerr << "Error on client fd: " << client_fd << std::endl;
 	throw std::runtime_error("EPOLL error occurred on client fd");
 }
