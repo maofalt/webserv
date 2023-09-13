@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 16:39:45 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 16:46:56 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 	int clientFd =  eventFd;
 
 	if(validateClient(eventFd)) {
-		log_message(Logger::ERROR, "%d fd is not a client but cgi", eventFd);
 		clientFd = _cgiFdsToClientFd[eventFd];	
 	}
 
@@ -123,6 +122,10 @@ int	Server::handleEvent(int epoll_fd, struct epoll_event& event, int eventFd, bo
 		
 		return -1;	
 	}
+
+	if(updateTimeoutEvents(epollSwitch)) {
+		return -1;
+	}
 	return 0;
 }
 
@@ -131,19 +134,15 @@ int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& 
 
 	int op;
 	int mode;
-	log_message(Logger::DEBUG, "updateEpoll");
-	log_message(Logger::DEBUG, "epollSwitch size %lu", epollSwitch.size());
 	for (std::vector<t_epollSwitch>::iterator it = epollSwitch.begin(); 
-		it != epollSwitch.end(); ++it ) {
+		it != epollSwitch.end(); ) {
 		//Set op depending on if fd is already in trackFds
 
-		log_message(Logger::DEBUG, "fd %d is going to be %s", it->fd, it->mode == DEL ? "deleted" : "added");
 		if (trackFds.find(it->fd) != trackFds.end()) {
 			op = EPOLL_CTL_MOD;
 			if (it->mode ==  DEL)
 				op = EPOLL_CTL_DEL;
 		} else if (it->mode == DEL){
-			log_message(Logger::WARN, "fd %d is going to be deleted", it->fd);
 			struct stat buf;
 			if (fstat(it->fd, &buf) == 0)
 				close(it->fd);
@@ -174,7 +173,11 @@ int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& 
 			break;
 		}
 		if (changeClientEpollMode(epoll_fd, it->fd, mode, op)) {
-			log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
+		}
+		if (it->mode == DEL) {
+			epollSwitch.erase(it);
+		} else {
+			++it;
 		}
 	}
 	
@@ -184,7 +187,7 @@ int	Server::updateEpoll(int epoll_fd, int clientFd, std::vector<t_epollSwitch>& 
 int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
     
     std::priority_queue<t_timeOutEvent> newTimeoutEvents;
-    std::map<int, std::time_t> timeoutUpdates;
+    std::map<int, std::time_t>			timeoutUpdates;
 
     // Create a map of fd to new timeout values from the epollSwitch vector
     for (size_t i = 0; i < epollSwitch.size(); ++i) {
@@ -200,8 +203,8 @@ int Server::updateTimeoutEvents(std::vector<t_epollSwitch>& epollSwitch) {
         if (it != timeoutUpdates.end()) {
             // Update the timeout value for this fd
             topEvent.expirationTime = it->second;
+			timeoutUpdates.erase(it);
         }
-
         // Whether updated or not, add the event to the new priority queue
         newTimeoutEvents.push(topEvent);
     }
