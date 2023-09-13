@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/11 16:48:18 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/13 16:33:47 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ ConfigValidator::ConfigValidator(
     _setterMap["clientBodyLimit"]      =   &ConfigValidator::setClientBodyLimit;
     _setterMap["clientHeaderLimit"]    =   &ConfigValidator::setClientHeaderLimit;
     _setterMap["timeoutClient"]        =   &ConfigValidator::setTimeoutClient;
-    _setterMap["timeoutCGi"]           =   &ConfigValidator::setTimeoutCgi;
+    _setterMap["timeoutCgi"]           =   &ConfigValidator::setTimeoutCgi;
     _setterMap["maxConnections"]       =   &ConfigValidator::setMaxConnections;
     _setterMap["maxRequests"]          =   &ConfigValidator::setMaxRequests;
     _setterMap["maxRequestsPerIP"]     =   &ConfigValidator::setMaxRequestsPerIP;
