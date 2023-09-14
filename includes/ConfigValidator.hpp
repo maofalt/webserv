@@ -31,12 +31,23 @@ private:
     /* =============== Utility Functions =============== */
     std::map<std::string, std::string> getFieldProperties(const std::string& context);
     void handleDuplicateValues(std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+    void handleAllowedMultipleValues(std::vector<std::string>& values, const std::set<std::string>& uniqueValues);
+    void handleNotAllowedMultipleValues(std::vector<std::string>& values, const std::vector<std::string>& subValues);
+    void logValidatedConfigKey(const std::string& contextType, const std::string& configKey);
+    void applyGlobalSettings(const std::string& configKey, const std::vector<std::string>& configValues);
+    void logConfigKeyValidationError(const std::string& contextType, const std::string& configKey, const char* error);
+
 
     /* =============== Validation Core Functions =============== */
-    void validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+    void                validateValue(const std::string& fullContext, std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties);
+    ValidationStrategy* getValidationStrategy(const std::string& fullContext, const std::map<std::string, std::string>& fieldProperties);
+    void                logValuesToValidate(const std::vector<std::string>& values);
+    void                validateValuesUsingStrategy(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties, ValidationStrategy* strategy, const std::string& fullContext);
+    
     bool validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
     bool validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
     bool validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType);
+
 
     /* =============== Specific Configuration Validations =============== */
     bool validateGlobalConfig();
