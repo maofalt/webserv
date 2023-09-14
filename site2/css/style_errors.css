@@ -28,6 +28,14 @@ h1 {
 	font-family:'Courier New', Courier, monospace;
 }
 
+img {
+	color: #090909;
+	border-radius: 3.2em;
+	transition: all 0.3s;
+	background: #e8e8e8;
+	border: 1px solid #e8e8e8;
+	box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
 /* Style for the footer section */
 /* footer { */
 	/* border: 1px solid red; */
