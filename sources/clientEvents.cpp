@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/13 21:06:22 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/14 15:19:58 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ int		Server::accept_new_client(int epoll_fd, int sock_listen) {
 int		Server::handleFdEvent(int epoll_fd, struct epoll_event& event) {
 	int eventFd = event.data.fd;
 	
-	log_message(Logger::DEBUG, "handlefdEvent call fo ahdnleEvent: %d", eventFd);
 	if (handleEvent(epoll_fd, event, eventFd, false)) {
 		return -1;
 	}

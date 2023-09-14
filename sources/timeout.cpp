@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/13 20:52:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/14 14:58:36 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ void    Server::checkAndHandleTimeouts() {
             log_message(Logger::DEBUG, "Top event has not expired");
             break;
         }
-        log_message(Logger::WARN, "Top event has expired");
         log_message(Logger::WARN, "Top event fd: %d", topEvent.event_fd);
         write(selfPipeWriteFd, "x", 1);
         break ;
@@ -99,7 +98,6 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
     std::time_t currentTime;
     time(&currentTime);
     while (!_timeOutEvents.empty()) {
-        log_message(Logger::WARN, "timeoutEvents size %d after kind of pop MichaelJackson", _timeOutEvents.size());
         const t_timeOutEvent& topEvent = _timeOutEvents.top();
 
         // If the top event has not expired, break
@@ -108,8 +106,6 @@ void    Server::handleTimeoutEvent(int epoll_fd) {
         }
         struct epoll_event ev;
         memset(&ev, 0, sizeof(ev));
-        log_message(Logger::WARN, "Timeout event fd: %d", topEvent.event_fd);
-        log_message(Logger::WARN, "handleEvent from handelTiemoutEvent");
         if (handleEvent(epoll_fd, ev, topEvent.event_fd, true)) {
             close_and_cleanup(epoll_fd, topEvent.event_fd);
         }

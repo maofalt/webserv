@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 15:45:39 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/14 19:14:01 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ int	ClientHandler::_setUpResponse(const HttpRequest *request)
 
 	return (0);
 }
+
 int	ClientHandler::_readClient(void)
 {
 	int	status;
