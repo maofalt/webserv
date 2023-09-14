@@ -1,21 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Logger.cpp                                         :+:      :+:    :+:   */
+/*   logger.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/04 14:18:40 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/14 16:19:43 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Logger.hpp"
-
-const int TIMESTAMP_WIDTH = 22;
-const int LEVEL_WIDTH = 8;
-const int FILE_FUNC_WIDTH = 25;
-const int MESSAGE_WIDTH = 100;
 
 
 std::string formatSection(const std::string& content, const std::string& color, int width) {
@@ -64,92 +59,6 @@ std::vector<std::string> splitIntoLines(const std::string& str, size_t width) {
     return result;
 }
 
-
-
-
-// Singleton instance initialization
-Logger* Logger::instance = NULL;
-
-// Private constructor to ensure only one instance is created
-Logger::Logger(const std::string& fname, long maxLogSize) 
-    : filename(fname),
-    maxSize(maxLogSize),
-    logRotationCount(0) {
-    
-    logFile.open(filename.c_str(), std::ios::app); // Open in append mode
-    if (!logFile.is_open()) {
-        throw std::runtime_error("Failed to open the log file.");
-    }
-}
-
-Logger* Logger::getInstance(long maxLogSize) {
-    if (!instance) {
-        // Generate filename based on current date
-        time_t rawtime;
-        struct tm* timeinfo;
-        char buffer[80];
-        time(&rawtime);
-        timeinfo = localtime(&rawtime);
-        strftime(buffer, sizeof(buffer), "log_%Y-%m-%d.txt", timeinfo);
-        
-        std::string dir = "log";  // Define the directory name
-        std::string path = dir + "/" + buffer;
-
-        // Check if directory exists
-        struct stat info;
-        if (stat(dir.c_str(), &info) != 0) {
-            // If not, create the directory
-            #if defined(_WIN32)
-            _mkdir(dir.c_str());
-            #else
-            mkdir(dir.c_str(), 0755);  // UNIX style permissions
-            #endif
-        }
-        
-        try {
-            instance = new Logger(path, maxLogSize);
-        } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
-            return NULL;
-        }
-    }
-    return instance;
-}
-
-
-Logger* Logger::getInstance(const std::string& fname, long maxLogSize) {
-    if (!instance) {
-        try {
-            instance = new Logger(fname, maxLogSize);
-        } catch (const std::exception& e) {
-            std::cerr << e.what() << std::endl;
-            return NULL;
-        }
-    }
-    return instance;
-}
-
-void Logger::captureStdout() {
-
-    oldCoutStreamBuf = std::cout.rdbuf();
-    try {
-        teeBuffer = new TeeBuf(std::cout.rdbuf(), logFile.rdbuf(), this, &Logger::logForCerr, false);
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return;
-    }
-
-    try {
-        teeStream = new std::ostream(teeBuffer);
-    } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return;
-    }
-    
-    std::cout.rdbuf(teeStream->rdbuf());
-}
-
-
 // Restoring standard output to its original destination
 void Logger::releaseStdout() {
     if (oldCoutStreamBuf)
@@ -163,28 +72,6 @@ void Logger::releaseStdout() {
         delete teeBuffer;
     teeBuffer = NULL;
 }
-
-// Redirecting standard error (cerr) to our log file
-void Logger::captureStderr() {
-    oldCerrStreamBuf = std::cerr.rdbuf();
-
-    try {
-        teeBufferErr = new TeeBuf(std::cerr.rdbuf(), logFile.rdbuf(), this, &Logger::logForCerr, true);
-    } catch (const std::exception& e) {
-        std::cerr << "Error creating cerr TeeBuf: " << e.what() << std::endl;
-        return;
-    }
-
-    try {
-        teeStreamErr = new std::ostream(teeBufferErr);
-    } catch (const std::exception& e) {
-        std::cerr << "Error creating cerr TeeStream: " << e.what() << std::endl;
-        return;
-    }
-
-    std::cerr.rdbuf(teeStreamErr->rdbuf());
-}
-
 
 // Restoring standard error to its original destination
 void Logger::releaseStderr() {
@@ -221,6 +108,54 @@ void Logger::rotateLogs() {
     logFile.open(filename.c_str(), std::ios_base::app);
 }
 
+void Logger::formatMessageByLogLevel(std::ostringstream& formattedMsg, LogLevel level, const std::string& file, int line) {
+    switch (level) {
+       case DEBUG:
+           formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+           break;
+       case DEBUG_DETAILED:
+           formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+           formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
+           break;
+       case DEBUG_CONFIG:
+           formattedMsg << formatSection("[CONFIG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
+           break;
+       case INFO:
+           formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
+           break;
+       case WARN:
+           formattedMsg << formatSection("[WARN]", ANSI_YELLOW, LEVEL_WIDTH);
+           break;
+       case ERROR:
+           formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
+           formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
+           break;
+       case ERROR_INTERCEPTED:
+           formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
+           break;
+       case TRACE:
+           formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
+           formattedMsg << "\n"; // New line for TRACE message content
+           break;
+    }
+}
+
+void Logger::formatDebugMessage(LogLevel level, const std::string& message, std::ostringstream& formattedMsg, const std::string& color) {
+    if (level == TRACE || level == DEBUG_CONFIG) {
+    std::vector<std::string> lines = splitIntoLines(message, MESSAGE_WIDTH);
+    std::cout << formattedMsg.str() << std::endl;
+    std::cout << SEPARATOR_START << std::endl;
+    for (size_t i = 0; i < lines.size(); ++i) {
+        formattedMsg.str(""); // Clear the contents of the stream
+        formattedMsg << " " << formatSection(lines[i], color, MESSAGE_WIDTH);  // Add a space before the message
+        std::cout << formattedMsg.str() << std::endl;
+    }
+    std::cout << SEPARATOR_END << std::endl;
+    std::cout << std::endl;
+    } else if (level == DEBUG_DETAILED) {
+        formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
+        std::cout << formattedMsg.str() << std::endl;}
+}
 
 // Implement the log function
 void Logger::log(LogLevel level, const std::string& message, const std::string& color, const std::string& file, int line) {
@@ -228,64 +163,18 @@ void Logger::log(LogLevel level, const std::string& message, const std::string& 
     if (logFile.tellp() > maxSize) {
         rotateLogs();
     }
-
     // 2. Fetch the current timestamp
     std::string timestamp = currentTimestamp();
-
     // 3. Format and write the message to the log file or std::cout based on log level
     std::ostringstream formattedMsg;
-
     formattedMsg << formatSection("[" + timestamp + "]", ANSI_CYAN, TIMESTAMP_WIDTH);
-    
-    switch (level) {
-        case DEBUG:
-            formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-            break;
-        case DEBUG_DETAILED:
-            formattedMsg << formatSection("[DEBUG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
-            break;
-        case DEBUG_CONFIG:
-            formattedMsg << formatSection("[CONFIG]", ANSI_BOLD_WHITE, LEVEL_WIDTH);
-            break;
-        case INFO:
-            formattedMsg << formatSection("[INFO]", ANSI_BLUE, LEVEL_WIDTH);
-            break;
-        case WARN:
-            formattedMsg << formatSection("[WARN]", ANSI_YELLOW, LEVEL_WIDTH);
-            break;
-        case ERROR:
-            formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
-            formattedMsg << formatSection(file + ":" + intToString(line) + ":" + __FUNCTION__, ANSI_BOLD_RED, FILE_FUNC_WIDTH);
-            break;
-        case ERROR_INTERCEPTED:
-            formattedMsg << formatSection("[ERROR]", ANSI_BOLD_RED, LEVEL_WIDTH);
-            break;
-        case TRACE:
-            formattedMsg << formatSection("[TRACE]", "", LEVEL_WIDTH);
-            formattedMsg << "\n"; // New line for TRACE message content
-            break;
-    }
-
-    //formattedMsg << formatSection(message,  ANSI_GREEN , MESSAGE_WIDTH);
-
+    //4-Format logLEVEL depending on log level
+    formatMessageByLogLevel(formattedMsg, level, file, line);
+    //5-Format message depending on log level
     #if DEBUG_LEVEL == 2
-    if (level == TRACE || level == DEBUG_CONFIG) {
-        std::vector<std::string> lines = splitIntoLines(message, MESSAGE_WIDTH);
-        std::cout << formattedMsg.str() << std::endl;
-        std::cout << SEPARATOR_START << std::endl;
-        for (size_t i = 0; i < lines.size(); ++i) {
-            formattedMsg.str(""); // Clear the contents of the stream
-            formattedMsg << " " << formatSection(lines[i], color, MESSAGE_WIDTH);  // Add a space before the message
-            std::cout << formattedMsg.str() << std::endl;
-        }
-        std::cout << SEPARATOR_END << std::endl;
-        std::cout << std::endl;
-    } else if (level == DEBUG_DETAILED) {
-        formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
-        std::cout << formattedMsg.str() << std::endl;}
+    formatDebugMessage(level, message, formattedMsg, color);
     #endif
-    
+    //6-Format message depending on log level
     formattedMsg << formatSection(message,  color , MESSAGE_WIDTH);
     
     #if DEBUG_LEVEL >= 1
@@ -319,39 +208,4 @@ std::string Logger::currentTimestamp() {
 
 void     Logger::logForCerr(const std::string& message) {
     log(ERROR_INTERCEPTED, message, "",  "Intercepted Cerr" , -1);
-}
-
-void Logger::cleanup() {
-    if (instance) {
-        delete instance;
-        instance = NULL; // or nullptr in modern C++
-    }
-}
-
-Logger::~Logger() {
-    if (logFile.is_open()) {
-        logFile.close();
-    }
-
-    if (teeStream)
-        delete teeStream;
-
-    if (teeBuffer) 
-        delete teeBuffer;
-
-    if (teeStreamErr) {
-        delete teeStreamErr;
-    }
-
-    if (teeBufferErr) {
-        delete teeBufferErr;
-    }
-
-    if (oldCoutStreamBuf)
-        std::cout.rdbuf(oldCoutStreamBuf);
-    oldCoutStreamBuf = NULL;
-    if (oldCerrStreamBuf)
-        std::cerr.rdbuf(oldCerrStreamBuf);
-    oldCerrStreamBuf = NULL;
-    // Clean up the instance to prevent memory leak
 }
