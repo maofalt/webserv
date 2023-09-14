@@ -56,7 +56,7 @@ private:
     static bool                                                 isMandatoryValid(const std::string& value);
     static bool                                                 isDefaultValid(const std::string& value);
     static bool                                                 isValidationStrategyValid(const std::string& value);
-//type validation methods no plac in another header
+//type validation methods
     static std::string                                           _currentType;
     static std::map<std::string, ValidationFunction>             _validTypes;
     void                                                        initializeValidTypes();                       
