@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ClientHandler.cpp                                  :+:      :+:    :+:   */
+/*   clientHandler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/13 16:52:49 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/14 15:21:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ int	ClientHandler::_setUpResponse(const HttpRequest *request)
 
 	return (0);
 }
+
 int	ClientHandler::_readClient(void)
 {
 	int	status;
