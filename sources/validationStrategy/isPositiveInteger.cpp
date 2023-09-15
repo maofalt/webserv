@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/15 16:17:58 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/15 16:40:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,60 +20,67 @@ bool isPositiveInteger::validate(const std::vector<std::string>& values, const s
     return true;
 }
 
-bool isPositiveInteger::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
-        // Use the Default value if value is empty or wrong and a default is provided
-    std::string actualValue = value;
-    std::string defaultValue = fieldProperties.find("Default")->second;
-    if(value.empty() && !defaultValue.empty()) {
-        actualValue = defaultValue;
-    }
+std::string isPositiveInteger::getDefaultValue(const std::map<std::string, std::string>& fieldProperties) const {
+    std::map<std::string, std::string>::const_iterator it = fieldProperties.find("Default");
+    return (it != fieldProperties.end()) ? it->second : std::string();
+}
 
-    // Check if actualValue is an integer
-    std::string::const_iterator it = actualValue.begin();
-    while (it != actualValue.end() && std::isdigit(*it)) ++it;
-    if (!actualValue.empty() && it != actualValue.end()) {
-        throw std::invalid_argument("Value is not an integer");
-        return false; 
-    }
+bool isPositiveInteger::isInteger(const std::string& value) const {
+    std::string::const_iterator it = value.begin();
+    while (it != value.end() && std::isdigit(*it)) ++it;
+    return value.empty() || it == value.end();
+}
 
-    //We check if is an integer by converting it to int
+int isPositiveInteger::convertToInt(const std::string& value) const {
     std::stringstream ss(value);
     int integerValue;
     ss >> integerValue;
+
     if (ss.fail()) {
-        ss.clear();
         throw std::invalid_argument("Value overflows or underflows");
-        return false;
     }
 
-    if (integerValue < 0) {
-        throw std::invalid_argument("Value is not positive");
-        return false;
-    }
+    return integerValue;
+}
 
-    // Validate Min and Max
-    std::map<std::string, std::string>::const_iterator minIt = fieldProperties.find("Min");
-    if (minIt != fieldProperties.end()) {
-        std::string min = minIt->second;
-        int minValue = std::atoi(min.c_str());
-        if(integerValue < minValue) {
+bool isPositiveInteger::isInValidRange(int value, const std::map<std::string, std::string>& fieldProperties) const {
+    std::map<std::string, std::string>::const_iterator itMin = fieldProperties.find("Min");
+    if (itMin != fieldProperties.end() && !itMin->second.empty()) {
+        int minValue = std::atoi(itMin->second.c_str());
+        if (value < minValue) {
             throw std::invalid_argument("Value is less than Min");
-            return false; 
         }
     }
 
     std::map<std::string, std::string>::const_iterator itMax = fieldProperties.find("Max");
-    if (itMax != fieldProperties.end()) {
-        std::string max = itMax->second;
-        if(!max.empty()) {
-            int maxValue = std::atoi(max.c_str());
-            if(integerValue > maxValue) {
-                throw std::invalid_argument("Value is greater than Max");
-                return false;  // Note: this line will not be reached due to the 'throw' statement above.
-            }
+    if (itMax != fieldProperties.end() && !itMax->second.empty()) {
+        int maxValue = std::atoi(itMax->second.c_str());
+        if (value > maxValue) {
+            throw std::invalid_argument("Value is greater than Max");
         }
     }
 
-
     return true;
 }
+
+bool isPositiveInteger::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
+    std::string actualValue = value;
+    std::string defaultValue = getDefaultValue(fieldProperties);
+
+    if (value.empty() && !defaultValue.empty()) {
+        actualValue = defaultValue;
+    }
+
+    if (!isInteger(actualValue)) {
+        throw std::invalid_argument("Value is not an integer");
+    }
+
+    int integerValue = convertToInt(actualValue);
+
+    if (integerValue < 0) {
+        throw std::invalid_argument("Value is not positive");
+    }
+
+    return isInValidRange(integerValue, fieldProperties);
+}
+
