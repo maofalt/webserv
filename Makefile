@@ -14,7 +14,7 @@ CXXFLAGS = -MMD -MP -Wall -Wextra -Werror -std=c++98
 
 HDRS_PATH = includes/
 HDR_NAME = $(shell find $(HDRS_PATH) -name "*.hpp")
-HDR_INCLUDE = -I $(HDRS_PATH)
+HDR_INCLUDE = $(shell find $(HDRS_PATH) -type d -exec echo -I{} \;)
 
 
 #===============================================================================#
@@ -89,6 +89,7 @@ $(OBJS_PATH):
 
 
 $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME) .last_build_flags
+	@mkdir -p $(dir $@)
 	@$(CC) $(CXXFLAGS) $(HDR_INCLUDE) -o $@ -c $<
 	@echo "\t[ $(GREEN)✓$(RESET) ] $@ object"
 

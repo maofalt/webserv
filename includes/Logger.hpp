@@ -16,6 +16,10 @@
 
 #define SEPARATOR_START "╔════════════════════════════════════════════════════════════════════════════════════════════════════╗"
 #define SEPARATOR_END   "╚════════════════════════════════════════════════════════════════════════════════════════════════════╝"
+#define TIMESTAMP_WIDTH 22
+#define LEVEL_WIDTH     8
+#define FILE_FUNC_WIDTH 25
+#define MESSAGE_WIDTH   100
 
 class Logger {
 private:
@@ -50,11 +54,17 @@ public:
     };
 
     static Logger*  getInstance(const std::string& filename = "logfile.txt", long maxLogSize = 10 * 1024 * 1024);
-    static Logger* getInstance(long maxLogSize);
+    static Logger*  getInstance(long maxLogSize);
+
+    static          std::string generateLogFileName();
+    static          std::string getLogFilePath(const std::string& fileName);
+    static void     checkAndCreateLogDirectory(const std::string& dir);
     static void     cleanup();
 
     void            log(LogLevel level, const std::string& message, const std::string& color, const std::string& file, int line);
     void            log(LogLevel level, std::ostringstream &oss, const std::string& color, const std::string& file, int line);
+    void            formatMessageByLogLevel(std::ostringstream& formattedMsg, LogLevel level, const std::string& file, int line );
+    void            formatDebugMessage(LogLevel level, const std::string& message, std::ostringstream& formattedMsg, const std::string& color);
     void            captureStdout();
     void            releaseStdout();
     void            captureStderr();

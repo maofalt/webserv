@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 PORT_NGINX=8670
-PORT_PERSO=8694
+PORT_PERSO=8670
 
 BOLD='\033[1m'
 
@@ -46,4 +46,4 @@ for request in test/requests/*; do
 	fi
 done
 
-rm -f test/output_*
+# rm -f test/output_*

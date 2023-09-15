@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 14:58:36 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/14 21:47:43 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,6 @@ int Server::initializeSelfPipe() {
 
     selfPipeReadFd = selfPipe[0];
     selfPipeWriteFd = selfPipe[1];
-
-    // fcntl(selfPipeReadFd, F_SETFL, O_NONBLOCK);
-    // fcntl(selfPipeWriteFd, F_SETFL, O_NONBLOCK);
 
     struct epoll_event ev;
     ev.events = EPOLLIN;

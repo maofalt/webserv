@@ -6,12 +6,24 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/13 17:01:34 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/15 16:29:33 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ValidationFactory.hpp"
 #include "ValidationStrategy.hpp"  // Assuming this is the file where your ValidationStrategy and derived classes are defined.
+#include "isPositiveInteger.hpp"
+#include "isValidServerName.hpp"
+#include "isValidDirectoryPath.hpp"
+#include "isValidLocPath.hpp"
+#include "isValidPath.hpp"
+#include "isValidMethod.hpp"
+#include "isValidRedirect.hpp"
+#include "isValidOnOff.hpp"
+#include "isValidCgiExtension.hpp"
+#include "isValidFileUploadTypes.hpp"
+#include "isValidAllow.hpp"
+
 
 // Private method to register the available strategies.
 void ValidationFactory::registerStrategies() {

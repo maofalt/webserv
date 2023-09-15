@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clientHandler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/15 16:42:04 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:43:09 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ int	ClientHandler::_setUpResponse(const HttpRequest *request)
 	
 	timeout = globalConfig.timeoutCgi;
 	status = _response.setUp(request, _config);
+
+	// log_message(Logger::WARN, "STATUS IN SETUP : %d", status);
 	if (status != CGI_LAUNCHED)
 		return (_response.log(), _addSwitch(_fdClient, OUT, timeout), 0);
 
@@ -120,6 +122,7 @@ int	ClientHandler::_readClient(void)
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL, 0), -1);
 
+	// log_message(Logger::WARN, "STATUS IN READ : %d", status);
 	if (status > 0)
 		return (_addSwitch(_fdClient, IN, timeout), 0);
 
