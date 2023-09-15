@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponse.cpp                                   :+:      :+:    :+:   */
+/*   httpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 17:39:16 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:16:08 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -742,7 +742,18 @@ int	HttpResponse::_writeErrorBadRequest(void)
 int	HttpResponse::_writeError(std::string status)
 {
 	_status = status;
-	_content = _defaultErrorPages[status];
+	std::string errUrl = "site2/errors/" + _status + ".html";
+	std::ifstream errPage;
+	errPage.open(errUrl.c_str());
+	if (!errPage)
+		_content = _defaultErrorPages[status];
+	else {
+		std::stringstream	buffer;
+		// std::string			extension;
+		buffer << errPage.rdbuf();
+		errPage.close();
+		_content = buffer.str();
+	}
 	_fields["ContentType"] = "text/html";
 	if (_status == "408")
 		_fields["Connection"] = "close";
