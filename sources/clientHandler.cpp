@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 19:14:01 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:43:09 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,10 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 
 	newSwitch.fd = fd;
 	newSwitch.mode = mode;
+	if (fd == _fdCgiIn && mode == DEL)
+		_fdCgiInOpened = false;
+	if (fd == _fdCgiOut && mode == DEL)
+		_fdCgiOutOpened = false;
 	if (timeout == 0)
 		newSwitch.timeout = 0;
 	else
@@ -112,7 +116,7 @@ int	ClientHandler::_readClient(void)
 	int	status;
 	int timeout;
 	const GlobalConfig& globalConfig = _config.getGlobalConfig();
-	
+
 	timeout = globalConfig.timeoutClient;
 	status = _request.recv(_fdClient);
 	if (status == -1)
@@ -137,12 +141,8 @@ int	ClientHandler::_readCgi(bool timeout)
 		return (_addSwitch(_fdCgiOut, IN, timeoutCgi), 0);
 
 	_addSwitch(_fdCgiOut, DEL, 0);
-	_fdCgiOutOpened = false;
 	if (_fdCgiInOpened)
-	{
 		_addSwitch(_fdCgiIn, DEL, 0);
-		_fdCgiInOpened = false;
-	}
 	_response.log();
 	
 	int timeOutSend = _config.getGlobalConfig().timeoutClient;
@@ -157,7 +157,7 @@ int	ClientHandler::_readData(int fd)
 
 	if (fd == _fdCgiOut)
 		return (_readCgi(false));
-		
+
 	log_message(Logger::ERROR, "Unknown fd to read from: %d", fd);
 	return (0);
 }
@@ -175,7 +175,7 @@ int	ClientHandler::_send(void)
 	if (status == 1)
 		return (_addSwitch(_fdClient, OUT, timeout), 1);
 	if (status == 0)
-		return (_addSwitch(_fdClient, DEL, 0), 0);
+		return (_addSwitch(_fdClient, IN, 0), 0);
 	return (0);
 }
 
@@ -190,7 +190,6 @@ int	ClientHandler::_writeCgi(void)
 	if (status > 0)
 		_addSwitch(_fdCgiIn, OUT, timeout);
 	_addSwitch(_fdCgiIn, DEL, 0);
-	_fdCgiInOpened = false;
 	return (0);
 }
 
@@ -215,22 +214,20 @@ int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
 	if (fd == _fdCgiIn)
 		return (_addSwitch(_fdCgiIn, DEL, 0), 0);
 	if (fd == _fdCgiOut)
-		return (_readCgi(true));
+	{
+		if (_fdCgiInOpened)
+			_addSwitch(_fdCgiIn, DEL, 0);
+		return (_addSwitch(_fdCgiOut, DEL, 0), _readCgi(true));
+	}
 	return (0);
 }
 
 void	ClientHandler::_clean(void)
 {
 	if (_fdCgiInOpened)
-	{
 		_addSwitch(_fdCgiIn, DEL, 0);
-		_fdCgiInOpened = false;
-	}
 	if (_fdCgiOutOpened)
-	{
 		_addSwitch(_fdCgiOut, DEL, 0);
-		_fdCgiOutOpened = false;
-	}
 	_addSwitch(_fdClient, DEL, 0);
 }
 
