@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:13 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/07 18:22:56 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/15 18:54:00 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 # define TRANSFER_ENCODING "Transfer-Encoding"
 
 # define BUFFER_SIZE_REQUEST 4096
-# define SIZE_MAX_REQUEST 32768
+# define SIZE_MAX_REQUEST 2147483648
 
 /*
 Purpose:            To act as a base class for all HTTP request types.
@@ -49,7 +49,7 @@ Attributes/Methods: We already got a good starting point with the
 */
 
 class HttpRequest {
-    public:
+	public:
 	// Method
 		std::string	_method;
 		std::string	_uri;

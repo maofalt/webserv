@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpRequest.cpp                                    :+:      :+:    :+:   */
+/*   httpRequest.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:03 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/09 19:02:34 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/15 18:52:43 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,16 +332,15 @@ const std::string	HttpRequest::getHost(void) const
 
 int	HttpRequest::recv(int fd)
 {
-	char	buffer[BUFFER_SIZE_REQUEST + 1];
+	char	buffer[BUFFER_SIZE_REQUEST];
 	int		count;
 
-	std::memset(buffer, 0, BUFFER_SIZE_REQUEST + 1);
 	count = ::recv(fd, buffer, BUFFER_SIZE_REQUEST, 0);
 	if (count == 0)
 		return (_status = "Closed", -1);
 	if (count < 0)
 		return (_status = "500", 0);
-	_raw += buffer;
+	_raw.append(buffer, count);
 	// all headers are parsed, trimmed from the raw request and saved in the _field map
 	if (!_headerComplete && _rawHeaderComplete())
 	{
