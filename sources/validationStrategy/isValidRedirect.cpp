@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/15 16:26:04 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/15 16:51:59 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 bool isValidRedirect::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
     (void)fieldProperties;
+
     // Check if the vector has only 2 strings
     if (values.size() != 2) {
         throw std::invalid_argument("Redirection does not contain exactly two values.");
@@ -32,91 +33,73 @@ bool isValidRedirect::validate(const std::vector<std::string>& values, const std
         throw std::invalid_argument("Invalid redirection type: " + values[0]);
         return false;
     }
-    // Check the URL (using a modified version of your provided validation)
-    const std::string& value = values[1];
 
-    // 1. Check if Empty
-    if (value.empty()) {
-        throw std::invalid_argument("URL is empty");
-        return false;
-    }
-
-    // 2. Valid Characters
-    for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
-        if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*' && *it != '/' && *it != ':' && *it != '_') {
-            throw std::invalid_argument(std::string("URL contains invalid characters: ") + *it);
-            return false;
-        }
-    }
-
-    // 3. Wildcard Usage (wildcards in URLs are more unusual, so let's not allow them)
-    if (value.find('*') != std::string::npos) {
-        throw std::invalid_argument("URL contains a wildcard");
-        return false;
-    }
-
-    // 4. Domain Length
-    if (value.length() > 2048) { // Most browsers support URLs up to 2048 characters
-        throw std::invalid_argument("URL is too long [2048 characters max]");
-        return false;
-    }
-
-    // 5. Number of Dots
-    if (std::count(value.begin(), value.end(), '.') < 1) {
-        throw std::invalid_argument("URL does not contain a domain");
-        return false;
-    }
-
-    // 6. No Consecutive Dots
-    if (value.find("..") != std::string::npos) {
-        throw std::invalid_argument("URL contains consecutive dots");
-        return false;
-    }
-
-    return true;
+    // Validate the URL part
+    return validateURL(values[1]);
 }
 
 bool isValidRedirect::validate(const std::string& value, const std::map<std::string, std::string>& fieldProperties) const {
     (void)fieldProperties;
+    return validateURL(value);
+}
 
-    // 1. Check if Empty
+
+bool isValidRedirect::checkEmpty(const std::string& value) const {
     if (value.empty()) {
         throw std::invalid_argument("URL is empty");
         return false;
     }
+    return true;
+}
 
-    // 2. Valid Characters
+bool isValidRedirect::checkValidCharacters(const std::string& value) const {
     for (std::string::const_iterator it = value.begin(); it != value.end(); ++it) {
         if (!std::isalnum(*it) && *it != '-' && *it != '.' && *it != '*' && *it != '/' && *it != ':' && *it != '_') {
             throw std::invalid_argument(std::string("URL contains invalid characters: ") + *it);
             return false;
         }
     }
+    return true;
+}
 
-    // 3. Wildcard Usage (wildcards in URLs are more unusual, so let's not allow them)
+bool isValidRedirect::checkWildcardUsage(const std::string& value) const {
     if (value.find('*') != std::string::npos) {
         throw std::invalid_argument("URL contains a wildcard");
         return false;
     }
+    return true;
+}
 
-    // 4. Domain Length
-    if (value.length() > 2048) { // Most browsers support URLs up to 2048 characters
+bool isValidRedirect::checkDomainLength(const std::string& value) const {
+    if (value.length() > 2048) {
         throw std::invalid_argument("URL is too long [2048 characters max]");
         return false;
     }
+    return true;
+}
 
-    // 5. Number of Dots
+bool isValidRedirect::checkNumberOfDots(const std::string& value) const {
     if (std::count(value.begin(), value.end(), '.') < 1) {
         throw std::invalid_argument("URL does not contain a domain");
         return false;
     }
+    return true;
+}
 
-    // 6. No Consecutive Dots
+bool isValidRedirect::checkConsecutiveDots(const std::string& value) const {
     if (value.find("..") != std::string::npos) {
         throw std::invalid_argument("URL contains consecutive dots");
         return false;
     }
-
     return true;
+}
+
+bool isValidRedirect::validateURL(const std::string& value) const {
+    return checkEmpty(value) &&
+           checkValidCharacters(value) &&
+           checkWildcardUsage(value) &&
+           checkDomainLength(value) &&
+           checkNumberOfDots(value) &&
+           checkConsecutiveDots(value);
 }
 
