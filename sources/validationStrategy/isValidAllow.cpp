@@ -6,11 +6,11 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/15 15:24:36 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/15 16:25:55 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ValidationStrategy.hpp"
+#include "isValidAllow.hpp"
 
 
 bool isValidAllow::validate(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties) const {
