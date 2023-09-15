@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 19:31:17 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:37:15 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class Config {
 		t_globalConfig										_globalConfig;
 
 	public:
-		// missing coplien !!!!;
 		Config();
 		~Config();
 
