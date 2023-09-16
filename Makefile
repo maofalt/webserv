@@ -104,7 +104,6 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp $(HDR_NAME)
 
 
 $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
-	@echo "$(SRCS_ALL)"
 	@$(CC) $(CXXFLAGS) $(OBJS) $(HDR_INCLUDE) -o $@
 	@echo "\t[ $(GREEN)✓$(RESET) ] $(NAME) executable"
 	@echo "\t\t       $(ROSE)  "
