@@ -63,7 +63,7 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
         if (server.loadDefaultConfig()) return false;
         printConfigFile(server);
         ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
-        if (!!validatorDefault.validateConfig()) return false;
+        if (!validatorDefault.validateConfig()) return false;
     }
     
     // if validate we set the global config
