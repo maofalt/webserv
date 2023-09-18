@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
+/*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/11 21:37:35 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/18 17:26:11 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ volatile sig_atomic_t Server::run = true; // Initialize the static member
 
 Server::Server() : 
 	epoll_fd(-1),
+	selfPipeReadFd(-1),
+	selfPipeWriteFd(-1),
 	defaultConf("./config/default.conf")
 {
 }
@@ -47,7 +49,7 @@ void Server::start() {
 	// Initialize sockets and start listening
 	if (!initializeSockets())
 		return; // Check if id ont forget to clsoe everything!
-
+	
 	// Set up epoll
 	epoll_fd = setUpEpoll();
 	initializeSelfPipe();
@@ -312,10 +314,13 @@ void Server::stop() {
 	// 	log_message(Logger::ERROR, "epoll_ctl %d", errno);
 	// 	throw std::exception();
 	// }
-
-	close(selfPipeReadFd);
-	close(selfPipeWriteFd);
-
+	
+	if (selfPipeReadFd != -1) {
+		close(selfPipeReadFd);
+	}
+	if (selfPipeWriteFd != -1) {
+		close(selfPipeWriteFd);
+	}
 	// Cleanup Logger
     Logger::cleanup();
 }
