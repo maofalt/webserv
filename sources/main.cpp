@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/18 17:13:05 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/18 18:23:25 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,10 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
     printConfigFile(server);
         if (server.loadDefaultConfig()) return false;
         printConfigFile(server);
-        ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
-        if (!validatorDefault.validateConfig()) {
+        //destroy validator with validator destructor
+        validator.~ConfigValidator();
+        ConfigValidator validator(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
+        if (!validator.validateConfig()) {
             log_message(Logger::ERROR, "Default Configuration validation failed. Exiting.");
             return false;
         }
