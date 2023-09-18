@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 14:37:17 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/18 17:12:14 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,14 @@ const t_globalConfig& ConfigValidator::getGlobalConfig() const{
 
 bool ConfigValidator::validateGlobalConfig() {
     if (!validateConfigData(_confData, "global")) {
+        log_message(Logger::ERROR, "Global config validation failed");
         return false;
     }
     
-    if (validateMandatoryKeys(_confData, "global"))
+    if (!validateMandatoryKeys(_confData, "global")) {
+        log_message(Logger::WARN, "Mandatory keys for global config not found");
         return false; 
-
+    }
     return true;
 }
 
@@ -85,9 +87,11 @@ bool ConfigValidator::validateLocationConfig(std::vector<location>& locations) {
 
 bool ConfigValidator::validateConfig() {
     if (!validateGlobalConfig()) {
+        log_message(Logger::ERROR, "Global config validation failed");
         return false;
     }
     if (!validateVirtualServerConfig()) {
+        log_message(Logger::ERROR, "One of virtual server config validation failed");
         return false;
     }
     return true;

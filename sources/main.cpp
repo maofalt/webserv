@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/06 16:49:00 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/18 17:13:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,11 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
         if (server.loadDefaultConfig()) return false;
         printConfigFile(server);
         ConfigValidator validatorDefault(server.getValidationFile(), server.getConfig().getConfData(), server.getConfig().getServList());
-        if (!validatorDefault.validateConfig()) return false;
+        if (!validatorDefault.validateConfig()) {
+            log_message(Logger::ERROR, "Default Configuration validation failed. Exiting.");
+            return false;
+        }
+        log_message(Logger::INFO, "Default Configuration validation passed.");
     }
     
     // if validate we set the global config
@@ -71,6 +75,7 @@ bool loadAndValidateConfig(Server& server, const char* configFile = NULL) {
     Config& config = server.getConfig();
     config.setGlobalConfig(globalConfig);
     ClientHandler::setConfig(server.getConfig());
+    log_message(Logger::INFO, "Configuration validation passed. Starting server.");
     return true;
 }
 

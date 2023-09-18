@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parseBlocks.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:02:45 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 20:11:01 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/18 16:44:15 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,6 @@ in server block (expected 'location').", line), ++_nbrErr;
 }
 
 int	Config::fill_credentials(ServerConfig & newServ, int & start) {
-	std::cout << "FILLING CREDS !!" << std::endl;
 	if (newServ._servConfig.find("credentials") == newServ._servConfig.end())
 		return std::cerr << "MISSING CREDENTIALS FILE !" << std::endl, 1;
 
@@ -121,7 +120,6 @@ int	Config::fill_credentials(ServerConfig & newServ, int & start) {
 	std::string		fileName;
 
 	fileName = newServ._servConfig.at("credentials")[1];
-	std::cout << "FILENAME : " + fileName << std::endl;
 	file.open(fileName.c_str(), std::fstream::in);
 	if (!file) {
 		std::cerr << BOLD << _confFileName + ": "<< RED << "error: " << RESET;
@@ -136,18 +134,14 @@ int	Config::fill_credentials(ServerConfig & newServ, int & start) {
 		if (pos == std::string::npos)
 			return 1;
 		login = line.substr(0, pos);
-		std::cout << "LOGIN : " + login << std::endl;
 		line.erase(0, pos + 1);
 		pos = line.find_first_of(';');
 		if (pos == std::string::npos)
 			return 1;
 		password = line.substr(0, pos);
-		std::cout << "PASSWORD : " + password << std::endl;
 		line.erase(0, pos + 1);
 		role = line;
-		std::cout << "ROLE : " + role << std::endl;
 		newServ._credentials[login][role] = password;
-		std::cerr << "PROUT" << std::endl;
 	}
 	file.close();
 	return 0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/15 16:37:15 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/18 16:29:20 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,14 @@ class Config {
 		// setter for global config
 		void						setGlobalConfig(t_globalConfig& globalConfig);
 		void						getGlobalConfig(t_globalConfig& globalConfig) const;
-		const t_globalConfig&				getGlobalConfig() const;
+		const t_globalConfig&		getGlobalConfig() const;
+		int 					getClientBodyLimit() const;
+		int 					getClientHeaderLimit() const;
+		int 					getTimeoutClient() const;
+		int 					getTimeoutCgi() const;
+		int 					getMaxConnections() const;
+		int 					getMaxRequests() const;
+		int 					getMaxRequestsPerIP() const;
 		
 		// specific server getter
 		ServerConfig	*findServer(std::string server_name, uint16_t port);

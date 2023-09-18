@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:41:53 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/15 16:37:07 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/18 16:33:25 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,47 @@ void 	Config::getGlobalConfig(t_globalConfig& globalConfig) const {
 
 const t_globalConfig&	 Config::getGlobalConfig() const {
 	return _globalConfig;
+}
+
+//getters for all global config attributes
+int 	Config::getClientBodyLimit() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.clientBodyLimit;
+}
+
+int	Config::getClientHeaderLimit() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.clientHeaderLimit;
+}
+
+int	Config::getTimeoutClient() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.timeoutClient;
+}
+
+int	Config::getTimeoutCgi() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.timeoutCgi;
+}
+
+int	Config::getMaxConnections() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.maxConnections;
+}
+
+int	Config::getMaxRequests() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.maxRequests;
+}
+
+int	Config::getMaxRequestsPerIP() const {
+	const t_globalConfig& globalConfig = this->getGlobalConfig();
+	(void)globalConfig;
+	return this->_globalConfig.maxRequestsPerIP;
 }
