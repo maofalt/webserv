@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/19 20:19:51 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/19 20:35:04 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -643,6 +643,7 @@ int	HttpResponse::_launchCgi(void)
 		
 		
 		FDManager::closeAllFds();
+		Logger::cleanup();
 		
 		if (execve(argv[0], argv, env) == -1)
 			std::exit(1);
