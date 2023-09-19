@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpResponse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/09 19:48:31 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/19 20:00:08 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ class HttpResponse
 		const t_location					*_location;
 
 	// Internal
+		std::set<int>						_fdsToClose;
 		t_responseType						_type;
 		bool								_isSetUp;
 		int									_fdCgiIn;

@@ -6,11 +6,12 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/18 17:26:11 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/19 20:00:14 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "FDManager.hpp"
 
 volatile sig_atomic_t Server::run = true; // Initialize the static member
 
@@ -45,7 +46,8 @@ Server::~Server() {
 void Server::start() {
 	run = true;
 	signal(SIGINT, signal_handler); // Register signal handler
-
+	//Manager of FD  for easy access elsewhere in the code.
+	FDManager::getInstance(*this);
 	// Initialize sockets and start listening
 	if (!initializeSockets())
 		return; // Check if id ont forget to clsoe everything!
@@ -323,6 +325,7 @@ void Server::stop() {
 	}
 	// Cleanup Logger
     Logger::cleanup();
+	FDManager::destroyInstance();
 }
 
 /**
@@ -401,5 +404,24 @@ bool	Server::loadValidationFile(const std::string& validationPath) {
 	return true;
 }
 
+const int& Server::getEpollFd(){
+	return epoll_fd;
+}
+
+const int& Server::getSelfPipeReadFd(){
+	return selfPipeReadFd;
+}
+
+const int& Server::getSelfPipeWriteFd(){
+	return selfPipeWriteFd;
+}
+
+const std::vector<int>& Server::getSockListens(){
+	return sock_listens;
+}
+
+const std::set<int>& Server::getTrackFds(){
+	return trackFds;
+}
 
 std::ostream& operator<<(std::ostream& os, const Server & server);

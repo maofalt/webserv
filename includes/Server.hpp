@@ -97,6 +97,13 @@ public:
     bool                        loadValidationFile(const std::string& validationPath);
     IniParser&                  getValidationFile() {return this->_validationFile;};
 
+        //All gf getters
+    const int&                        getEpollFd();
+    const int&                        getSelfPipeReadFd();
+    const int&                        getSelfPipeWriteFd();
+    const std::vector<int>&           getSockListens();
+    const std::set<int>&              getTrackFds();
+
 private:
     std::set<std::string>       getPorts();
     bool                        initializeSockets();
@@ -149,7 +156,8 @@ private:
     void                        updateExistingTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
                                          std::map<int, std::time_t>& timeoutUpdates); 
     void                        addNewTimeoutEvents(std::priority_queue<t_timeOutEvent>& newTimeoutEvents, 
-                                 const std::map<int, std::time_t>& timeoutUpdates);                          
+                                 const std::map<int, std::time_t>& timeoutUpdates);   
+
 public:
     friend std::ostream& operator<<(std::ostream& os, const Server & server);
 };

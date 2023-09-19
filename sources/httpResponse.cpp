@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   httpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 16:16:08 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/19 20:19:51 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "HttpResponse.hpp"
+#include "FDManager.hpp"
+
 
 // Static member variables
 #include <ctime>
@@ -592,6 +594,7 @@ int	HttpResponse::_setEnvCgi(void)
 
 	return (0);
 }
+
 int	HttpResponse::_launchCgi(void)
 {
 	int		pid;
@@ -637,6 +640,10 @@ int	HttpResponse::_launchCgi(void)
 			env[i++] = &((*it)[0]);
 		env[i] = NULL;
 		chdir(_path.substr(0, _path.find_last_of("/")).c_str());
+		
+		
+		FDManager::closeAllFds();
+		
 		if (execve(argv[0], argv, env) == -1)
 			std::exit(1);
 	}
@@ -647,6 +654,7 @@ int	HttpResponse::_launchCgi(void)
 	_fdCgiOut = pipeFdOut[0];
 	return (CGI_LAUNCHED);
 }
+
 int	HttpResponse::_writeRedirection(void)
 {
 	std::ostringstream	content;
