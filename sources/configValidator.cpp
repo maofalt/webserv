@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 17:49:52 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 18:11:47 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,8 @@ bool ConfigValidator::validateMandatoryKeys(std::map<std::string, std::vector<st
                     std::stringstream ss;
                     ss << _globalConfig.clientBodyLimit;                    
                     std::vector<std::string> newValueVector;
-                    newValueVector.push_back("clientBodyLimit");
+                    log_message(Logger::INFO, "\t\t parameter is = %s", parameter.c_str());
+                    newValueVector.push_back(parameter);
                     newValueVector.push_back(ss.str());
                     //Create inside map server.clientBodyLimit and push newValueVector
                     confData.insert(std::pair<std::string, std::vector<std::string> >(parameter, newValueVector));
