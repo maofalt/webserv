@@ -71,8 +71,10 @@ public:
     std::vector<ServerConfig>&                          _servList
     );
     
+
     ~ConfigValidator();
-    
+    ConfigValidator &operator=(ConfigValidator const &rhs);
+
     /* =============== Accessor Methods =============== */
     const t_globalConfig&                                     getGlobalConfig() const;
 

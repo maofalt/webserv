@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 17:29:48 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 17:49:52 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,16 @@ ConfigValidator::ConfigValidator(
 }
 
 ConfigValidator::~ConfigValidator() {
+}
+
+ConfigValidator &ConfigValidator::operator=(ConfigValidator const &rhs)
+{
+    _validationFile = rhs._validationFile;
+    _confData = rhs._confData;
+    _servList = rhs._servList;
+    _globalConfig = rhs._globalConfig;
+    _setterMap = rhs._setterMap;
+    return (*this);
 }
 
 
