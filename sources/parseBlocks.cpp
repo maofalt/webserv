@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:02:45 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/18 16:44:15 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 18:06:53 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,6 @@ int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	ServerConfig	newServ;
 	int	start = line;
 
-	newServ._maxSize = 0;
 	it += 2;
 	while (it != _splitContent.end() && *it == "\n") {
 		line++;

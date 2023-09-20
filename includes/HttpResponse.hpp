@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/19 20:00:08 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 18:03:07 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ class HttpResponse
 		int			_determineLocation(void);
 		int			_determinePost(void);
 		std::string	_generateCookie(void);
+		int			_launchSon(int pipeFdIn[2], int pipeFdOut[2]);
 		int			_launchCgi(void);
 		int			_limitClientBodySize(void);
 		int			_limitHttpMethod(void);
