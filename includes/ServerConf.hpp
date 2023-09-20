@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 16:47:00 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/15 15:38:32 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 18:00:03 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ class ServerConfig {
 	public:
 		std::map< std::string, std::vector< std::string > >			_servConfig;
 		std::vector< struct location >								_locations;
-		std::string::size_type										_maxSize;
 		std::set<std::string>										_allowedMethods;
 		std::map< std::string, std::map<std::string, std::string> >	_credentials;
 		std::map< std::string, std::map<std::string, std::string> >	_sessionCookie;
