@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/18 17:12:14 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 17:29:48 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ bool ConfigValidator::validateConfig() {
         log_message(Logger::ERROR, "Global config validation failed");
         return false;
     }
+    
     if (!validateVirtualServerConfig()) {
         log_message(Logger::ERROR, "One of virtual server config validation failed");
         return false;
@@ -170,7 +171,7 @@ bool ConfigValidator::validateConfigData(std::map<std::string, std::vector<std::
 }
 
 // Helper function to ensure all mandatory contexts are present
-bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
+bool ConfigValidator::validateMandatoryKeys(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType) {
     const std::set<std::string>& _mandatorySections = _validationFile.getMandatorySections();
     
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
@@ -179,6 +180,20 @@ bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::vec
             std::string parameter = it->substr(it->find(contextType + ".") + contextType.length() + 1);
             if (confData.find(parameter) == confData.end()) {
                 log_message(Logger::ERROR, "Mandatory %s config key [%s] not found", contextType.c_str(), parameter.c_str());
+                // server.clientBodyLimit i no found create  it wiht the value of globaclientBodyLimit
+                std::string globalKey = "server." + parameter;
+                if ( globalKey == "server.clientBodyLimit") {
+                    log_message(Logger::INFO, "Creating server.clientBodyLimit with value of global.clientBodyLimit");
+                    std::stringstream ss;
+                    ss << _globalConfig.clientBodyLimit;                    
+                    std::vector<std::string> newValueVector;
+                    newValueVector.push_back("clientBodyLimit");
+                    newValueVector.push_back(ss.str());
+                    //Create inside map server.clientBodyLimit and push newValueVector
+                    confData.insert(std::pair<std::string, std::vector<std::string> >(parameter, newValueVector));
+                    log_message(Logger::INFO, "server.clientBodyLimit created");
+                    return true;
+                }
                 return false;
             }
         }
@@ -186,7 +201,7 @@ bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::vec
     return true;
 }
 
-bool ConfigValidator::validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType) {
+bool ConfigValidator::validateMandatoryKeys( std::map<std::string, std::string>& confData, const std::string& contextType) {
     const std::set<std::string>& _mandatorySections = _validationFile.getMandatorySections();
     for (std::set<std::string>::const_iterator it = _mandatorySections.begin(); it != _mandatorySections.end(); ++it) {
         if(it->find(contextType + ".") != std::string::npos) {
