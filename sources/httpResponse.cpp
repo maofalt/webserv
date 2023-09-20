@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/19 20:35:04 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/20 17:37:32 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,6 +325,10 @@ int	HttpResponse::_checkPath(void)
 		else
 			_uriIsDirectory = true;
 	}
+	if (_uriIsDirectory
+		&& _location->_locConfig.count("directoryListing")
+		&& _location->_locConfig.at("directoryListing")[1] == "off")
+		return (_status = "403", -1);
 	return (0);
 }
 int	HttpResponse::_refineUri(void)
