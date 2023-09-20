@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 18:03:07 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/20 19:18:03 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ class HttpResponse
 
 	// Destructor
 		~HttpResponse(void);
+		void	clean(void);
 
 	// Operators
 		HttpResponse	&operator=(HttpResponse const &rhs);

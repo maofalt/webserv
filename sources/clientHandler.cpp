@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 19:01:53 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/20 19:22:03 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ void	ClientHandler::_reset(void)
 	_fdCgiIn = 0;
 	_fdCgiOut = 0;
 	_request = HttpRequest();
-	_response = HttpResponse();
+	_response.clean();
 }
 
 void	ClientHandler::_clean(void)

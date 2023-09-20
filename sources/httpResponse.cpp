@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 18:10:11 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/20 19:22:22 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,24 @@ HttpResponse	&HttpResponse::operator=(HttpResponse const &rhs)
 	return (*this);
 }
 
+void	HttpResponse::clean(void)
+{
+	_request = NULL;
+	_method = "";
+	_host = "";
+	_uri = "";
+	_path = "";
+	_uriIsDirectory = false;
+	_type = ERROR;
+	_isSetUp = false;
+	_iWriteToCgi = 0;
+	_pidCgi = 0;
+	_protocol = DEFAULT_PROTOCOL;
+	_content = "";
+	_raw = "";
+	_iRaw = 0;
+}
+
 // Getters
 int	HttpResponse::getFdCgiIn(void) const
 {
@@ -226,9 +244,6 @@ int	HttpResponse::_stripUri(void)
 
 int	HttpResponse::_limitClientBodySize(void)
 {
-	std::cout << "IsClientBodyLimit: " << _server->_servConfig.count("clientBodyLimit") << std::endl;
-	if (_server->_servConfig.count("clientBodyLimit"))
-		std::cout << "Server clientBodyLimit: " << _server->_servConfig.at("clientBodyLimit")[1] << std::endl;
 	if (_server->_servConfig.count("clientBodyLimit") && _request->_body.size() > (std::string::size_type)std::atoi(_server->_servConfig.at("clientBodyLimit")[1].c_str()))
 		return (_status = "413", -1);
 	return (0);
