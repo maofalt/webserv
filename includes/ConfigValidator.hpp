@@ -45,8 +45,8 @@ private:
     void                validateValuesUsingStrategy(const std::vector<std::string>& values, const std::map<std::string, std::string>& fieldProperties, ValidationStrategy* strategy, const std::string& fullContext);
     
     bool validateConfigData(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
-    bool validateMandatoryKeys(const std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
-    bool validateMandatoryKeys(const std::map<std::string, std::string>& confData, const std::string& contextType);
+    bool validateMandatoryKeys(std::map<std::string, std::vector<std::string> >& confData, const std::string& contextType);
+    bool validateMandatoryKeys(std::map<std::string, std::string>& confData, const std::string& contextType);
 
 
     /* =============== Specific Configuration Validations =============== */
