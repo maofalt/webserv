@@ -12,7 +12,7 @@ void    log_message(Logger::LogLevel level, const char* format, ...) {
     
 
     va_start(args, format);
-    vsnprintf(buffer, sizeof(buffer), format, args);
+    std::vsnprintf(buffer, sizeof(buffer), format, args);
     va_end(args);
     
     std::string msg(buffer);
