@@ -36,6 +36,7 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	background-color: var(--back_col);
+	cursor: url('../cursor/wtffcatSmall.gif'), default;
 }
 
 header {
