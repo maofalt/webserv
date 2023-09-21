@@ -1,5 +1,4 @@
 from os import environ
-import cgi, cgitb
 
 print ("""<!DOCTYPE html>
 <html>

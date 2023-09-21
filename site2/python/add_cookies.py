@@ -1,4 +1,3 @@
-from os import environ
 import cgi, cgitb
 
 form = cgi.FieldStorage()

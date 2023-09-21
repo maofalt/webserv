@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/21 18:42:48 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/21 20:08:22 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static std::map<std::string, std::string>	getDescription(void)
 	std::srand(std::time(0));
 	description["200"] = "OK";
 	description["201"] = "Created";
+	description["205"] = "Reset Content";
 	description["400"] = "Bad request";
 	description["403"] = "Forbidden";
 	description["404"] = "Not found";
@@ -277,6 +278,15 @@ int	HttpResponse::_determineLocation(void)
 {
 	std::string::size_type	maxLen = 0;
 
+	std::cout << "_uri: " << _uri << std::endl;
+	std::cout << "isCookie: " << _request->_field.count("Cookie") << std::endl;
+	if (_request->_field.count("Cookie"))
+		std::cout << "Cookie: " << _request->_field.at("Cookie") << std::endl;
+	if (_uri.find("/css") == 0
+		&& _uri.find("/css/dark") != 0
+		&& _request->_field.count("Cookie")
+		&& _request->_field.at("Cookie").find("darkmode=on") != std::string::npos)
+		_uri.replace(0, 4, "/css/dark");
 	for (std::vector<t_location>::const_iterator location = _server->_locations.begin(); location != _server->_locations.end(); ++location)
 	{
 		for (std::vector<std::string>::const_iterator prefix = location->_paths.begin(); prefix != location->_paths.end(); ++prefix)
@@ -588,7 +598,6 @@ int	HttpResponse::_setEnvCgi(void)
 	if (_request->_field.count("Cookie"))
 	{
 		variable << "HTTP_COOKIE=" << _request->_field.at("Cookie");
-		std::cerr << _request->_field.at("Cookie") << std::endl;
 		_envCgi.push_back(variable.str());
 		variable.str("");
 	}
@@ -641,10 +650,9 @@ int	HttpResponse::_launchSon(int pipeFdIn[2], int pipeFdOut[2])
 	env[i] = NULL;
 	chdir(_path.substr(0, _path.find_last_of("/")).c_str());
 
-
 	FDManager::closeAllFds();
 	Logger::cleanup();
-	
+
 	if (execve(argv[0], argv, env) == -1)
 		std::exit(1);
 	return (0);
@@ -865,6 +873,14 @@ int	HttpResponse::_writeCgi(void)
 	std::getline(ss, field, '\n');
 	while (field != "" && field != "\r")
 	{
+		std::cout << "field: " << field << std::endl;
+		if (field.find("205") == 0)
+		{
+			_status = "205";
+			std::getline(ss, field, '\n');
+			continue ;
+		}
+		std::cout << "Passed 205" << std::endl;
 		std::istringstream	ssLine(field);
 		std::string			name;
 		std::string			value;
@@ -896,12 +912,15 @@ int	HttpResponse::_writeRaw(void)
 	response << _protocol << " " << _status << " " << _description[_status] << "\r\n";
 	response << "Date: " << time_buffer << "\r\n";
 	response << "Server: " << "webserv" << "\r\n";
-	response << "Content-Length: " << numberToString(_content.size()) << "\r\n";
+	if (_content.size() > 0)
+		response << "Content-Length: " << numberToString(_content.size()) << "\r\n";
 	if (_fields.count("Connection") == 0)
 		response << "Connection: " << "keep-alive" << "\r\n";
 	response << "Accept-Ranges: " << "bytes" << "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
+	std::cout << "Response headers" << std::endl;
+	std::cout << response.str() << std::endl;
 	response << "\r\n";
 	response << _content;
 
@@ -953,6 +972,22 @@ int	HttpResponse::readCgi(bool timeout)
 	return (bytesRead);
 }
 
+int	HttpResponse::send(int fd)
+{
+	std::string::size_type	bytesSend;
+
+	if (_raw.size() <= _iRaw + SEND_BUFFER_SIZE)
+		bytesSend = ::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0);
+	else
+		bytesSend = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
+	if (bytesSend <= 0)
+		return (-1);
+	if (bytesSend == _raw.size() - _iRaw)
+		return (0);
+	_iRaw += bytesSend;
+	return (1);
+}
+
 int	HttpResponse::setUp(HttpRequest const *request, Config &config)
 {
 	if (!request)
@@ -973,20 +1008,4 @@ int	HttpResponse::setUp(HttpRequest const *request, Config &config)
 	if (_type == CGI)
 		return (_launchCgi());
 	return ((this->*_writeType[_type])());
-}
-
-int	HttpResponse::send(int fd)
-{
-	std::string::size_type	bytesSend;
-
-	if (_raw.size() <= _iRaw + SEND_BUFFER_SIZE)
-		bytesSend = ::send(fd, _raw.c_str() + _iRaw, _raw.size() - _iRaw, 0);
-	else
-		bytesSend = ::send(fd, _raw.c_str() + _iRaw, SEND_BUFFER_SIZE, 0);
-	if (bytesSend <= 0)
-		return (-1);
-	if (bytesSend == _raw.size() - _iRaw)
-		return (0);
-	_iRaw += bytesSend;
-	return (1);
 }
