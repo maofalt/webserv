@@ -101,32 +101,62 @@ public:
 #ifdef DEBUG_LEVEL
 
 #define DEBUG_LOG(msg) Logger::getInstance()->log(Logger::DEBUG, msg, ANSI_WHITE , __FILE__, __LINE__)
+#define DEBUG_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::DEBUG, msg, ANSI_WHITE , file, line)
 
 #if DEBUG_LEVEL >= 2
-#define DEBUG_LOG_DETAILED(msg) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, "",__FILE__, __LINE__)
+#define DEBUG_LOG_DETAILED(msg) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, "", __FILE__, __LINE__)
+#define DEBUG_LOG_DETAILED_LOC(msg, file, line) Logger::getInstance()->log(Logger::DEBUG_DETAILED, msg, "", file, line)
+
 #define TRACE_LOG(msg) Logger::getInstance()->log(Logger::TRACE, msg, "", __FILE__, __LINE__)
-#define DEBUG_CONFIG(msg) Logger::getInstance()->log(Logger::DEBUG_CONFIG, msg, "",__FILE__, __LINE__)
+#define TRACE_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::TRACE, msg, "", file, line)
+
+#define DEBUG_CONFIG(msg) Logger::getInstance()->log(Logger::DEBUG_CONFIG, msg, "", __FILE__, __LINE__)
+#define DEBUG_CONFIG_LOC(msg, file, line) Logger::getInstance()->log(Logger::DEBUG_CONFIG, msg, "", file, line)
 #else
 #define DEBUG_LOG_DETAILED(msg)
+#define DEBUG_LOG_DETAILED_LOC(msg, file, line)
+
 #define TRACE_LOG(msg)
+#define TRACE_LOG_LOC(msg, file, line)
+
 #define DEBUG_CONFIG(msg)
+#define DEBUG_CONFIG_LOC(msg, file, line)
 #endif
 
 #define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define INFO_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, file, line)
+
 #define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE , __FILE__, __LINE__)
+#define WARN_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE , file, line)
+
 #define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE , __FILE__, __LINE__)
+#define ERROR_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE , file, line)
 
 #else
 
 #define DEBUG_LOG(msg)
+#define DEBUG_LOG_LOC(msg, file, line)
+
 #define DEBUG_LOG_DETAILED(msg)
+#define DEBUG_LOG_DETAILED_LOC(msg, file, line)
+
 #define DEBUG_CONFIG(msg)
+#define DEBUG_CONFIG_LOC(msg, file, line)
+
 #define TRACE_LOG(msg)
+#define TRACE_LOG_LOC(msg, file, line)
+
 #define INFO_LOG(msg) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define INFO_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::INFO, msg, ANSI_WHITE, file, line)
+
 #define WARN_LOG(msg) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define WARN_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::WARN, msg, ANSI_WHITE, file, line)
+
 #define ERROR_LOG(msg) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE, __FILE__, __LINE__)
+#define ERROR_LOG_LOC(msg, file, line) Logger::getInstance()->log(Logger::ERROR, msg, ANSI_WHITE, file, line)
 
 #endif
+
 
 /*
 ********** USAGE **********
