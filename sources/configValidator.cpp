@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 18:11:47 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/21 17:15:28 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ bool ConfigValidator::validateMandatoryKeys(std::map<std::string, std::vector<st
             if (confData.find(parameter) == confData.end()) {
                 log_message(Logger::ERROR, "Mandatory %s config key [%s] not found", contextType.c_str(), parameter.c_str());
                 // server.clientBodyLimit i no found create  it wiht the value of globaclientBodyLimit
-                std::string globalKey = "server." + parameter;
+                std::string globalKey = contextType + "." + parameter;
                 if ( globalKey == "server.clientBodyLimit") {
                     log_message(Logger::INFO, "Creating server.clientBodyLimit with value of global.clientBodyLimit");
                     std::stringstream ss;
