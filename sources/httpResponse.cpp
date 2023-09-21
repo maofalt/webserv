@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 18:10:11 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/21 17:59:47 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,6 +585,14 @@ int	HttpResponse::_setEnvCgi(void)
 	_envCgi.push_back(variable.str());
 	variable.str("");
 
+	if (_request->_field.count("Cookie"))
+	{
+		variable << "HTTP_COOKIE=" << _request->_field.at("Cookie");
+		std::cerr << _request->_field.at("Cookie") << std::endl;
+		_envCgi.push_back(variable.str());
+		variable.str("");
+	}
+
 	if (_method == "POST")
 	{
 		if (_request->_field.count("Content-Type"))
@@ -632,8 +640,8 @@ int	HttpResponse::_launchSon(int pipeFdIn[2], int pipeFdOut[2])
 		env[i++] = &((*it)[0]);
 	env[i] = NULL;
 	chdir(_path.substr(0, _path.find_last_of("/")).c_str());
-	
-	
+
+
 	FDManager::closeAllFds();
 	Logger::cleanup();
 	
@@ -684,7 +692,7 @@ int	HttpResponse::_writeRedirection(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeDirectory(void)
@@ -694,27 +702,50 @@ int	HttpResponse::_writeDirectory(void)
 	struct dirent		*entry;
 
 	content << "<!DOCTYPE html>\n"
-			<< "<html lang=\"en\">\n"
+			<< "<html>\n"
+			<< "	\n"
 			<< "<head>\n"
 			<< "	<meta charset=\"utf-8\" />\n"
-			<< "	<title>"<< _uri << "</title>\n"
+			<< "	<title>CGI testing</title>\n"
+			<< "	<link rel=\"stylesheet\" href=\"../css/style_cgi_testing.css\" />\n"
+			<< "	<link rel=\"icon\" type=\"image/png\" href=\"logo.png\" />\n"
 			<< "</head>\n"
+			<< "\n"
 			<< "<body>\n"
-			<< "	<h1>" << _uri << "</h1>\n"
-			<< "	<ul>\n";
+			<< "	<header>\n"
+			<< "		<h1>Webserv: " << _uri << "</h1>\n"
+			<< "		<div>\n";
 	dir = opendir(_path.c_str());
 	entry = readdir(dir);
 	while (entry)
 	{
-		content << "		<li><a href=\"" << _uri << entry->d_name << "\">" << entry->d_name << "</a></li\n>";
+		if (entry->d_name[0] == '.')
+		{
+			entry = readdir(dir);
+			continue ;
+		}
+		content << "			<h2>\n"
+				<< "				<a href=\"" << _uri << entry->d_name << "\"><span class=\"h2\"</span>" << entry->d_name << "</a>\n"
+				<< "			</h2>\n";
 		entry = readdir(dir);
 	}
 	closedir(dir);
-	content	<< "	</ul>\n"
+	content	<< "		</div>\n"
+			<< "	</header>\n"
+			<< "	<div id=\"index\">\n"
+			<< "		<h2>\n"
+			<< "			<a href=\"../index.html\"  title=\"Back to index\"><span class=\"h2\">< back&nbsp;</span></a>\n"
+			<< "		</h2>\n"
+			<< "	</div>\n"
+			<< "\n"
+			<< "	<footer>\n"
+			<< "		<p>Rgarrigo&nbsp;&nbsp;&nbsp;Motero&nbsp;&nbsp;&nbsp;Znogueir</p>\n"
+			<< "	</footer>\n"
 			<< "</body>\n"
+			<< "\n"
 			<< "</html>\n";
 	_content = content.str();
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeGet(void)
@@ -730,7 +761,7 @@ int	HttpResponse::_writeGet(void)
 	_content = buffer.str();
 
 	extension = _path.substr(_path.find_last_of(".") + 1);
-	_fields["ContentType"] = _mapContentType[extension];
+	_fields["Content-Type"] = _mapContentType[extension];
 
 	return (_writeRaw());
 }
@@ -751,7 +782,7 @@ int	HttpResponse::_writeDelete(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeErrorBadRequest(void)
@@ -773,7 +804,7 @@ int	HttpResponse::_writeError(std::string status)
 		errPage.close();
 		_content = buffer.str();
 	}
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	if (_status == "408")
 		_fields["Connection"] = "close";
 	return (_writeRaw());
@@ -796,7 +827,7 @@ int	HttpResponse::_writeUpload(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeAuthentification(void)
@@ -823,7 +854,7 @@ int	HttpResponse::_writeAuthentification(void)
 		<< "</body>\n"
 		<< "</html>\n";
 	_content = content.str();
-	_fields["ContentType"] = "text/html";
+	_fields["Content-Type"] = "text/html";
 	return (_writeRaw());
 }
 int	HttpResponse::_writeCgi(void)

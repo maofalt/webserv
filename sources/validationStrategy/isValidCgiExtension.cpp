@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/02 21:19:07 by motero            #+#    #+#             */
-/*   Updated: 2023/09/15 16:26:27 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/21 16:49:12 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool isValidCgiExtension::validate(const std::string& value, const std::map<std:
     (void)fieldProperties; // Unused
 
     // 1. Check for known extensions
-    if (value.find("/php-cgi") == std::string::npos && value.find("/python-cgi") == std::string::npos) {
+    if (value.find("/php-cgi") == std::string::npos && value.find("/python") == std::string::npos) {
         throw std::invalid_argument("Invalid CGI extension in path: " + value);
         return false;
     }
