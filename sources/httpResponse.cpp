@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/21 19:06:04 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/21 19:12:03 by znogueir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -713,7 +713,7 @@ int	HttpResponse::_writeDirectory(void)
 			<< "\n"
 			<< "<body>\n"
 			<< "	<header>\n"
-			<< "		<h1>Webserv: " + _uri + "</h1>\n"
+			<< "		<h1>Webserv: ." + _uri + "</h1>\n"
 			<< "		<div>\n";
 	dir = opendir(_path.c_str());
 	entry = readdir(dir);
