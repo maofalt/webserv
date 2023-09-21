@@ -30,23 +30,30 @@
 
 html, body {
 	height: 100%;
-	/* width: 100%; */
+	width: 100%;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
 	background-color: var(--back_col);
+	/* border: 1px solid red; */
 }
 
 header {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
 	text-align: center;
 	margin-top: 50px;
+	/* border: 1px solid green; */
 }
 
 h1 {
 	color: var(--titles_col);
 	font-size: 3em;
 	font-family:'Courier New', Courier, monospace;
+	/* border: 1px solid blue; */
 }
 
 h2 {
@@ -90,6 +97,7 @@ h2:active {
 }
 
 footer {
+	/* border: 1px solid yellow; */
 	padding: 10px 10px 10px 10px;
 	font-size: 13px;
 	margin-top: auto;
