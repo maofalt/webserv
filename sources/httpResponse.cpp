@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/21 17:59:47 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/21 18:42:48 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -871,7 +871,14 @@ int	HttpResponse::_writeCgi(void)
 
 		std::getline(ssLine, name, ':');
 		std::getline(ssLine, value, '\0');
-		_fields[name] = value;
+		if (name == "Set-Cookie" && _fields.count("Set-Cookie") == 1)
+		{
+			_fields["Set-Cookie"] += "\r\n";
+			_fields["Set-Cookie"] += "Set-Cookie: ";
+			_fields["Set-Cookie"] += value;
+		}
+		else
+			_fields[name] = value;
 		std::getline(ss, field, '\n');
 	}
 	std::getline(ss, _content, '\0');
