@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   httpResponse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
+/*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/21 20:08:22 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/21 20:15:04 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -721,7 +721,7 @@ int	HttpResponse::_writeDirectory(void)
 			<< "\n"
 			<< "<body>\n"
 			<< "	<header>\n"
-			<< "		<h1>Webserv: " << _uri << "</h1>\n"
+			<< "		<h1>Webserv: ." + _uri + "</h1>\n"
 			<< "		<div>\n";
 	dir = opendir(_path.c_str());
 	entry = readdir(dir);
@@ -738,13 +738,11 @@ int	HttpResponse::_writeDirectory(void)
 		entry = readdir(dir);
 	}
 	closedir(dir);
-	content	<< "		</div>\n"
+	content	<< "			<h2 id=\"back\">\n"
+			<< "				<a href=\"../index.html\"  title=\"Back to index\"><span class=\"h2\">< back&nbsp;</span></a>\n"
+			<< "			</h2>\n"
+			<< "		</div>\n"
 			<< "	</header>\n"
-			<< "	<div id=\"index\">\n"
-			<< "		<h2>\n"
-			<< "			<a href=\"../index.html\"  title=\"Back to index\"><span class=\"h2\">< back&nbsp;</span></a>\n"
-			<< "		</h2>\n"
-			<< "	</div>\n"
 			<< "\n"
 			<< "	<footer>\n"
 			<< "		<p>Rgarrigo&nbsp;&nbsp;&nbsp;Motero&nbsp;&nbsp;&nbsp;Znogueir</p>\n"

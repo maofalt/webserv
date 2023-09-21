@@ -36,6 +36,7 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	background-color: var(--back_col);
+	cursor: url('../cursor/small_cat.gif'), default;
 }
 
 header {
@@ -64,6 +65,7 @@ h2 {
 	background: var(--box_backg_col);
 	border: 1px solid var(--box_border_col);
 	box-shadow: 6px 6px 12px var(--box_shadow_col_1), -6px -6px 12px var(--box_shadow_col_2);
+	cursor : url('../cursor/znogueir-nobg.png'), pointer;
 }
 
 h2 a {
@@ -78,11 +80,13 @@ h2 a {
 	color: var(--buttons_text_col);
 	justify-content: center;
 	font-family:'Courier New', Courier, monospace;
+	cursor : url('../cursor/znogueir-nobg.png'), pointer;
 }
 
 h2:active {
 	color: var(--box_active_col);
 	box-shadow: inset 4px 4px 12px var(--box_shadow_col_1), inset -4px -4px 12px var(--box_shadow_col_2);
+	cursor : url('../cursor/znogueir-nobg.png'), pointer;
 }
 
 footer {
