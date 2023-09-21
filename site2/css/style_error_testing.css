@@ -15,7 +15,7 @@
 	--box_shadow_col_1: #c5c5c5;
 	--box_shadow_col_2: #ffffff;
 }
-.dark-theme{
+/* .dark-theme{
 	--back_col: #353535;
 	--titles_col: #666;
 	--buttons_text_col: gray;
@@ -26,7 +26,7 @@
 	--box_border_col: #353535;
 	--box_shadow_col_1: #1f1f1f;
 	--box_shadow_col_2: #4e4e4e;
-}
+} */
 
 html, body {
 	height: 100%;
