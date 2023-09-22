@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/22 18:01:13 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/22 18:39:12 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ int Server::determineOperation(std::vector<t_epollSwitch>::iterator it, int clie
         if (fstat(it->fd, &buf) == 0) {
             close(it->fd);
         }
+		log_message(Logger::WARN, "fd %d is going to be deleted BUT fd i not tracked", it->fd);
         // Skipping the current iteration as the fd is to be deleted
         return -1;
     } else {
@@ -180,7 +181,8 @@ int Server::determineOperation(std::vector<t_epollSwitch>::iterator it, int clie
 
 int Server::determineMode(std::vector<t_epollSwitch>::iterator it) {
     int mode;
-
+	
+	mode = 0;
     switch (it->mode) {
         case IN:
             mode = EPOLLIN;
@@ -192,6 +194,7 @@ int Server::determineMode(std::vector<t_epollSwitch>::iterator it) {
             mode = EPOLLIN | EPOLLOUT;
             break;
         case DEL:
+			break;
         default:
             mode = 0;
             break;
@@ -284,11 +287,13 @@ int		Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, 
 	if (mode) {
 		ev.events = mode | EPOLLET;
 		ev.data.fd = client_fd;
-	}
-	if (epoll_ctl(epoll_fd, op, client_fd, &ev) == -1) {
+		if (epoll_ctl(epoll_fd, op, client_fd, &ev) == -1) {
 		log_message(Logger::ERROR, "epoll_ctl: problem with during switch");
 		return -1;
-	}
+		}
+	} else
+		log_message(Logger::WARN, "mode is 0, nothing to do");
+
 	if (op == EPOLL_CTL_DEL) {
 		trackFds.erase(client_fd);
 		_cgiFdsToClientFd.erase(client_fd);
