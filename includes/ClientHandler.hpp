@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:07 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/12 17:34:50 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/20 19:01:26 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class ClientHandler {
 		static std::map<int, uint16_t>	_port;
 
 	// Utils
-		int		_addSwitch(int fd, t_epollMode mode, std::time_t timeout);
+		int		_addSwitch(int fd, t_epollMode mode);
 		int		_manageTimeout(int fd, struct epoll_event &event);
 		int		_readClient(void);
 		int		_readCgi(bool timeout);
@@ -64,6 +64,7 @@ class ClientHandler {
 		int		_writeCgi(void);
 		int		_writeData(int fd);
 		void	_clean(void);
+		void	_reset(void);
 
 	public:
 	// Coplien

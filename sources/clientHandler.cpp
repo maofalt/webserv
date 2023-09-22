@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 23:16:17 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 18:28:35 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/20 19:22:03 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ClientHandler::setConfig(const Config &config)
 }
 
 // Utils
-int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
+int	ClientHandler::_addSwitch(int fd, t_epollMode mode)
 {
 	t_epollSwitch	newSwitch;
 
@@ -78,10 +78,14 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 		_fdCgiInOpened = false;
 	if (fd == _fdCgiOut && mode == DEL)
 		_fdCgiOutOpened = false;
-	if (timeout == 0)
-		newSwitch.timeout = 0;
-	else
-		newSwitch.timeout = std::time(NULL) + timeout;
+	newSwitch.timeout = 0;
+	if (mode != DEL)
+	{
+		if (fd == _fdClient)
+			newSwitch.timeout = std::time(NULL) + _config.getTimeoutClient();
+		if (fd == _fdCgiIn || fd == _fdCgiOut)
+			newSwitch.timeout = std::time(NULL) + _config.getTimeoutCgi();
+	}
 	_epollSwitches.push_back(newSwitch);
 	return (0);
 }
@@ -89,15 +93,12 @@ int	ClientHandler::_addSwitch(int fd, t_epollMode mode, std::time_t timeout)
 int	ClientHandler::_setUpResponse(const HttpRequest *request)
 {
 	int					status;
-	int 				timeout;
-	const GlobalConfig& globalConfig = _config.getGlobalConfig();
-	
-	timeout = globalConfig.timeoutCgi;
+
 	status = _response.setUp(request, _config);
 
 	// log_message(Logger::WARN, "STATUS IN SETUP : %d", status);
 	if (status != CGI_LAUNCHED)
-		return (_response.log(), _addSwitch(_fdClient, OUT, timeout), 0);
+		return (_response.log(), _addSwitch(_fdClient, OUT), 0);
 
 	_fdCgiIn = _response.getFdCgiIn();
 	_fdCgiOut = _response.getFdCgiOut();
@@ -105,8 +106,8 @@ int	ClientHandler::_setUpResponse(const HttpRequest *request)
 	_fdCgiInOpened = true;
 	_fdCgiOutOpened = true;
 
-	_addSwitch(_fdCgiIn, OUT, globalConfig.timeoutCgi);
-	_addSwitch(_fdCgiOut, IN, globalConfig.timeoutCgi);
+	_addSwitch(_fdCgiIn, OUT);
+	_addSwitch(_fdCgiOut, IN);
 
 	return (0);
 }
@@ -120,11 +121,11 @@ int	ClientHandler::_readClient(void)
 	timeout = globalConfig.timeoutClient;
 	status = _request.recv(_fdClient);
 	if (status == -1)
-		return (_addSwitch(_fdClient, DEL, 0), -1);
+		return (_addSwitch(_fdClient, DEL), -1);
 
 	// log_message(Logger::WARN, "STATUS IN READ : %d", status);
 	if (status > 0)
-		return (_addSwitch(_fdClient, IN, timeout), 0);
+		return (_addSwitch(_fdClient, IN), 0);
 
 	return (_setUpResponse(&_request));
 }
@@ -132,21 +133,17 @@ int	ClientHandler::_readClient(void)
 int	ClientHandler::_readCgi(bool timeout)
 {
 	int	status;
-	int	timeoutCgi;
-	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
-	timeoutCgi = globalConfig.timeoutCgi;
 	status = _response.readCgi(timeout);
 	if (status > 0)
-		return (_addSwitch(_fdCgiOut, IN, timeoutCgi), 0);
+		return (_addSwitch(_fdCgiOut, IN), 0);
 
-	_addSwitch(_fdCgiOut, DEL, 0);
+	_addSwitch(_fdCgiOut, DEL);
 	if (_fdCgiInOpened)
-		_addSwitch(_fdCgiIn, DEL, 0);
+		_addSwitch(_fdCgiIn, DEL);
 	_response.log();
 	
-	int timeOutSend = _config.getGlobalConfig().timeoutClient;
-	_addSwitch(_fdClient, OUT, timeOutSend);
+	_addSwitch(_fdClient, OUT);
 	return (0);
 }
 
@@ -165,17 +162,14 @@ int	ClientHandler::_readData(int fd)
 int	ClientHandler::_send(void)
 {
 	int	status;
-	int timeout;
-	const t_globalConfig&  globalConfig = _config.getGlobalConfig();
 
-	timeout = globalConfig.timeoutClient;
 	status = _response.send(_fdClient);
 	if (status == -1)
 		return (_clean(), -1);
 	if (status == 1)
-		return (_addSwitch(_fdClient, OUT, timeout), 1);
+		return (_addSwitch(_fdClient, OUT), 1);
 	if (status == 0)
-		return (_addSwitch(_fdClient, IN, 0), 0);
+		return (_reset(), _addSwitch(_fdClient, IN), 0);
 	return (0);
 }
 
@@ -188,8 +182,8 @@ int	ClientHandler::_writeCgi(void)
 	timeout = globalConfig.timeoutCgi;
 	status = _response.writeToCgi();
 	if (status > 0)
-		_addSwitch(_fdCgiIn, OUT, timeout);
-	_addSwitch(_fdCgiIn, DEL, 0);
+		_addSwitch(_fdCgiIn, OUT);
+	_addSwitch(_fdCgiIn, DEL);
 	return (0);
 }
 
@@ -212,23 +206,35 @@ int	ClientHandler::_manageTimeout(int fd, struct epoll_event &event)
 	if (fd == _fdClient && event.events == 0)
 		return (_clean(), 0);
 	if (fd == _fdCgiIn)
-		return (_addSwitch(_fdCgiIn, DEL, 0), 0);
+		return (_addSwitch(_fdCgiIn, DEL), 0);
 	if (fd == _fdCgiOut)
 	{
 		if (_fdCgiInOpened)
-			_addSwitch(_fdCgiIn, DEL, 0);
-		return (_addSwitch(_fdCgiOut, DEL, 0), _readCgi(true));
+			_addSwitch(_fdCgiIn, DEL);
+		return (_addSwitch(_fdCgiOut, DEL), _readCgi(true));
 	}
 	return (0);
+}
+
+void	ClientHandler::_reset(void)
+{
+	if (_fdCgiInOpened)
+		_addSwitch(_fdCgiIn, DEL);
+	if (_fdCgiOutOpened)
+		_addSwitch(_fdCgiOut, DEL);
+	_fdCgiIn = 0;
+	_fdCgiOut = 0;
+	_request = HttpRequest();
+	_response.clean();
 }
 
 void	ClientHandler::_clean(void)
 {
 	if (_fdCgiInOpened)
-		_addSwitch(_fdCgiIn, DEL, 0);
+		_addSwitch(_fdCgiIn, DEL);
 	if (_fdCgiOutOpened)
-		_addSwitch(_fdCgiOut, DEL, 0);
-	_addSwitch(_fdClient, DEL, 0);
+		_addSwitch(_fdCgiOut, DEL);
+	_addSwitch(_fdClient, DEL);
 }
 
 // Methods
@@ -246,7 +252,7 @@ std::vector<t_epollSwitch>	ClientHandler::handleEvent(int fd, struct epoll_event
 		if (fd == _fdClient)
 			_clean();
 		if (fd == _fdCgiIn)
-			_addSwitch(_fdCgiIn, DEL, 0);
+			_addSwitch(_fdCgiIn, DEL);
 		if (fd == _fdCgiOut)
 			_readData(fd);
 	}
