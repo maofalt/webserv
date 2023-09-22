@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/14 15:19:58 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/22 18:01:13 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 bool	Server::validateClient(int client_fd) {
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
 		std::cerr << "Unknown client fd: " << client_fd << std::endl;
+		log_message(Logger::DEBUG, "Unknown client fd: %d, IT MUST BE A CGI !", client_fd);
 		return 1;
 	}
 	return 0;
