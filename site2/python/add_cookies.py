@@ -13,8 +13,7 @@ print ("""<!DOCTYPE html>
 <head>
 	<meta charset="utf-8" />
 	<title>Webserv</title>
-	<link rel="stylesheet" href="css/style_index.css" />
-	<link rel="icon\" type="image/png" href="motero.png" />
+	<link rel="icon\" type="image/png" href="/motero.png" />
 </head>
 
 <body>
