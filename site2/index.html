@@ -13,7 +13,7 @@
 		<form action="/python/toggle_darkmode.py">
 			<!-- <button id="dark-mode-toggle">☀</button> -->
 			<!-- <button id="dark-mode-toggle">🌝</button> -->
-			<button id="dark-mode-toggle">🌚</button>
+			<button type="button" id="dark-mode-toggle">🌚</button>
 		</form>
 		<h1>Webserv</h1>
 		<div>
@@ -42,7 +42,7 @@
 	<footer>
 		<p>Rgarrigo&nbsp;&nbsp;&nbsp;Motero&nbsp;&nbsp;&nbsp;Znogueir</p>
 	</footer>
-	<script>
+	<!-- <script>
 		var icon = document.getElementById("dark-mode-toggle");
 
 		icon.onclick = function() {
@@ -54,7 +54,7 @@
 				icon.innerText = "🌚";
 			}
 		}
-	</script>
+	</script> -->
 
 	<script>
         // Array of image sources
@@ -64,23 +64,31 @@
             'cursor/znogueir-nobg.png'
         ];
 
-		const darkmodeImages = [
-			'cursor/dancingcatSmal.gif',
-			'cursor/small_cat.gif',
-			'cursor/wtffcatSMall.gif'
+		const darkModeImages = [
+			'cursor/garrigodarkmode.png',
+			'cursor/znoguerdarkmode.png',
+			'cursor/moterodarkmode.png'
 		];
 
+
 		function createFallingObjects() {
-		
-			const images = document.body.classList.contains('dark-mode') ? darkModeImages : lightModeImages;
-        	// Container for falling objects
-        	const container = document.getElementById('fallingObjectsContainer');
-			
+					
+            const container = document.getElementById('fallingObjectsContainer');
+            const images = document.body.classList.contains('dark-theme') ? darkModeImages : lightModeImages;
+            
+            // Clear existing objects
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
         	// Number of falling objects you want to create
         	const numberOfObjects = 100;
 
         	for (let i = 0; i < numberOfObjects; i++) {
-        	    // Create an image element
+        	    
+				// Clear existing objects
+
+				// Create an image element
         	    const img = document.createElement('img');
 			
         	    // Assign a random image source from the array
@@ -102,7 +110,7 @@
     			img.style.animationDuration = randomDuration;
 
 				// Set a random size
-				const randomSize = Math.random() * 50 + 50 + 'px'; // Random size between 50px and 100px
+				const randomSize = Math.random() * 100 + 50 + 'px'; // Random size between 50px and 100px
     			img.style.width = randomSize;
 
         	    // Append the image to the container
@@ -112,6 +120,15 @@
 
 		// Create initial falling objects
 		createFallingObjects();
+
+		document.getElementById('dark-mode-toggle').addEventListener('click', function(event) {
+			document.body.classList.toggle("dark-theme");
+			console.log('Is dark theme:', document.body.classList.contains("dark-theme"));
+			const icon = document.getElementById("dark-mode-toggle");
+			icon.innerText = document.body.classList.contains("dark-theme") ? "🌝" : "🌚";
+			createFallingObjects();
+		});
+
     </script>
 </body>
 
