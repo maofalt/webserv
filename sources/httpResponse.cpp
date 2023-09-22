@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/22 12:53:35 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:58:43 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,11 +171,23 @@ void	HttpResponse::clean(void)
 	_uri = "";
 	_path = "";
 	_uriIsDirectory = false;
+	_queryString = "";
+	_server = NULL;
+	_location = NULL;
+	_fdsToClose.clear();
 	_type = ERROR;
 	_isSetUp = false;
+	_fdCgiIn = 0;
 	_iWriteToCgi = 0;
+	_outputCgi = "";
 	_pidCgi = 0;
+	_envCgi.clear();
+	_uploadFileOn = false;
+	_uploadOnly = false;
+	_cookie = "";
 	_protocol = DEFAULT_PROTOCOL;
+	_status = "";
+	_fields.clear();
 	_content = "";
 	_raw = "";
 	_iRaw = 0;
@@ -293,10 +305,6 @@ int	HttpResponse::_determineLocation(void)
 {
 	std::string::size_type	maxLen = 0;
 
-	std::cout << "_uri: " << _uri << std::endl;
-	std::cout << "isCookie: " << _request->_field.count("Cookie") << std::endl;
-	if (_request->_field.count("Cookie"))
-		std::cout << "Cookie: " << _request->_field.at("Cookie") << std::endl;
 	if (_uri.find("/css") == 0
 		&& _uri.find("/css/dark") != 0
 		&& _request->_field.count("Cookie")
@@ -886,14 +894,12 @@ int	HttpResponse::_writeCgi(void)
 	std::getline(ss, field, '\n');
 	while (field != "" && field != "\r")
 	{
-		std::cout << "field: " << field << std::endl;
 		if (field.find("205") == 0)
 		{
 			_status = "205";
 			std::getline(ss, field, '\n');
 			continue ;
 		}
-		std::cout << "Passed 205" << std::endl;
 		std::istringstream	ssLine(field);
 		std::string			name;
 		std::string			value;
@@ -932,8 +938,6 @@ int	HttpResponse::_writeRaw(void)
 	response << "Accept-Ranges: " << "bytes" << "\r\n";
 	for (std::map<std::string, std::string>::const_iterator it = _fields.begin(); it != _fields.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
-	std::cout << "Response headers" << std::endl;
-	std::cout << response.str() << std::endl;
 	response << "\r\n";
 	response << _content;
 
