@@ -9,6 +9,7 @@
 </head>
 
 <body>
+	<div id="fallingObjectsContainer"></div>
 	<header>
 		<form action="/python/toggle_darkmode.py">
 			<button name="darkmode" value="on" id="dark-mode-toggle">Toggle Dark Mode</button>
@@ -47,6 +48,53 @@
 			document.body.classList.toggle("dark-theme");
 		}
 	</script> -->
+
+	<script>
+        // Array of image sources
+        const images = [
+            'cursor/motero-nobg.png',
+            'cursor/rgarrigo-nobg.png',
+            'cursor/znogueir-nobg.png'
+        ];
+
+        // Container for falling objects
+        const container = document.getElementById('fallingObjectsContainer');
+
+        // Number of falling objects you want to create
+        const numberOfObjects = 100;
+
+        for (let i = 0; i < numberOfObjects; i++) {
+            // Create an image element
+            const img = document.createElement('img');
+            
+            // Assign a random image source from the array
+            img.src = images[Math.floor(Math.random() * images.length)];
+            
+            // Assign the fallingObject class to the image
+            img.className = 'fallingObject';
+            
+    		// Set random horizontal starting position
+    		const randomLeft = Math.random() * 100 + 'vw';
+    		img.style.left = randomLeft;
+
+   			// Set a random animation delay
+   			const randomDelay = Math.random() * 5 - 5 + 's'; // Random delay between -5s and 0s
+   			img.style.animationDelay = randomDelay;
+
+			// Set a random animation duration (speed of falling)
+			const randomDuration = Math.random() * 3 + 3 + 's'; // Random duration between 3s and 6s
+    		img.style.animationDuration = randomDuration;
+
+			// Set a random size
+			const randomSize = Math.random() * 50 + 50 + 'px'; // Random size between 50px and 100px
+    		img.style.width = randomSize;
+
+            // Append the image to the container
+            container.appendChild(img);
+
+			
+        }
+    </script>
 </body>
 
 </html>

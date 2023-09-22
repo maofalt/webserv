@@ -37,6 +37,7 @@ html, body {
 	justify-content: center;
 	background-color: var(--back_col);
 	cursor: url('../cursor/small_cat.gif'), default;
+	z-index: 0;
 }
 
 header {
@@ -98,3 +99,27 @@ footer {
 	color: var(--footer_col);
 	font-family:'Courier New', Courier, monospace;
 }
+
+.fallingObject {
+    position: absolute;
+    animation: fallAnimation 5s linear infinite;
+	z-index: -1;
+}
+
+
+@keyframes fallAnimation {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(25vh) translateX(50px);
+    }
+    50% {
+        transform: translateY(50vh) translateX(0);
+    }
+    75% {
+        transform: translateY(75vh) translateX(-50px);
+    }
+}
+
+
