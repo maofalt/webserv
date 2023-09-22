@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>PHP test</title>
+	<meta charset="utf-8"/>
+	<title>Webserv</title>
+	<link rel="icon" type="image/png" href="/motero.png"/>
 </head>
 
 <body>
