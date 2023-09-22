@@ -11,7 +11,8 @@
 	<header>
 		<form action="/python/toggle_darkmode.py">
 			<!-- <button id="dark-mode-toggle">☀</button> -->
-			<button id="dark-mode-toggle">☾</button>
+			<!-- <button id="dark-mode-toggle">🌝</button> -->
+			<button id="dark-mode-toggle">🌚</button>
 		</form>
 		<h1>Webserv</h1>
 		<div>
@@ -45,6 +46,12 @@
 
 		icon.onclick = function() {
 			document.body.classList.toggle("dark-theme");
+
+			if (document.body.classList.contains("dark-theme")) {
+				icon.innerText = "🌝";
+			} else {
+				icon.innerText = "🌚";
+			}
 		}
 	</script>
 </body>
