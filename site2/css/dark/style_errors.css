@@ -25,18 +25,18 @@
 	--box_shadow_col_1: #c5c5c5;
 	--box_shadow_col_2: #ffffff; */
 }
-/* .dark-theme{
-	--back_col: #353535;
-	--titles_col: #666;
+.dark-theme{
+	--back_col: #e4e4e4;
+	--titles_col: rgb(196, 196, 196);
 	--buttons_text_col: gray;
 	--footer_col: gray;
 	--box_col: #090909;
 	--box_active_col: #666;
-	--box_backg_col: #353535;
-	--box_border_col: #353535;
-	--box_shadow_col_1: #1f1f1f;
-	--box_shadow_col_2: #4e4e4e;
-} */
+	--box_backg_col: #e8e8e8;
+	--box_border_col: #e8e8e8;
+	--box_shadow_col_1: #c5c5c5;
+	--box_shadow_col_2: #ffffff;
+}
 
 html, body {
 	height: 100%;
@@ -46,7 +46,7 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	background-color: var(--back_col);
-	cursor: url('../cursor/wtffcatSmall.gif'), default;
+	cursor: url('/cursor/wtffcatSmall.gif'), default;
 }
 
 header {
