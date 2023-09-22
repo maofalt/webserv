@@ -15,7 +15,7 @@
 	--box_shadow_col_1: #c5c5c5;
 	--box_shadow_col_2: #ffffff;
 }
-/* .dark-theme{
+.dark-theme{
 	--back_col: #353535;
 	--titles_col: #666;
 	--buttons_text_col: gray;
@@ -26,7 +26,7 @@
 	--box_border_col: #353535;
 	--box_shadow_col_1: #1f1f1f;
 	--box_shadow_col_2: #4e4e4e;
-} */
+}
 
 html, body {
 	height: 100%;
@@ -36,7 +36,7 @@ html, body {
 	flex-direction: column;
 	justify-content: center;
 	background-color: var(--back_col);
-	cursor: url('../cursor/wtffcatSmall.gif'), default;
+	cursor: url('/cursor/wtffcatSmall.gif'), default;
 }
 
 header {
@@ -70,7 +70,7 @@ h2 {
 	background: var(--box_backg_col);
 	border: 1px solid var(--box_border_col);
 	box-shadow: 6px 6px 12px var(--box_shadow_col_1), -6px -6px 12px var(--box_shadow_col_2);
-	cursor : url('../cursor/motero-nobg.png'), pointer;
+	cursor : url('/cursor/motero-nobg.png'), pointer;
 }
 
 li {
@@ -86,7 +86,7 @@ li {
 	background: var(--box_backg_col);
 	border: 1px solid var(--box_border_col);
 	box-shadow: 6px 6px 12px var(--box_shadow_col_1), -6px -6px 12px var(--box_shadow_col_2);
-	cursor : url('../cursor/motero-nobg.png'), pointer;
+	cursor : url('/cursor/motero-nobg.png'), pointer;
 }
 
 li a {
@@ -101,7 +101,7 @@ li a {
 	color: var(--buttons_text_col);
 	justify-content: center;
 	font-family:'Courier New', Courier, monospace;
-	cursor : url('../cursor/motero-nobg.png'), pointer;
+	cursor : url('/cursor/motero-nobg.png'), pointer;
 }
 
 h2 a {
@@ -116,13 +116,13 @@ h2 a {
 	color: var(--buttons_text_col);
 	justify-content: center;
 	font-family:'Courier New', Courier, monospace;
-	cursor : url('../cursor/motero-nobg.png'), pointer;
+	cursor : url('/cursor/motero-nobg.png'), pointer;
 }
 
 li:active {
 	color: var(--box_active_col);
 	box-shadow: inset 4px 4px 12px var(--box_shadow_col_1), inset -4px -4px 12px var(--box_shadow_col_2);
-	cursor : url('../cursor/motero-nobg.png'), pointer;
+	cursor : url('/cursor/motero-nobg.png'), pointer;
 }
 
 footer {
