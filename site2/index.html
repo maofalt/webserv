@@ -51,12 +51,19 @@
 
 	<script>
         // Array of image sources
-        const images = [
+        const lightModeImages = [
             'cursor/motero-nobg.png',
             'cursor/rgarrigo-nobg.png',
             'cursor/znogueir-nobg.png'
         ];
 
+		const darkmodeImages = [
+			'cursor/dancingcatSmal.gif',
+			'cursor/small_cat.gif',
+			'cursor/wtffcatSMall.gif'
+		];
+
+		const images = document.body.classList.contains('dark-mode') ? darkModeImages : lightModeImages;
         // Container for falling objects
         const container = document.getElementById('fallingObjectsContainer');
 
