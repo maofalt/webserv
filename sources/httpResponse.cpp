@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/22 16:58:43 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/22 17:54:39 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -716,6 +716,7 @@ int	HttpResponse::_writeRedirection(void)
 		<< "<head>\n"
 		<< "	<meta charset=\"utf-8\" />\n"
 		<< "	<title>301 - Moved</title>\n"
+		<< "	<link rel=\"icon\" type=\"image/png\" href=\"/motero.png\"/>\n"
 		<< "</head>\n"
 		<< "<body>\n"
 		<< "	<p>This page has moved to <a href=\"" << _fields["Location"]
@@ -738,8 +739,8 @@ int	HttpResponse::_writeDirectory(void)
 			<< "<head>\n"
 			<< "	<meta charset=\"utf-8\" />\n"
 			<< "	<title>CGI testing</title>\n"
-			<< "	<link rel=\"stylesheet\" href=\"../css/style_cgi_testing.css\" />\n"
-			<< "	<link rel=\"icon\" type=\"image/png\" href=\"logo.png\" />\n"
+			<< "	<link rel=\"stylesheet\" href=\"/css/style_cgi_testing.css\"/>\n"
+			<< "	<link rel=\"icon\" type=\"image/png\" href=\"/motero.png\"/>\n"
 			<< "</head>\n"
 			<< "\n"
 			<< "<body>\n"
@@ -805,6 +806,7 @@ int	HttpResponse::_writeDelete(void)
 		<< "<head>\n"
 		<< "	<meta charset=\"utf-8\" />\n"
 		<< "	<title>Deleted</title>\n"
+		<< "	<link rel=\"icon\" type=\"image/png\" href=\"/motero.png\"/>\n"
 		<< "</head>\n"
 		<< "<body>\n"
 		<< "	<p>File has been deleted.</p>\n"
@@ -850,6 +852,7 @@ int	HttpResponse::_writeUpload(void)
 		<< "<head>\n"
 		<< "	<meta charset=\"utf-8\" />\n"
 		<< "	<title>Uploaded</title>\n"
+		<< "	<link rel=\"icon\" type=\"image/png\" href=\"/motero.png\"/>\n"
 		<< "</head>\n"
 		<< "<body>\n"
 		<< "	<p>File has been uploaded.</p>\n"
@@ -877,6 +880,7 @@ int	HttpResponse::_writeAuthentification(void)
 		<< "<head>\n"
 		<< "	<meta charset=\"utf-8\" />\n"
 		<< "	<title>Authentification success</title>\n"
+		<< "	<link rel=\"icon\" type=\"image/png\" href=\"/motero.png\"/>\n"
 		<< "</head>\n"
 		<< "<body>\n"
 		<< "	<p>Authentification success.</p>\n"
