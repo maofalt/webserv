@@ -203,7 +203,7 @@ bool ConfigValidator::validateMandatoryKeys(std::map<std::string, std::vector<st
                     //Create inside map server.clientBodyLimit and push newValueVector
                     confData.insert(std::pair<std::string, std::vector<std::string> >(parameter, newValueVector));
                     log_message(Logger::INFO, "server.clientBodyLimit created");
-                    return true;
+                    continue ;
                 }
                 return false;
             }
