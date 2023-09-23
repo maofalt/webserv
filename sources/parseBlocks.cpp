@@ -126,31 +126,31 @@ int	Config::fill_credentials(ServerConfig & newServ, int & start) {
 		std::cerr << "failed to open credentials file in server block line " << start << "." << std::endl;
 		return 1;
 	}
-	while (file) {
-		std::getline(file, line);
+	while (std::getline(file, line)) {
 		if (line.empty())
 			continue;
 		pos = line.find_first_of(';');
 		if (pos == std::string::npos)
-			return 1;
+			return  log_message(Logger::DEBUG, "\t\tcredentials file bad format."), 1;
 		login = line.substr(0, pos);
 		line.erase(0, pos + 1);
 		pos = line.find_first_of(';');
 		if (pos == std::string::npos)
-			return 1;
+			return log_message(Logger::DEBUG, "\t\tcredentials file bad format 2."), 1;
 		password = line.substr(0, pos);
 		line.erase(0, pos + 1);
 		role = line;
 		newServ._credentials[login][role] = password;
 	}
 	file.close();
+	log_message(Logger::DEBUG, "\t\tcredentials file parsed successfully.");
 	return 0;
 }
 
 int	Config::parseServConf(std::vector<std::string>::iterator & it, int & line) {
 	ServerConfig	newServ;
 	int	start = line;
-
+	log_message(Logger::DEBUG, "\t\tParsing server block");
 	it += 2;
 	while (it != _splitContent.end() && *it == "\n") {
 		line++;
