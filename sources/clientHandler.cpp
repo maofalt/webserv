@@ -115,10 +115,7 @@ int	ClientHandler::_setUpResponse(const HttpRequest *request)
 int	ClientHandler::_readClient(void)
 {
 	int	status;
-	int timeout;
-	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
-	timeout = globalConfig.timeoutClient;
 	status = _request.recv(_fdClient);
 	if (status == -1)
 		return (_addSwitch(_fdClient, DEL), -1);
@@ -176,10 +173,7 @@ int	ClientHandler::_send(void)
 int	ClientHandler::_writeCgi(void)
 {
 	int	status;
-	int timeout;
-	const GlobalConfig& globalConfig = _config.getGlobalConfig();
 
-	timeout = globalConfig.timeoutCgi;
 	status = _response.writeToCgi();
 	if (status > 0)
 		_addSwitch(_fdCgiIn, OUT);
