@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:55:01 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/22 17:54:39 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/25 00:37:51 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static std::map<std::string, std::string>	getDescription(void)
 	std::srand(std::time(0));
 	description["200"] = "OK";
 	description["201"] = "Created";
-	description["205"] = "Reset Content";
+	description["204"] = "No Content";
 	description["400"] = "Bad request";
 	description["403"] = "Forbidden";
 	description["404"] = "Not found";
@@ -898,9 +898,9 @@ int	HttpResponse::_writeCgi(void)
 	std::getline(ss, field, '\n');
 	while (field != "" && field != "\r")
 	{
-		if (field.find("205") == 0)
+		if (field == "204" || field == "204\r")
 		{
-			_status = "205";
+			_status = "204";
 			std::getline(ss, field, '\n');
 			continue ;
 		}

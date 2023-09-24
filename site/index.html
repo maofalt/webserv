@@ -1,5 +1,144 @@
-<!DOCTYPE html><html>	
-<!-- Mirrored from brogarow.free.fr/meteo/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 24 Apr 2023 16:20:16 GMT -->
-<head>		<meta charset="utf-8" />		<title>Météorologie et prévisions</title>		<link rel="stylesheet" href="css/style.css" />		<link rel="icon" type="image/png" href="logo.png" />	</head>	<body>		<header>			<section id="sujet">					<h1><a href="index-2.html"  title="Retour à l'accueil"><img src="images/sujet.png" alt="Sujet: météorologie et prévisions" id="img"/></a></h1>			</section>			<div id="accueil">				<h2>					<a href="index-2.html"  title="Retour à l'accueil"><span class="h2">Accueil</span></a>				</h2>			</div>			<div id="sommaire">				<h2>					Sommaire				</h2>					<h3><a href="pages/echanges_energie.html" title="Phénomènes météorologiques"><span class="h3">&nbsp;Phénomènes météorologiques&nbsp;</span></a></h3>					<ul>						<li><a href="pages/echanges_energie.html" title="Formation des phénomènes météorologiques"><span class="h4" >&nbsp;- Formations&nbsp;</span></a></li>						<li><a href="pages/tempetes.html" title="Descriptions des phénomènes météorologiques"><span class="h4">&nbsp;- Descriptions&nbsp;</span></a></li>					</ul>					<h3><a href="pages/previsions_observations.html" title="Prévisions météorologiques"><span class="h3">&nbsp;Prévisions météorologiques&nbsp;</span></a></h3>					<ul>						<li><a href="pages/previsions_observations.html" title="Description des prévisions météorologiques"><span class="h4">&nbsp;- Prévisions&nbsp;</span></a></li>						<li><a href="pages/experience.html" title="Expérience"><span class="h4">&nbsp;- Expérience&nbsp;</span></a></li>					</ul>					<h3><a href="pages/conclusion.html" title="Conclusion du tpe"><span class="h3">&nbsp;Conclusion&nbsp;</span></a></h3>			</div>			<div id="divers">				<h2>					Divers				</h2>					<h3><a href="pages/en_savoir_plus.html" title="Documents complémentaires"><span class="h3">&nbsp;En savoir plus&nbsp;</span></h3>					<h3><a href="pages/mediagraphie.html" title="Médiagraphie"><span class="h3">&nbsp;Médiagraphie&nbsp;</span></a></h3>					<h3><a href="pages/infos_pratiques.html" title="Informations sur le site web"><span class="h3">&nbsp;Infos pratiques&nbsp;</span></a></h3>			</div>		</header>		<div id="titre"><h1>Accueil</h1></div>		<article>			<h3>&nbsp;&nbsp;&nbsp;&nbsp;Un tpe réalisé par Romain Garrigou, Romain ***** et Nathan *****</h3>			<p>&nbsp;&nbsp;&nbsp;“La météo est une science qui permet de connaître le temps qu’il aurait dû faire.” disait Philippe Bouvard, mais alors <strong>les prévisions météorologiques</strong> ont-elles réellement une grande utilité?</p>			<p>&nbsp;&nbsp;&nbsp;Nous vous souhaitons la bienvenue sur ce site ayant pour thème <strong>la météorologie</strong> et plus spécifiquement <strong>les formations</strong> de différents phénomènes météorologiques et l'importance de <strong>leurs prévisions</strong>.</p>			<p>&nbsp;&nbsp;&nbsp;Nous vous présenterons tout d'abord <strong>la formation</strong> de plusieurs éléments clés de la météorologie, puis <strong>les descriptions</strong> de plusieurs catastrophes météorologiques, analyserons <strong>les prévisions</strong> des météorologues de nos jours et enfin vérifierons la fiabilité de ces prévisions à l'aide d'<strong>une expérience</strong> réalisée par nous-mêmes.</p>			<p>&nbsp;&nbsp;&nbsp;<strong>Un sommaire</strong> sur votre gauche vous permettra de naviguer d'une page à l'autre sur le site web, il est néanmoins conseillé de lire les différents articles dans l'ordre pour une première lecture à l'aide des flèches bleues se situant en bas à droite des pages. Enfin n'oubliez pas de faire défiler les pages web vers le bas lorsque c'est possible pour ne pas manquer des parties de documents.</p>		</article>		<footer>			<a href="pages/echanges_energie.html" title="Page suivante"><img src="images/fleche.png" alt="Flêche" id="fleche"/>		</footer>	</body>
-<!-- Mirrored from brogarow.free.fr/meteo/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 24 Apr 2023 16:20:29 GMT -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Webserv</title>
+	<link rel="stylesheet" href="/css/style_index.css" />
+	<link rel="icon" type="image/png" href="/motero.png" />
+</head>
+
+<body>
+	<div id="fallingObjectsContainer"></div>
+	<header>
+		<form action="/python/toggle_darkmode.py" onsubmit="return toggleDarkmode()">
+			<!-- <button id="dark-mode-toggle">☀</button> -->
+			<!-- <button id="dark-mode-toggle">🌝</button> -->
+			<button type="submit" id="dark-mode-toggle">🌚</button>
+		</form>
+		<h1>Webserv</h1>
+		<div>
+		<div id="testing">
+			<h2>
+				<a href="tests"  title="Directory of tests"><span class="h2">./tests/</span></a>
+			</h2> 
+			<h2>
+				<a href="tests/errors_testing.html"  title="Errors testing page"><span class="h2">error pages</span></a>
+			</h2>
+			<!-- <h2>
+				<a href="tests/cgi_testing.html"  title="CGIs"><span class="h2">CGIs</span></a>
+			</h2>
+			<h2>
+				<a href="tests/upload.html"  title="upload"><span class="h2">upload</span></a>
+			</h2>
+			<h2>
+				<a href="tests/authentificate.html"  title="upload"><span class="h2">authentification</span></a>
+			</h2> -->
+			<h2>
+				<a href="broken_link"  title="link that leads to nothing"><span class="h2">link to nothing</span></a>
+			</h2>
+		</div>
+	</header>
+
+	<footer>
+		<p>Rgarrigo&nbsp;&nbsp;&nbsp;Motero&nbsp;&nbsp;&nbsp;Znogueir</p>
+	</footer>
+	<!-- <script>
+		var icon = document.getElementById("dark-mode-toggle");
+
+		icon.onclick = function() {
+			document.body.classList.toggle("dark-theme");
+
+			if (document.body.classList.contains("dark-theme")) {
+				icon.innerText = "🌝";
+			} else {
+				icon.innerText = "🌚";
+			}
+		}
+	</script> -->
+
+	<script>
+        // Array of image sources
+        const lightModeImages = [
+            'cursor/motero-nobg.png',
+            'cursor/rgarrigo-nobg.png',
+            'cursor/znogueir-nobg.png'
+        ];
+
+		const darkModeImages = [
+			'cursor/garrigodarkmode.png',
+			'cursor/znoguerdarkmode.png',
+			'cursor/moterodarkmode.png'
+		];
+
+		const darkmode_ini = ((document.cookie.match(/^(?:.*;)?\s*darkmode\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1] === "on")
+
+
+		function createFallingObjects() {
+					
+            const container = document.getElementById('fallingObjectsContainer');
+            const images = (document.body.classList.contains('dark-theme') ^ darkmode_ini) ? darkModeImages : lightModeImages;
+            
+            // Clear existing objects
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+        	// Number of falling objects you want to create
+        	const numberOfObjects = 100;
+
+        	for (let i = 0; i < numberOfObjects; i++) {
+        	    
+				// Clear existing objects
+
+				// Create an image element
+        	    const img = document.createElement('img');
+			
+        	    // Assign a random image source from the array
+        	    img.src = images[Math.floor(Math.random() * images.length)];
+			
+        	    // Assign the fallingObject class to the image
+        	    img.className = 'fallingObject';
+			
+    			// Set random horizontal starting position
+    			const randomLeft = Math.random() * 100 + 'vw';
+    			img.style.left = randomLeft;
+
+   				// Set a random animation delay
+   				const randomDelay = Math.random() * 5 - 5 + 's'; // Random delay between -5s and 0s
+   				img.style.animationDelay = randomDelay;
+
+				// Set a random animation duration (speed of falling)
+				const randomDuration = Math.random() * 3 + 3 + 's'; // Random duration between 3s and 6s
+    			img.style.animationDuration = randomDuration;
+
+				// Set a random size
+				const randomSize = Math.random() * 100 + 50 + 'px'; // Random size between 50px and 100px
+    			img.style.width = randomSize;
+
+        	    // Append the image to the container
+        	    container.appendChild(img);
+			}
+        }
+
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		function toggleDarkmode() {
+			document.body.classList.toggle("dark-theme");
+			console.log('Is dark theme:', document.body.classList.contains("dark-theme"));
+			const icon = document.getElementById("dark-mode-toggle");
+			icon.innerText = (document.body.classList.contains("dark-theme") ^ darkmode_ini) ? "🌝" : "🌚";
+			sleep(100).then(() => { createFallingObjects() });
+		};
+
+		const icon = document.getElementById("dark-mode-toggle");
+		icon.innerText = (document.body.classList.contains("dark-theme") ^ darkmode_ini) ? "🌝" : "🌚";
+
+		// Create initial falling objects
+		createFallingObjects();
+
+    </script>
+</body>
+
 </html>

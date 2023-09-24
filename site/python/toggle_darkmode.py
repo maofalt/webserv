@@ -10,6 +10,6 @@ try:
 except KeyError:
 	darkmode = "on"
 
-print ("205\r\n", end='')
+print ("204\r\n", end='')
 print ("Set-Cookie:darkmode=%s; Path=/\r\n" % darkmode, end='')
 print ("\r\n", end='')
