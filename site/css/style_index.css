@@ -74,7 +74,7 @@ button {
 	background: var(--box_backg_col);
 	border: 1px solid var(--box_border_col);
 	box-shadow: 6px 6px 12px var(--box_shadow_col_1), -6px -6px 12px var(--box_shadow_col_2);
-	cursor : url('/cursor/znogueir-nobg.png'), pointer;
+	cursor : url('/cursor/profile-nobg.png'), pointer;
 }
 
 h1 {
@@ -107,7 +107,7 @@ h2 {
 	background: var(--box_backg_col);
 	border: 1px solid var(--box_border_col);
 	box-shadow: 6px 6px 12px var(--box_shadow_col_1), -6px -6px 12px var(--box_shadow_col_2);
-	cursor : url('/cursor/znogueir-nobg.png'), pointer;
+	cursor : url('/cursor/profile-nobg.png'), pointer;
 }
 
 h2 a {
@@ -122,12 +122,12 @@ h2 a {
 	justify-content: center;
 	color: var(--buttons_text_col);
 	font-family:'Courier New', Courier, monospace;
-	cursor : url('/cursor/znogueir-nobg.png'), pointer;
+	cursor : url('/cursor/profile-nobg.png'), pointer;
 }
 
 h2:active {
 	color: var(--box_active_col);
-	cursor : url('/cursor/znogueir-nobg.png'), pointer;
+	cursor : url('/cursor/profile-nobg.png'), pointer;
 	box-shadow: inset 4px 4px 12px var(--box_shadow_col_1), inset -4px -4px 12px var(--box_shadow_col_2);
 }
 

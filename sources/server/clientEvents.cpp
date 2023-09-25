@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 17:29:05 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/22 18:39:12 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/25 01:49:36 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
  */
 bool	Server::validateClient(int client_fd) {
 	if (clientHandlers.find(client_fd) == clientHandlers.end()) {
-		std::cerr << "Unknown client fd: " << client_fd << std::endl;
 		log_message(Logger::DEBUG, "Unknown client fd: %d, IT MUST BE A CGI !", client_fd);
 		return 1;
 	}
@@ -292,7 +291,7 @@ int		Server::changeClientEpollMode(int epoll_fd, int client_fd, u_int32_t mode, 
 		return -1;
 		}
 	} else
-		log_message(Logger::WARN, "mode is 0, nothing to do");
+		log_message(Logger::DEBUG, "mode is 0, nothing to do");
 
 	if (op == EPOLL_CTL_DEL) {
 		trackFds.erase(client_fd);

@@ -81,10 +81,12 @@ all: project $(NAME) $(HDR_NAME)
 		$(MAKE) $(NAME); \
 	fi
 	@echo "$(CURRENT_CXXFLAGS)" > .last_build_flags
+	@cp /tmp/profile.png site/cursor/profile-nobg.png 2> /dev/null || true 
+	@cp /tmp/profile_darkmode.png site/cursor/profile_darkmode.png 2> /dev/null || true
 
 valgrind: DEBUG_LEVEL = 2
 valgrind: all 
-	valgrind --leak-check=full --trace-children=yes --track-origins=yes ./webserv
+	valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes --track-origins=yes ./$(NAME)
 
 project:
 	@echo "$(BLUE)====================================$(RESET)"
@@ -136,9 +138,6 @@ $(NAME): $(OBJS_PATH) $(OBJS) $(HDR_NAME)
 	@echo "$(GREEN)\|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ \|/ $(RESET)"
 	@echo "\t [ $(GREEN)✓$(RESET) ] $(BOLD)PROJECT IS READY $(RESET)[ $(GREEN)✓$(RESET) ] "
 	@echo "$(GREEN)/|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ /|\ $(RESET)"
-
-
-
 
 clean:
 	@echo "\t[ $(RED)$(BOLD)=== CLEANING === $(RESET)]"

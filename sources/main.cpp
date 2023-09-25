@@ -6,10 +6,11 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/28 20:22:00 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 17:52:37 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/25 01:36:46 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <ctime>
 #include "Config.hpp"
 #include "ConfigValidator.hpp"
 #include "Server.hpp"
@@ -93,6 +94,7 @@ bool startServer(Server& server) {
 int main(int ac, char **av) {
     Server server;
 
+	std::srand(std::time(0));
     if (!initializeLogger()) return 1;
     if (!loadServerValidationFile(server)) return 1;
     if (!loadAndValidateConfig(server, (ac > 1) ? av[1] : NULL)) return 1;

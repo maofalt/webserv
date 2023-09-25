@@ -6,7 +6,7 @@
 /*   By: znogueir <znogueir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 18:13:42 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/12 20:14:38 by znogueir         ###   ########.fr       */
+/*   Updated: 2023/09/25 01:55:08 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ void	Config::printErr(std::string errMsg, int line) {
 }
 
 int	Config::printNbErr() {
-	std::cerr << BOLD << _confFileName + ": " << (_nbrErr ? RED : GREEN);
+	if (!_nbrErr)
+		return (0);
+	std::cerr << BOLD << _confFileName + ": " << RED;
 	return std::cerr << _nbrErr << RESET << " error(s)." << std::endl, _nbrErr;
 }
 

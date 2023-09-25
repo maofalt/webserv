@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/20 14:42:02 by znogueir          #+#    #+#             */
-/*   Updated: 2023/09/18 16:29:20 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/25 01:11:09 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@
 #include "ServerConf.hpp"
 #include "Logger.hpp"
 #include "IniParser.hpp"
-
-# define DISPLAY_CONF 1
 
 class Config {
 	private:

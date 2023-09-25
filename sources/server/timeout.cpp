@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 01:18:42 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/14 21:47:43 by motero           ###   ########.fr       */
+/*   Updated: 2023/09/25 01:50:04 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void    Server::checkAndHandleTimeouts() {
             log_message(Logger::DEBUG, "Top event has not expired");
             break;
         }
-        log_message(Logger::WARN, "Top event fd: %d", topEvent.event_fd);
+        log_message(Logger::DEBUG, "Top event fd: %d", topEvent.event_fd);
         write(selfPipeWriteFd, "x", 1);
         break ;
     }

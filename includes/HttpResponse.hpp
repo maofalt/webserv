@@ -6,7 +6,7 @@
 /*   By: motero <motero@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 21:48:54 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/20 19:18:03 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/25 02:15:37 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,41 @@ class HttpResponse
 		static std::map<t_responseType, t_writeType>						_writeType;
 		static std::map<std::string, std::string>							_defaultErrorPages;
 
-	// UploadFile
+	// Authentification
+		int			_authentificate(void);
+		int			_checkAuthentification(
+			const std::string &user,
+			const std::string &password,
+			const std::vector<std::string> &rolesRequested,
+			std::vector<std::string> &rolesAccepted);
+		int			_getAuthentification(
+			std::string &user,
+			std::string &password,
+			std::vector<std::string> &rolesRequested);
+		std::string	_generateCookie(void);
+		int			_setAuthentificationCookie(
+			const std::string &user,
+			const std::vector<std::string> &rolesAccepted);
+
+	// Init
+		int			_checkPath(void);
+		int			_determineLocation(void);
+		int			_determinePost(void);
+		int			_limitClientBodySize(void);
+		int			_limitHttpMethod(void);
+		bool		_locationAllowed(void);
+		int			_refineUri(void);
+		int			_setRequest(const HttpRequest *request);
+		int			_setServer(Config &config);
+		int			_setType(void);
+		int			_stripUri(void);
+
+	// Cgi
+		int			_launchCgi(void);
+		int			_launchSon(int pipeFdIn[2], int pipeFdOut[2]);
+		int			_setEnvCgi(void);
+
+	// Upload
 		int	_skipLine(std::string::size_type &i);
 		int	_readUploadContentHeader(
 			std::string &boundary,
@@ -109,24 +143,8 @@ class HttpResponse
 			std::string::size_type &i);
 		int	_createFile(std::string &file, std::string &path);
 		int	_uploadFile(void);
-
-	// Utils
-		int			_authentificate(void);
-		int			_checkPath(void);
-		int			_determineLocation(void);
-		int			_determinePost(void);
-		std::string	_generateCookie(void);
-		int			_launchSon(int pipeFdIn[2], int pipeFdOut[2]);
-		int			_launchCgi(void);
-		int			_limitClientBodySize(void);
-		int			_limitHttpMethod(void);
-		bool		_locationAllowed(void);
-		int			_refineUri(void);
-		int			_setEnvCgi(void);
-		int			_setRequest(const HttpRequest *request);
-		int			_setServer(Config &config);
-		int			_setType(void);
-		int			_stripUri(void);
+	
+	// Write
 		int			_writeAuthentification(void);
 		int			_writeCgi(void);
 		int			_writeDelete(void);
@@ -138,7 +156,7 @@ class HttpResponse
 		int			_writeError(std::string status);
 		int			_writeRaw(void);
 
-	// Utils types
+	// Types
 		static std::map<t_responseType, t_writeType>	_getWriteType(void);
 
 	public:

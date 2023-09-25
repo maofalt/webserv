@@ -11,30 +11,22 @@
 	<div id="fallingObjectsContainer"></div>
 	<header>
 		<form action="/python/toggle_darkmode.py" onsubmit="return toggleDarkmode()">
-			<!-- <button id="dark-mode-toggle">☀</button> -->
-			<!-- <button id="dark-mode-toggle">🌝</button> -->
 			<button type="submit" id="dark-mode-toggle">🌚</button>
 		</form>
 		<h1>Webserv</h1>
 		<div>
 		<div id="testing">
 			<h2>
-				<a href="tests"  title="Directory of tests"><span class="h2">./tests/</span></a>
+				<a href="tests" title="Directory of tests"><span class="h2">Tests</span></a>
 			</h2> 
 			<h2>
-				<a href="tests/errors_testing.html"  title="Errors testing page"><span class="h2">error pages</span></a>
-			</h2>
-			<!-- <h2>
-				<a href="tests/cgi_testing.html"  title="CGIs"><span class="h2">CGIs</span></a>
+				<a href="tests/errors_testing.html" title="Errors testing page"><span class="h2">Error pages</span></a>
 			</h2>
 			<h2>
-				<a href="tests/upload.html"  title="upload"><span class="h2">upload</span></a>
+				<a href="broken_link" title="Link that leads to nothing"><span class="h2">Link to nothing</span></a>
 			</h2>
 			<h2>
-				<a href="tests/authentificate.html"  title="upload"><span class="h2">authentification</span></a>
-			</h2> -->
-			<h2>
-				<a href="broken_link"  title="link that leads to nothing"><span class="h2">link to nothing</span></a>
+				<a href="secret/secret.html" title="Secret page"><span class="h2">Secret page</span></a>
 			</h2>
 		</div>
 	</header>
@@ -42,32 +34,21 @@
 	<footer>
 		<p>Rgarrigo&nbsp;&nbsp;&nbsp;Motero&nbsp;&nbsp;&nbsp;Znogueir</p>
 	</footer>
-	<!-- <script>
-		var icon = document.getElementById("dark-mode-toggle");
-
-		icon.onclick = function() {
-			document.body.classList.toggle("dark-theme");
-
-			if (document.body.classList.contains("dark-theme")) {
-				icon.innerText = "🌝";
-			} else {
-				icon.innerText = "🌚";
-			}
-		}
-	</script> -->
 
 	<script>
         // Array of image sources
         const lightModeImages = [
             'cursor/motero-nobg.png',
             'cursor/rgarrigo-nobg.png',
-            'cursor/znogueir-nobg.png'
+            'cursor/znogueir-nobg.png',
+            'cursor/profile-nobg.png'
         ];
 
 		const darkModeImages = [
 			'cursor/garrigodarkmode.png',
 			'cursor/znoguerdarkmode.png',
-			'cursor/moterodarkmode.png'
+			'cursor/moterodarkmode.png',
+			'cursor/profile_darkmode.png'
 		];
 
 		const darkmode_ini = ((document.cookie.match(/^(?:.*;)?\s*darkmode\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1] === "on")
@@ -100,7 +81,7 @@
         	    img.className = 'fallingObject';
 			
     			// Set random horizontal starting position
-    			const randomLeft = Math.random() * 100 + 'vw';
+    			const randomLeft = (5 + Math.random() * 80) + 'vw';
     			img.style.left = randomLeft;
 
    				// Set a random animation delay
@@ -132,10 +113,9 @@
 			sleep(100).then(() => { createFallingObjects() });
 		};
 
+		// Initialise
 		const icon = document.getElementById("dark-mode-toggle");
 		icon.innerText = (document.body.classList.contains("dark-theme") ^ darkmode_ini) ? "🌝" : "🌚";
-
-		// Create initial falling objects
 		createFallingObjects();
 
     </script>
