@@ -6,7 +6,7 @@
 /*   By: rgarrigo <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 01:29:04 by rgarrigo          #+#    #+#             */
-/*   Updated: 2023/09/25 01:40:43 by rgarrigo         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:17:04 by rgarrigo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	HttpResponse::_launchSon(int pipeFdIn[2], int pipeFdOut[2])
 	if (dup2(pipeFdOut[1], 1) == -1)
 		return (close(pipeFdOut[1]), -1);
 	close(pipeFdOut[1]);
+
 	std::string	pathExec;
 	char		*argv[3];
 	char		*env[100];
