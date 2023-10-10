@@ -1,0 +1,892 @@
+[36m[2023-10-10 15:30:12] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:30:12] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:30:12] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:30:12] [0m[1m[31m[ERROR] [0m[1m./config/default.conf: [38;5;1merror: [0mfailed to open credentials file in server block line 7.[0m
+[36m[2023-10-10 15:30:12] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:30:12] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:30:12] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:124:formatMessageByLogLevel[0m[97mError during context [server.credentials], value [config/credentials.txt] validation: File does not exist or don't have permissions. You stink[0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidatorUtility.cpp:87:formatMessageByLogLevel[0m[97mFailed to validate server config key [credentials]: File does not exist or don't have permissions. You stink[0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:105:formatMessageByLogLevel[0m[97mOne of virtual server config validation failed                                                      [0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:62:formatMessageByLogLevel[0m[97mConfiguration validation failed. Trying default configuration.                                      [0m
+[36m[2023-10-10 15:30:13] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m./config/default.conf: [38;5;1merror: [0mfailed to open credentials file in server block line 7.[0m
+[36m[2023-10-10 15:30:13] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:30:13] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:30:13] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:124:formatMessageByLogLevel[0m[97mError during context [server.credentials], value [config/credentials.txt] validation: File does not exist or don't have permissions. You stink[0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidatorUtility.cpp:87:formatMessageByLogLevel[0m[97mFailed to validate server config key [credentials]: File does not exist or don't have permissions. You stink[0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:105:formatMessageByLogLevel[0m[97mOne of virtual server config validation failed                                                      [0m
+[36m[2023-10-10 15:30:13] [0m[1m[31m[ERROR] [0m[1m[31msources/main.cpp:69:formatMessageByLogLevel[0m[97mDefault Configuration validation failed. Exiting.                                                   [0m
+[36m[2023-10-10 15:30:20] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:30:20] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:30:20] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:30:21] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:30:21] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:30:21] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:30:21] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:201:formatMessageByLogLevel[0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:30:21] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLoading validation file                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLoading INI file: config/validation/contextFields.ini
+                                              [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidation file loaded                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[TRACE] [0m
+
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ IniParser                                                                                           [0m
+  [global.clientBodyLimit]                                                                           [0m
+ 	Default=1048576                                                                                    [0m
+ 	Description=Maximum allowed size for client body.                                                  [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Max=2147483647                                                                                     [0m
+ 	Min=0                                                                                              [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.clientHeaderLimit]                                                                          [0m
+ 	Default=8192                                                                                       [0m
+ 	Description=Maximum allowed size for client headers.                                               [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.maxConnections]                                                                             [0m
+ 	Default=100                                                                                        [0m
+ 	Description=Maximum number of connections.                                                         [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.maxRequests]                                                                                [0m
+ 	Default=1000                                                                                       [0m
+ 	Description=Maximum number of requests.                                                            [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.maxRequestsPerIP]                                                                           [0m
+ 	Default=50                                                                                         [0m
+ 	Description=Maximum number of requests per IP.                                                     [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.timeoutCgi]                                                                                 [0m
+ 	Default=300                                                                                        [0m
+ 	Description=Maximum time to wait for a request.                                                    [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Max=100000                                                                                         [0m
+ 	Min=0                                                                                              [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [global.timeoutClient]                                                                              [0m
+ 	Default=1                                                                                          [0m
+ 	Description=Maximum time to wait for a request.                                                    [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Max=10000                                                                                          [0m
+ 	Min=0                                                                                              [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [location.cgi]                                                                                      [0m
+ 	Description=List of file extensions that should be handled as CGI.                                 [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidCgiExtension                                                                     [0m
+ [location.defaultFile]                                                                              [0m
+ 	Description=List of default files to serve if the request targets a directory.                     [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidPath                                                                             [0m
+ [location.directoryListing]                                                                         [0m
+ 	Default=off                                                                                        [0m
+ 	Description=List of settings to enable or disable directory listing.                               [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidOnOff                                                                            [0m
+ [location.index]                                                                                    [0m
+ 	Description=List of path patterns for location blocks.                                             [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidLocPath                                                                          [0m
+ [location.methods]                                                                                  [0m
+ 	Default=GET,POST,DELETE                                                                            [0m
+ 	Description=Allowed HTTP methods for this location.                                                [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidMethod                                                                           [0m
+ [location.path]                                                                                     [0m
+ 	Description=List of path patterns for location blocks.                                             [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidLocPath                                                                          [0m
+ [location.return]                                                                                   [0m
+ 	Description=Multiple string since 301 + URL                                                        [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidRedirect                                                                         [0m
+ [location.root]                                                                                     [0m
+ 	Description=List of root directories for this location.                                            [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidLocPath                                                                          [0m
+ [location.upload.upload_allowed_exts]                                                               [0m
+ 	Description=List of accepted file types for uploads.                                               [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidFileUploadTypes                                                                  [0m
+ [location.upload.upload_store]                                                                      [0m
+ 	Description=List of paths where uploaded files are saved.                                          [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidDirectoryPath                                                                    [0m
+ [location.uploadDir]                                                                                [0m
+ 	Description=List of directories where uploaded files should be saved.                              [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidDirectoryPath                                                                    [0m
+ [server.clientBodyLimit]                                                                            [0m
+ 	Default=1048576                                                                                    [0m
+ 	Description=Maximum allowed size for client body.                                                  [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [server.credentials]                                                                                [0m
+ 	Description=Path where credentials are stored                                                      [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidPath                                                                             [0m
+ [server.errorPages]                                                                                 [0m
+ 	Default=/site/error/400.html                                                                       [0m
+ 	Description=Paths to custom error pages for the servermapped to HTTP status codes.                 [0m
+ 	Mandatory=false                                                                                    [0m
+ 	Multiple=false                                                                                     [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidPath                                                                             [0m
+ [server.listen]                                                                                     [0m
+ 	Default=8000                                                                                       [0m
+ 	Description=Port number on which the server listens.                                               [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Max=65535                                                                                          [0m
+ 	Min=0                                                                                              [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=integer                                                                                       [0m
+ 	Validation=isPositiveInteger                                                                       [0m
+ [server.server_name]                                                                                [0m
+ 	Default=localhost                                                                                  [0m
+ 	Description=List of server names.                                                                  [0m
+ 	Mandatory=true                                                                                     [0m
+ 	Multiple=true                                                                                      [0m
+ 	Type=string                                                                                        [0m
+ 	Validation=isValidServerName                                                                       [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Parsing server block                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		credentials file parsed successfully.                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Parsing server block                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		credentials file parsed successfully.                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[CONFIG][0m
+╔════════════════════════════════════════════════════════════════════════════════════════════════════╗
+ [clientBodyLimit][1][;][                                                                            [0m
+ ][clientHeaderLimit][1000][;][                                                                      [0m
+ ][maxConnections][100000][;][                                                                       [0m
+ ][timeoutClient][10][;][                                                                            [0m
+ ][timeoutCgi][100][;][                                                                              [0m
+ ][                                                                                                  [0m
+ ][server][{][                                                                                       [0m
+ ][listen][8000][8001][;][                                                                           [0m
+ ][server_name][127.0.0.1][;][                                                                       [0m
+ ][access_log][logs/domain1.access.log][main][;][                                                    [0m
+ ][credentials][config/credentials.txt][;][                                                          [0m
+ ][root][html][;][                                                                                   [0m
+ ][                                                                                                  [0m
+ ][clientBodyLimit][10000][;][                                                                       [0m
+ ][location][/][{][                                                                                  [0m
+ ][root][./site/][;][                                                                                [0m
+ ][methods][GET][;][                                                                                 [0m
+ ][index][index.html][;][                                                                            [0m
+ ][}][                                                                                               [0m
+ ][location][/wiki][{][                                                                              [0m
+ ][return][http://wikipedia.org][;][                                                                 [0m
+ ][}][                                                                                               [0m
+ ][location][/php][{][                                                                               [0m
+ ][root][./site/php][;][                                                                             [0m
+ ][methods][GET][POST][;][                                                                           [0m
+ ][cgi][/usr/bin/php-cgi][;][                                                                        [0m
+ ][}][                                                                                               [0m
+ ][location][/python][{][                                                                            [0m
+ ][root][./site/python][;][                                                                          [0m
+ ][methods][GET][POST][;][                                                                           [0m
+ ][cgi][/bin/python3.10][;][                                                                         [0m
+ ][}][                                                                                               [0m
+ ][location][/secret][{][                                                                            [0m
+ ][root][./site/secret][;][                                                                          [0m
+ ][methods][GET][;][                                                                                 [0m
+ ][allow][admin][;][                                                                                 [0m
+ ][}][                                                                                               [0m
+ ][location][/upload][{][                                                                            [0m
+ ][root][./site/upload][;][                                                                          [0m
+ ][methods][GET][POST][;][                                                                           [0m
+ ][upload][./site/upload][;][                                                                        [0m
+ ][}][                                                                                               [0m
+ ][location][/login][{][                                                                             [0m
+ ][methods][POST][;][                                                                                [0m
+ ][}][                                                                                               [0m
+ ][}][                                                                                               [0m
+ ][                                                                                                  [0m
+ ][server][{][                                                                                       [0m
+ ][listen][8002][;][                                                                                 [0m
+ ][server_name][sitevide.com][;][                                                                    [0m
+ ][credentials][config/credentials.txt][;][                                                          [0m
+ ][location][/][{][                                                                                  [0m
+ ][root][./site/][;][                                                                                [0m
+ ][methods][GET][;][                                                                                 [0m
+ ][index][index.html][;][                                                                            [0m
+ ][}][                                                                                               [0m
+ ][}][                                                                                               [0m
+ ][                                                                                                  [0m
+ ]                                                                                                   [0m
+ ==========================================================================                          [0m
+ Config Data :                                                                                       [0m
+ clientBodyLimit : clientBodyLimit, 1                                                                [0m
+ clientHeaderLimit : clientHeaderLimit, 1000                                                         [0m
+ maxConnections : maxConnections, 100000                                                             [0m
+ timeoutCgi : timeoutCgi, 100                                                                        [0m
+ timeoutClient : timeoutClient, 10                                                                   [0m
+ ==========================================================================                          [0m
+ Server 1 :                                                                                          [0m
+ 	access_log : access_log, logs/domain1.access.log, main                                             [0m
+ 	clientBodyLimit : clientBodyLimit, 10000                                                           [0m
+ 	credentials : credentials, config/credentials.txt                                                  [0m
+ 	listen : listen, 8000, 8001                                                                        [0m
+ 	root : root, html                                                                                  [0m
+ 	server_name : server_name, 127.0.0.1                                                               [0m
+ 	Location(s) :                                                                                      [0m
+ 		location 1 :                                                                                      [0m
+ 		path(s) : /                                                                                       [0m
+ 		index : index, index.html                                                                         [0m
+ 		methods : methods, GET                                                                            [0m
+ 		root : root, ./site/                                                                              [0m
+ 		location 2 :                                                                                      [0m
+ 		path(s) : /wiki                                                                                   [0m
+ 		return : return, http://wikipedia.org                                                             [0m
+ 		location 3 :                                                                                      [0m
+ 		path(s) : /php                                                                                    [0m
+ 		cgi : cgi, /usr/bin/php-cgi                                                                       [0m
+ 		methods : methods, GET, POST                                                                      [0m
+ 		root : root, ./site/php                                                                           [0m
+ 		location 4 :                                                                                      [0m
+ 		path(s) : /python                                                                                 [0m
+ 		cgi : cgi, /bin/python3.10                                                                        [0m
+ 		methods : methods, GET, POST                                                                      [0m
+ 		root : root, ./site/python                                                                        [0m
+ 		location 5 :                                                                                      [0m
+ 		path(s) : /secret                                                                                 [0m
+ 		allow : allow, admin                                                                              [0m
+ 		methods : methods, GET                                                                            [0m
+ 		root : root, ./site/secret                                                                        [0m
+ 		location 6 :                                                                                      [0m
+ 		path(s) : /upload                                                                                 [0m
+ 		methods : methods, GET, POST                                                                      [0m
+ 		root : root, ./site/upload                                                                        [0m
+ 		upload : upload, ./site/upload                                                                    [0m
+ 		location 7 :                                                                                      [0m
+ 		path(s) : /login                                                                                  [0m
+ 		methods : methods, POST                                                                           [0m
+ 	Credentials :                                                                                      [0m
+ 		brogarow :                                                                                        [0m
+ 			admin; password                                                                                  [0m
+ 			villager; password                                                                               [0m
+ 		motero :                                                                                          [0m
+ 			admin; password2                                                                                 [0m
+ 			villager; password2                                                                              [0m
+ 		olimartin :                                                                                       [0m
+ 			villager; password4                                                                              [0m
+ 		znogueir :                                                                                        [0m
+ 			admin; password3                                                                                 [0m
+ 			villager; password3                                                                              [0m
+ Server 2 :                                                                                          [0m
+ 	credentials : credentials, config/credentials.txt                                                  [0m
+ 	listen : listen, 8002                                                                              [0m
+ 	server_name : server_name, sitevide.com                                                            [0m
+ 	Location(s) :                                                                                      [0m
+ 		location 1 :                                                                                      [0m
+ 		path(s) : /                                                                                       [0m
+ 		index : index, index.html                                                                         [0m
+ 		methods : methods, GET                                                                            [0m
+ 		root : root, ./site/                                                                              [0m
+ 	Credentials :                                                                                      [0m
+ 		brogarow :                                                                                        [0m
+ 			admin; password                                                                                  [0m
+ 			villager; password                                                                               [0m
+ 		motero :                                                                                          [0m
+ 			admin; password2                                                                                 [0m
+ 			villager; password2                                                                              [0m
+ 		olimartin :                                                                                       [0m
+ 			villager; password4                                                                              [0m
+ 		znogueir :                                                                                        [0m
+ 			admin; password3                                                                                 [0m
+ 			villager; password3                                                                              [0m
+ ==========================================================================                          [0m
+╚════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [global.clientBodyLimit]                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: global.clientBodyLimit                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: global.clientBodyLimit                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 1                                                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [global.clientBodyLimit], value [1]                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated global config key [clientBodyLimit]                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [global]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [clientBodyLimit]                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [global.clientHeaderLimit]                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: global.clientHeaderLimit                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: global.clientHeaderLimit                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 1000                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [global.clientHeaderLimit], value [1000]                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated global config key [clientHeaderLimit]                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [global]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [clientHeaderLimit]                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [global.maxConnections]                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: global.maxConnections                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: global.maxConnections                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 100000                                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [global.maxConnections], value [100000]                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated global config key [maxConnections]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [global]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [maxConnections]                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [global.timeoutCgi]                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: global.timeoutCgi                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: global.timeoutCgi                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 100                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [global.timeoutCgi], value [100]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated global config key [timeoutCgi]                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [global]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [timeoutCgi]                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [global.timeoutClient]                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: global.timeoutClient                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: global.timeoutClient                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 10                                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [global.timeoutClient], value [10]                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated global config key [timeoutClient]                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [global]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [timeoutClient]                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.access_log]                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.access_log                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.clientBodyLimit]                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.clientBodyLimit                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.clientBodyLimit                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 10000                                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.clientBodyLimit], value [10000]                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [clientBodyLimit]                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [clientBodyLimit]                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.credentials]                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.credentials                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.credentials                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: config/credentials.txt                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.credentials], value [config/credentials.txt]            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [credentials]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [credentials]                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.listen]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.listen                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.listen                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 8000                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 8001                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.listen], value [8000]                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.listen], value [8001]                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [listen]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [listen]                                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.root]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.root                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.server_name]                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.server_name                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.server_name                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 127.0.0.1                                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.server_name], value [127.0.0.1]                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [server_name]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [server_name]                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.index]                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.index                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.index                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: index.html                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.index], value [index.html]                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [index]                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [index]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/                                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.return]                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.return                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.return                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: http://wikipedia.org                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.return], value [http://wikipedia.org]                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [return]                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [return]                                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.cgi]                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.cgi                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.cgi                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: /usr/bin/php-cgi                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.cgi], value [/usr/bin/php-cgi]                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [cgi]                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [cgi]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: POST                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [POST]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/php                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/php]                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.cgi]                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.cgi                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.cgi                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: /bin/python3.10                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.cgi], value [/bin/python3.10]                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [cgi]                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [cgi]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: POST                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [POST]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/python                                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/python]                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.allow]                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.allow                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/secret                                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/secret]                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: POST                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [POST]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/upload                                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/upload]                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.upload]                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.upload                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: POST                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [POST]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:201:formatMessageByLogLevel[0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.clientBodyLimit]                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.clientBodyLimit                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.clientBodyLimit                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 1                                                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.clientBodyLimit], value [1]                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [clientBodyLimit]                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [clientBodyLimit]                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.credentials]                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.credentials                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.credentials                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: config/credentials.txt                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.credentials], value [config/credentials.txt]            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [credentials]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [credentials]                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.listen]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.listen                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.listen                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: 8002                                                                                         [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.listen], value [8002]                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [listen]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [listen]                                                                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [server.server_name]                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: server.server_name                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: server.server_name                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: sitevide.com                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [server.server_name], value [sitevide.com]                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated server config key [server_name]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [server]                                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [server_name]                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.index]                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.index                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.index                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: index.html                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.index], value [index.html]                            [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [index]                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [index]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.methods]                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.methods                                                               [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.methods                                                                     [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: GET                                                                                          [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.methods], value [GET]                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [methods]                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [methods]                                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFetching data for context [location.root]                                                           [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mLooking for section: location.root                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mFound section: location.root                                                                        [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValues to validate:                                                                                 [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValue: ./site/                                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m[YES] Validation passed for context [location.root], value [./site/]                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mValidated location config key [root]                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Context is [location]                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97m		Config key is [root]                                                                              [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mPort added: 8000                                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mPort added: 8001                                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mPort added: 8002                                                                                    [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:36:10] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mEpoll returned with 0 events.                                                                       [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mChecking timeouts                                                                                   [0m
+[36m[2023-10-10 15:36:10] [0m[1m[97m[DEBUG] [0m[97mWaiting for an epoll event...                                                                       [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:36:33] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:36:33] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:201:formatMessageByLogLevel[0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:36:33] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m
+[36m[2023-10-10 15:36:43] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:36:43] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:36:44] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:36:44] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:36:44] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:36:44] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:36:44] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:201:formatMessageByLogLevel[0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:36:44] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:41:49] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:41:49] [0m[1m[31m[ERROR] [0m[1m[31msources/parsing/configValidator.cpp:201:formatMessageByLogLevel[0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:41:49] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mLogger initialized.                                                                                 [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mInvalid value: isValidAllow for key: Validation in section: location.allow.                         [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mSection location.allow is empty. Erasing section.                                                   [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mConfig = ./config/default.conf                                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mConfiguration loaded.                                                                               [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mSection server.access_log not found in the INI file.                                                [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mSection server.root not found in the INI file.                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mSection location.allow not found in the INI file.                                                   [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mSection location.upload not found in the INI file.                                                  [0m
+[36m[2023-10-10 15:42:10] [0m[33m[WARN]  [0m[97mMandatory server config key [clientBodyLimit] not found                                             [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mCreating server.clientBodyLimit with value of global.clientBodyLimit                                [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97m		 parameter is = clientBodyLimit                                                                   [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mserver.clientBodyLimit created                                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mConfiguration validation passed. Starting server.                                                   [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mInitializing sockets                                                                                [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mPorts to listen: 3                                                                                  [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8000                                                                       [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8000                                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mListening on port: 8000                                                                             [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8001                                                                       [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8001                                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mListening on port: 8001                                                                             [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mSocket created for port: 8002                                                                       [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mBind successful for port: 8002                                                                      [0m
+[36m[2023-10-10 15:42:10] [0m[34m[INFO]  [0m[97mListening on port: 8002                                                                             [0m

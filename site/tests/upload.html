@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Webserv</title>
+	<link rel="icon" type="image/png" href="/motero.png"/>
+</head>
+<body>
+	<h1>Upload your file in style</h1>
+	<p>Your file will be uploaded in "./site2/upload/"</p>
+	<form action="/upload" method="post" enctype="multipart/form-data">
+	  Select file to upload:
+	  <input type="file" name="fileToUpload" id="fileToUpload">
+	  <input type="submit" value="Upload File" name="submit">
+	</form>
+</body>
+</html>
